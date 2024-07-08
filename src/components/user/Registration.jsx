@@ -1,12 +1,13 @@
 import axios from 'axios';
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 function Registration() {
     // const [formdata, setFormdata] = useState({ email: "", password: "", password1: "", termAndCondition: "" });
     const [formdata, setFormdata] = useState({ email: "", password: "" });
+    const navigate = useNavigate("")
 
 
     const updateData = (e) => {
@@ -16,9 +17,17 @@ function Registration() {
     const submitFormData = async (e) => {
         e.preventDefault();
         try {
-            const data = await axios.post("http://localhost:8080/api/v1/customers/register", formdata);
+            const data = await axios.post("http://localhost:8080/api/v1/customers/register",
+                formdata,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true // Includes cookies with the request
+                });
             // setFormdata({ email: "", password: "", password1: "", termAndCondition: "" })
             setFormdata({ email: "", password: "" })
+            if(data === '202'){
+                navigate("/otpVerification")
+            }
             console.log(data)
         } catch (error) {
             console.log(error)
