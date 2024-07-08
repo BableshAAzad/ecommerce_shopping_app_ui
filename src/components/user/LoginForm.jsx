@@ -6,7 +6,7 @@ function LoginForm() {
     const [formdata, setFormdata] = useState({ email: "", password: "" });
 
     const updateData = (e) => {
-        setFormdata({ ...formdata, [e.target.name]: e.target.value })
+        setFormdata({ ...formdata, [e.target.name] : e.target.value })
     }
 
     const submitFormData = async (e) => {
@@ -45,4 +45,5 @@ function LoginForm() {
     )
 }
 
-export default LoginForm
+export default LoginForm 
+// test commit
