@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import Header from "../components/header/Header"
-import HomePage from "../components/header/HomePage"
+import Header from "../components/header/Header.jsx"
+import HomePage from "../components/navbarpage/HomePage.jsx"
 
 
 function App() {
