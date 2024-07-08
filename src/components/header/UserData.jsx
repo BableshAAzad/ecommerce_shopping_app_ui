@@ -14,15 +14,21 @@ function UserData() {
                 <Dropdown
                     arrowIcon={false}
                     inline
-                    label={!isLogin ? login : username}>
+                    label={!isLogin ? login : username}    >
                     <Dropdown.Header>
                         <span className="block text-sm">Bablesh AAzad</span>
                         <span className="block truncate text-sm font-medium">aazadbablesh@gmail.com</span>
                     </Dropdown.Header>
 
                     <Dropdown.Item>
-                        <Navbar.Link to='#'>
-                            <FontAwesomeIcon icon={faUser} /> MyProfile
+                        <Navbar.Link href='/registration'>
+                            <FontAwesomeIcon icon={faUser} /> Sing Up
+                        </Navbar.Link >
+                    </Dropdown.Item>
+
+                    <Dropdown.Item>
+                        <Navbar.Link href='/loginForm'>
+                            <FontAwesomeIcon icon={faUser} /> Login
                         </Navbar.Link >
                     </Dropdown.Item>
 

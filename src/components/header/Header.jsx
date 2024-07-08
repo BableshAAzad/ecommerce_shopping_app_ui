@@ -17,7 +17,7 @@ function Header() {
     return (
         <>
             <Navbar fluid >
-                <Navbar.Brand to="#" className='navlogo'>
+                <Navbar.Brand href="/" className='navlogo'>
                     {/* <img src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/fkheaderlogo_exploreplus-44005d.svg" width="160" height="40" title="Flipkart" alt="Flipkart" /> */}
                     <img src={logo} alt="EcommerceShoppingApp"  width="47" height="40" title="EcommerceShoppingApp"/>
                     <span className="self-center sitename dark:text-white text-xl font-semibold break-words md:whitespace-normal">Ecommerce Shopping App</span>
