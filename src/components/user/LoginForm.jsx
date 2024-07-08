@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import axios from 'axios';
 
@@ -6,15 +6,25 @@ function LoginForm() {
     const [formdata, setFormdata] = useState({ email: "", password: "" });
 
     const updateData = (e) => {
-        setFormdata({ ...formdata, [e.target.name] : e.target.value })
+        setFormdata({ ...formdata, [e.target.name]: e.target.value })
     }
 
     const submitFormData = async (e) => {
         e.preventDefault();
         try {
-            const data = await axios.post("http://localhost:8080/api/v1/login", formdata);
+            const data = await axios.post("http://localhost:8080/api/v1/login",
+                formdata,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true // Includes cookies with the request
+                }
+            );
             setFormdata({ email: "", password: "" })
+            console.log("login successfull")
             console.log(data)
+            if(data === '202'){
+                console.log("")
+            }
         } catch (error) {
             console.log(error)
         }
@@ -45,5 +55,5 @@ function LoginForm() {
     )
 }
 
-export default LoginForm 
+export default LoginForm
 // test commit
