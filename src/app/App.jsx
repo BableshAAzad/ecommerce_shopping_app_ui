@@ -1,7 +1,7 @@
 
 import { Outlet } from "react-router-dom"
-import HeaderComp from "../components/header/HeaderComp.jsx"
 import FooterComp from "../components/footer/FooterComp.jsx"
+import HeaderComp from "../components/header/HeaderComp.jsx"
 
 
 function App() {
@@ -16,4 +16,4 @@ function App() {
 
 export default App
 
-// test commit
+// test commit + test commit 2
