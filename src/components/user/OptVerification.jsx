@@ -1,26 +1,53 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Modal } from "flowbite-react";
-import { HiOutlineExclamationCircle } from "react-icons/hi";
 import OtpInput from 'react-otp-input';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Loading from '../loader/Loading';
+import axios from 'axios';
 
-function UserDashBoard() {
-    const [toggle, setToggle] = useState(true)
+function OptVerification() {
     const [openModal, setOpenModal] = useState(true);
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+    const [isLoding, setIsLoding] = useState(false);
+    const location = useLocation();
+    const navigate = useNavigate()
 
-    let otpPrint = () => {
-        let temp = otp.join('')
-        console.log(temp)
+
+    let formData = location.state;
+    // console.log(formData)
+
+    // useEffect(() => {
+    //     console.log(otp.join(''))
+    // }, [otp])
+
+    const submitOtp = async () => {
+        try {
+            setIsLoding(true)
+            console.log({ email: formData.email, opt: otp.join('') })
+            const response = await axios.post("http://localhost:8080/api/v1/users/otpVerification",
+                { email: formData.email, otp: otp.join('') },
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true // Includes cookies with the request
+                });
+
+            setOtp(["", "", "", "", "", ""])
+            setIsLoding(false)
+
+            if (response.status === 201) {
+                navigate("/userOtpVerifiedPage", { state: response.data })
+            }
+            console.log(response)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    useEffect(() => {
-        console.log(otp.join(''))
-    }, [otp])
 
-    // setToggle(true)
     return (
         <>
-            <Button onClick={() => setOpenModal(true)}>Toggle modal</Button>
+            {isLoding ? <Loading /> : ""}
+            {/* <Button onClick={() => setOpenModal(true)}>Toggle modal</Button> */}
             <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
                 <Modal.Header />
                 <Modal.Body>
@@ -50,10 +77,13 @@ function UserDashBoard() {
                             }
                         </section>
                         <div className="flex justify-center gap-4 m-3">
-                            <Button color="success" onClick={() => setOpenModal(false)}>
+                            <Button color="success" onClick={() => {
+                                setOpenModal(false),
+                                    submitOtp()
+                            }}>
                                 {"Verify Email"}
                             </Button>
-                            <Button color="blue" onClick={() => setOpenModal(false)}>
+                            <Button color="blue" onClick={() => setOpenModal(true)}>
                                 Resend OTP
                             </Button>
                         </div>
@@ -64,4 +94,4 @@ function UserDashBoard() {
     )
 }
 
-export default UserDashBoard
+export default OptVerification
