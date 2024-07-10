@@ -50,19 +50,19 @@ function Registration() {
                         <div className="mb-2 block">
                             <Label htmlFor="email2" value="Your email" />
                         </div>
-                        <TextInput id="email2" type="email" value={formdata.email} name="email" onChange={updateData} placeholder="name@flowbite.com" required shadow />
+                        <TextInput id="email2" type="email" value={formdata.email} name="email" onChange={updateData} placeholder="name@flowbite.com" autoComplete='true'  required shadow />
                     </div>
                     <div>
                         <div className="mb-2 block">
                             <Label htmlFor="password2" value="Your password" />
                         </div>
-                        <TextInput id="password2" type="password" value={formdata.password} name="password" onChange={updateData} placeholder='Abc@123xyz' required shadow />
+                        <TextInput id="password2" type="password" value={formdata.password} name="password" onChange={updateData} placeholder='Abc@123xyz' autoComplete='true'  required shadow />
                     </div>
                     <div>
                         <div className="mb-2 block">
                             <Label htmlFor="repeat-password" value="Repeat password" />
                         </div>
-                        <TextInput id="repeat-password" type="password" name="password1" placeholder='Abc@123xyz' required shadow />
+                        <TextInput id="repeat-password" type="password" name="password1" placeholder='Abc@123xyz' autoComplete='true'  required shadow />
                     </div>
                     <div className="flex items-center gap-2">
                         <Checkbox id="agree" name="termAndCondition" />
