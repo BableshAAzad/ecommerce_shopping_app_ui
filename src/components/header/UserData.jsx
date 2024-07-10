@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Dropdown, Navbar } from "flowbite-react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faGift, faHeart, faRightToBracket, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -33,7 +33,7 @@ function UserData() {
                     </Dropdown.Item>
 
                     <Dropdown.Item>
-                        <Navbar.Link to='#'>
+                        <Navbar.Link href='/optVerification'>
                             <FontAwesomeIcon icon={faCartShopping} /> Orders
                         </Navbar.Link >
                     </Dropdown.Item>
