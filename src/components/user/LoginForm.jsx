@@ -47,13 +47,13 @@ function LoginForm() {
                         <div className="mb-2 block">
                             <Label htmlFor="usernamelogin" value="Your Username" />
                         </div>
-                        <TextInput id="usernamelogin" type="text" value={formdata.username} onChange={updateData} name="username" placeholder="abcd" required />
+                        <TextInput id="usernamelogin" type="text" value={formdata.username} onChange={updateData} name="username" placeholder="abcd" autoComplete='true'  required />
                     </div>
                     <div>
                         <div className="mb-2 block">
                             <Label htmlFor="passwordlogin" value="Your password" />
                         </div>
-                        <TextInput id="passwordlogin" type="password" value={formdata.password} onChange={updateData} name="password" placeholder='Abc@123xyz' required />
+                        <TextInput id="passwordlogin" type="password" value={formdata.password} onChange={updateData} name="password" placeholder='Abc@123xyz' autoComplete='true' required />
                     </div>
                     <div className="flex items-center gap-2">
                         <Checkbox id="remember" />
