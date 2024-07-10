@@ -1,5 +1,5 @@
 import "./Loading.css"
-import pic from "../../images/LinearDNA.gif";
+import pic from "../../images/loderIcon.gif";
 
 function Loading() {
   return (

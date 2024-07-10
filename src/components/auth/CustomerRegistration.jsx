@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Loading from '../loader/Loading';
 
 
-function Registration() {
+function CustomerRegistration() {
     // const [formdata, setFormdata] = useState({ email: "", password: "", password1: "", termAndCondition: "" });
     const [formdata, setFormdata] = useState({ email: "", password: "" });
     // const [popupOpen, setPopupOpen] = useState(false);
@@ -50,19 +50,19 @@ function Registration() {
                         <div className="mb-2 block">
                             <Label htmlFor="email2" value="Your email" />
                         </div>
-                        <TextInput id="email2" type="email" value={formdata.email} name="email" onChange={updateData} placeholder="name@flowbite.com" autoComplete='true'  required shadow />
+                        <TextInput id="email2" type="email" value={formdata.email} name="email" onChange={updateData} placeholder="name@flowbite.com" autoComplete='true' required shadow />
                     </div>
                     <div>
                         <div className="mb-2 block">
                             <Label htmlFor="password2" value="Your password" />
                         </div>
-                        <TextInput id="password2" type="password" value={formdata.password} name="password" onChange={updateData} placeholder='Abc@123xyz' autoComplete='true'  required shadow />
+                        <TextInput id="password2" type="password" value={formdata.password} name="password" onChange={updateData} placeholder='Abc@123xyz' autoComplete='true' required shadow />
                     </div>
                     <div>
                         <div className="mb-2 block">
                             <Label htmlFor="repeat-password" value="Repeat password" />
                         </div>
-                        <TextInput id="repeat-password" type="password" name="password1" placeholder='Abc@123xyz' autoComplete='true'  required shadow />
+                        <TextInput id="repeat-password" type="password" name="password1" placeholder='Abc@123xyz' autoComplete='true' required shadow />
                     </div>
                     <div className="flex items-center gap-2">
                         <Checkbox id="agree" name="termAndCondition" />
@@ -80,4 +80,4 @@ function Registration() {
     )
 }
 
-export default Registration
+export default CustomerRegistration

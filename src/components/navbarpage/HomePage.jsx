@@ -6,7 +6,7 @@ function HomePage() {
     // console.log(document.cookie)
     // console.log(jwtDecode("eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiQ1VTVE9NRVIiLCJzdWIiOiJhYXphZGJhYmxlc2giLCJpYXQiOjE3MjA1NDA3MTYsImV4cCI6MTcyMTgzNjcxNn0.6rUYgSZCkDSd7dkkHqb8d7ejqiNg4AY8tjcj1I0RuPuWTwMGEZZ2pE95QBdfgdkwbb_IZLvVxA708USeTBcZ7w"))
     return (
-        <div className="w-full dark:bg-slate-700 h-screen">
+        <div className="h-screen">
             <br /><br />
             {/* <img src={shop} alt="shop" /> */}
             <h1 className="text-center text-2xl dark:text-white">Welcome To Ecommerce Shopping Application</h1>
