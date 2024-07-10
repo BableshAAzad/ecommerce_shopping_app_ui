@@ -1,16 +1,18 @@
 import { useState } from 'react'
-import { Dropdown, Navbar } from "flowbite-react";
+import { Dropdown } from "flowbite-react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faGift, faHeart, faRightToBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 import "./UserData.css"
+import AppNavLink from './AppNavLink';
 
 function UserData() {
     const [isLogin, setIsLogin] = useState(false);
     let login = (<><FontAwesomeIcon icon={faUser} />&nbsp;Login</>);
     let username = "Bablesh"
+
     return (
         <>
-            <div className="loginbtn dark:text-slate-400 hover:dark:text-slate-100">
+            <div className="navbtn dark:text-slate-400 hover:dark:text-slate-100">
                 <Dropdown
                     arrowIcon={false}
                     inline
@@ -20,45 +22,19 @@ function UserData() {
                         <span className="block truncate text-sm font-medium">aazadbablesh@gmail.com</span>
                     </Dropdown.Header>
 
-                    <Dropdown.Item>
-                        <Navbar.Link href='/registration'>
-                            <FontAwesomeIcon icon={faUser} /> Sing Up
-                        </Navbar.Link >
-                    </Dropdown.Item>
+                    <AppNavLink path="/customerRegistration" icon={<FontAwesomeIcon icon={faUser} />} text="Sing Up" />
 
-                    <Dropdown.Item>
-                        <Navbar.Link href='/loginForm'>
-                            <FontAwesomeIcon icon={faUser} /> Login
-                        </Navbar.Link >
-                    </Dropdown.Item>
+                    <AppNavLink path="/loginForm" icon={<FontAwesomeIcon icon={faUser} />} text="Login" />
 
-                    <Dropdown.Item>
-                        <Navbar.Link href='/optVerification'>
-                            <FontAwesomeIcon icon={faCartShopping} /> Orders
-                        </Navbar.Link >
-                    </Dropdown.Item>
+                    <AppNavLink path="/optVerification" icon={<FontAwesomeIcon icon={faCartShopping} />} text="Orders" />
 
-                    <Dropdown.Item>
-                        <Navbar.Link to='#'>
-                            <FontAwesomeIcon icon={faHeart} /> Wishlist
-                        </Navbar.Link >
-                    </Dropdown.Item>
+                    <AppNavLink path="/wishlist" icon={<FontAwesomeIcon icon={faHeart} />} text="Wishlist" />
 
-                    <Dropdown.Item>
-                        <Navbar.Link to='#'>
-                            <FontAwesomeIcon icon={faGift} /> Rewards
-                        </Navbar.Link >
-                    </Dropdown.Item>
+                    <AppNavLink path="/rewards" icon={<FontAwesomeIcon icon={faGift} />} text="Rewards" />
 
-                    <Dropdown.Divider />
-                    <Dropdown.Item>
-                        <Navbar.Link to='#'>
-                            <FontAwesomeIcon icon={faRightToBracket} /> Sign out
-                        </Navbar.Link >
-                    </Dropdown.Item>
+                    <AppNavLink path="/logout" icon={<FontAwesomeIcon icon={faRightToBracket} />} text="Sign out" />
 
                 </Dropdown>
-                {/* <Navbar.Toggle /> */}
             </div>
         </>
     )

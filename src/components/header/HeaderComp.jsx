@@ -1,14 +1,18 @@
 import { useState } from 'react';
-import { faBoxOpen, faCartShopping, faEllipsisVertical, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faBoxOpen, faCartShopping, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Navbar, TextInput } from "flowbite-react";
 import DarkModeOption from "../darkmode/DarkModeOption";
-import "./Header.css"
+import "./HeaderComp.css"
+import "./UserData.css"
 import UserData from './UserData';
 import logo from "../../images/logo.png"
+import { NavLink, useLocation } from 'react-router-dom';
+import MoreOptionNav from './MoreOptionNav';
 
-function Header() {
+function HeaderComp() {
     let [isSearchVisible, setIsSearchVisible] = useState(false);
+    const location = useLocation();
 
     let handleSearchIconClick = () => {
         setIsSearchVisible(!isSearchVisible);
@@ -19,7 +23,7 @@ function Header() {
             <Navbar fluid className='bg-slate-100'>
                 <Navbar.Brand href="/" className='navlogo'>
                     {/* <img src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/fkheaderlogo_exploreplus-44005d.svg" width="160" height="40" title="Flipkart" alt="Flipkart" /> */}
-                    <img src={logo} alt="EcommerceShoppingApp"  width="47" height="40" title="EcommerceShoppingApp"/>
+                    <img src={logo} alt="EcommerceShoppingApp" width="47" height="40" title="EcommerceShoppingApp" />
                     <span className="self-center sitename dark:text-white text-xl font-semibold break-words md:whitespace-normal">Ecommerce Shopping App</span>
                 </Navbar.Brand>
                 <div className="flex md:order-1 md:w-1/4">
@@ -33,14 +37,28 @@ function Header() {
                 </div>
                 <Navbar.Collapse className="md:order-2">
                     <UserData />
-                    <Navbar.Link to="#" className='text-base'><FontAwesomeIcon icon={faCartShopping} /> Cart</Navbar.Link>
-                    <Navbar.Link to="#" className='text-base'><FontAwesomeIcon icon={faBoxOpen} /> Become a Seller</Navbar.Link>
-                    <Navbar.Link to="#" className='text-base'><DarkModeOption /></Navbar.Link>
-                    <Navbar.Link to="#" className='text-base'><FontAwesomeIcon icon={faEllipsisVertical} /></Navbar.Link>
+
+                    <NavLink to="/cart" className="text-base">
+                        <Navbar.Link active={location.pathname === "/cart"} as="div">
+                            <FontAwesomeIcon icon={faCartShopping} /> Cart
+                        </Navbar.Link>
+                    </NavLink>
+
+                    <NavLink to="/becomeASeller" className='text-base'>
+                        <Navbar.Link active={location.pathname === "/becomeASeller"} as="div">
+                            <FontAwesomeIcon icon={faBoxOpen} /> Become a Seller
+                        </Navbar.Link>
+                    </NavLink>
+
+                    <div className='navbtn mt-auto mb-auto dark:text-slate-400 hover:dark:text-slate-100'>
+                        <DarkModeOption />
+                    </div>
+
+                    <MoreOptionNav />
                 </Navbar.Collapse>
             </Navbar>
         </>
     );
 }
 
-export default Header;
+export default HeaderComp;

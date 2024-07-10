@@ -3,10 +3,14 @@ import { Route, Routes } from "react-router-dom"
 import Loading from "../loader/Loading"
 import App from "../../app/App"
 import HomePage from "../navbarpage/HomePage"
-import Registration from "../user/Registration"
-import OptVerification from "../user/OptVerification"
-import UserOtpVerifiedPage from "../user/UserOtpVerifiedPage"
-import LoginForm from "../user/LoginForm"
+import CustomerRegistration from "../auth/CustomerRegistration"
+import OptVerification from "../auth/OptVerification"
+import UserOtpVerifiedPage from "../auth/UserOtpVerifiedPage"
+import LoginForm from "../auth/LoginForm"
+import CartComp from "../navbarpage/CartComp"
+import BecomeASeller from "../navbarpage/BecomeASeller"
+import ErrorPage from "../errorpage/ErrorPage"
+import SellerRegistration from "../auth/SellerRegistration"
 
 
 function AllRoutes() {
@@ -16,11 +20,18 @@ function AllRoutes() {
                 <Route path="/" element={<App />}>
                     <Route path="" element={<HomePage />} />
 
-                    <Route path="registration" element={<Registration />} />
+                    <Route path="customerRegistration" element={<CustomerRegistration />} />
+                    <Route path="sellerRegistration" element={<SellerRegistration />} />
+
                     <Route path="optVerification" element={<OptVerification />} />
                     <Route path="userOtpVerifiedPage" element={<UserOtpVerifiedPage />} />
 
                     <Route path="loginForm" element={<LoginForm />} />
+                    <Route path="cart" element={<CartComp />} />
+                    <Route path="becomeASeller" element={<BecomeASeller />} />
+
+                    
+                    <Route path="*" element={<ErrorPage />} />
                 </Route>
             </Routes>
         </Suspense>
