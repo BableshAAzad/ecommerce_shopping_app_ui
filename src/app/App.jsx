@@ -1,15 +1,15 @@
 
 import { Outlet } from "react-router-dom"
-import Header from "../components/header/Header.jsx"
+import HeaderComp from "../components/header/HeaderComp.jsx"
+import FooterComp from "../components/footer/FooterComp.jsx"
 
 
 function App() {
   return (
     <div className="dark:bg-slate-900">
-
-      <Header />
+      <HeaderComp />
       <Outlet />
-
+      <FooterComp/>
     </div>
   )
 }
