@@ -1,14 +1,24 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Dropdown } from "flowbite-react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faGift, faHeart, faRightToBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 import "./UserData.css"
 import AppNavLink from './AppNavLink';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../authprovider/AuthProvider';
 
 function UserData() {
     const [isLogin, setIsLogin] = useState(false);
+    const navigate = useNavigate();
+    const { logout } = useContext(AuthContext);
+
     let login = (<><FontAwesomeIcon icon={faUser} />&nbsp;Login</>);
-    let username = "Bablesh"
+    let username = "Bablesh";
+
+    const logoutUser = () => {
+        logout();
+        navigate("/login")
+    }
 
     return (
         <>
@@ -32,7 +42,7 @@ function UserData() {
 
                     <AppNavLink path="/rewards" icon={<FontAwesomeIcon icon={faGift} />} text="Rewards" />
 
-                    <AppNavLink path="/logout" icon={<FontAwesomeIcon icon={faRightToBracket} />} text="Sign out" />
+                    <AppNavLink path="/logout" icon={<FontAwesomeIcon icon={faRightToBracket} />} text="Sign out" onClick={logoutUser} />
 
                 </Dropdown>
             </div>
