@@ -1,10 +1,28 @@
 // import shop from "../../images/shop.jpg"
-import { jwtDecode } from "jwt-decode";
+// import { jwtDecode } from "jwt-decode";
+
+// import { useContext } from "react";
+// import { AuthContext } from "../authprovider/AuthProvider";
 
 function HomePage() {
-    console.log(document.cookie.split('; '))
-    // console.log(document.cookie)
-    // console.log(jwtDecode("eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiQ1VTVE9NRVIiLCJzdWIiOiJhYXphZGJhYmxlc2giLCJpYXQiOjE3MjA1NDA3MTYsImV4cCI6MTcyMTgzNjcxNn0.6rUYgSZCkDSd7dkkHqb8d7ejqiNg4AY8tjcj1I0RuPuWTwMGEZZ2pE95QBdfgdkwbb_IZLvVxA708USeTBcZ7w"))
+    // const { isLogin, login } = useContext(AuthContext);
+
+    // // let currentTime = new Date();
+    // let atExpiredTime = localStorage.getItem("atExpiredTime");
+    // let rtExpiredTime = localStorage.getItem("rtExpiredTime");
+
+    // let userData = localStorage.getItem("userData");
+    // userData = JSON.parse(userData);
+
+    // console.log(atExpiredTime)
+    // console.log(rtExpiredTime)
+    // console.log(userData)
+    // console.log(isLogin)
+
+    // if (new Date(atExpiredTime) > new Date()) {
+    //     login(userData)
+    // }
+
     return (
         <div className="h-screen">
             <br /><br />
@@ -14,17 +32,4 @@ function HomePage() {
         </div>
     )
 }
-
 export default HomePage
-
-// export function getCookie(name) {
-//     const cookies = document.cookie.split('; ');
-//     for (let i = 0; i < cookies.length; i++) {
-//         const cookiePair = cookies[i].split('=');
-//         if (cookiePair[0] === name) {
-//             // return jwtDecode(cookiePair[1]);
-//             return cookiePair[0]
-//         }
-//     }
-//     return null;
-// }

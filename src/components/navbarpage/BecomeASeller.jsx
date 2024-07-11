@@ -11,6 +11,11 @@ function BecomeASeller() {
                 Register Now
                 <FontAwesomeIcon className="ml-3 m-auto" icon={faArrowRight} />
             </Link>
+            <br /><br /><br />
+            <Link to="/profilePage" className="bg-blue-600 w-fit ml-auto mr-auto text-white rounded p-3">
+                Profile Page
+                <FontAwesomeIcon className="ml-3 m-auto" icon={faArrowRight} />
+            </Link>
         </div>
     )
 }
