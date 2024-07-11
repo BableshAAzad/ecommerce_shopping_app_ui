@@ -6,6 +6,7 @@ export const AuthContext = createContext();
 
 function AuthProvider({ children }) {
     const [isLogin, setIsLogin] = useState(null);
+    const [isOtp, setIsOtp] = useState(false);
     const navigate = useNavigate();
     const refreshTokenCalled = useRef(false); // Ref to track if refresh token function has been called
 
@@ -20,6 +21,10 @@ function AuthProvider({ children }) {
         localStorage.removeItem("atExpiredTime");
         localStorage.removeItem("rtExpiredTime");
     };
+
+    const otpVerify = (otpGen) => {
+        setIsOtp(otpGen)
+    }
 
     const handleRefreshToken = async () => {
         try {
@@ -71,7 +76,7 @@ function AuthProvider({ children }) {
     }, [isLogin, navigate]);
 
     return (
-        <AuthContext.Provider value={{ isLogin, login, logout }}>
+        <AuthContext.Provider value={{ isLogin, login, logout, isOtp, otpVerify }}>
             {children}
         </AuthContext.Provider>
     );

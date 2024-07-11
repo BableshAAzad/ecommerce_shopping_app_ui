@@ -6,6 +6,12 @@
     color: rgb(58, 88, 148);
 }
 
+.navbtn button {
+    width: -webkit-fill-available;
+    text-align: left;
+    
+}
+
 @media only screen and (max-width: 767px) {
     .navbtn {
         padding-right: 1rem;
@@ -13,4 +19,5 @@
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
     }
+
 }

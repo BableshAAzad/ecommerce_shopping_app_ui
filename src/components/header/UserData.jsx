@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { Dropdown, Navbar } from "flowbite-react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCartShopping, faCoins, faGift, faHeart, faMoneyBills, faRightToBracket, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faCoins, faCreditCard, faGift, faHeart, faMoneyBills, faRightToBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 import "./UserData.css"
 import AppNavLink from './AppNavLink';
 import {NavLink, useNavigate } from 'react-router-dom';
@@ -19,7 +19,7 @@ function UserData() {
 
     const logoutUser = () => {
         logout();
-        navigate("/login")
+        navigate("/login-form")
     }
 
     return (
@@ -33,26 +33,28 @@ function UserData() {
                     {!isLogin ? <Dropdown.Item>
                         <div className="flex items-center justify-between">
                             <span className="text-sm mr-2">New Customer?</span>
-                            <NavLink to="/customerRegistration">
-                                <Navbar.Link className="text-base font-medium text-blue-600 dark:text-blue-500" active={location.pathname === "/customerRegistration"} as="div">
+                            <NavLink to="/customer-registration">
+                                <Navbar.Link className="text-base font-medium text-blue-600 dark:text-blue-500" active={location.pathname === "/customer-registration"} as="div">
                                     Sing Up
                                 </Navbar.Link>
                             </NavLink>
                         </div>
                     </Dropdown.Item> : <></>}
 
-                    <AppNavLink path={!isLogin ? "/loginForm" : "/myProfile"} icon={<FontAwesomeIcon icon={faUser} />} text="My Profile" />
+                    <AppNavLink path={!isLogin ? "/login-form" : "/profile-page"} icon={<FontAwesomeIcon icon={faUser} />} text="My Profile" />
 
-                    {!isLogin ? <></> : <AppNavLink path="/superCoinZone" icon={<FontAwesomeIcon icon={faCoins} />} text="Super Coin Zone" />}
+                    {!isLogin ? <></> : <AppNavLink path="/super-coin-zone" icon={<FontAwesomeIcon icon={faCoins} />} text="Super Coin Zone" />}
 
                     <AppNavLink path="/orders" icon={<FontAwesomeIcon icon={faCartShopping} />} text="Orders" />
 
-                    <AppNavLink path="/wishlist" icon={<FontAwesomeIcon icon={faHeart} />} text="Wishlist" />
+                    <AppNavLink path="/wish-list" icon={<FontAwesomeIcon icon={faHeart} />} text="Wishlist" />
 
                     <AppNavLink path="/rewards" icon={<FontAwesomeIcon icon={faGift} />} text="Rewards" />
 
+                    <AppNavLink path="/gift-cards" icon={<FontAwesomeIcon icon={faCreditCard} />} text="Gift Cards" />
+
                     {!isLogin ?
-                        <AppNavLink path="/giftCards" icon={<FontAwesomeIcon icon={faMoneyBills} />} text="Gift Cards" />
+                        <AppNavLink path="/gift-cards" icon={<FontAwesomeIcon icon={faMoneyBills} />} text="Gift Cards" />
                         : <AppNavLink path="/logout" icon={<FontAwesomeIcon icon={faRightToBracket} />} text="Sign out" onClick={logoutUser} />}
 
                 </Dropdown>

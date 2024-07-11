@@ -28,7 +28,7 @@ function LogoutComp() {
                 localStorage.setItem("atExpiredTime", "");
                 localStorage.setItem("rtExpiredTime", "");
                 login(null)
-                navigate("/LoginForm")
+                navigate("/login-form")
             }
             setIsLoding(true)
 

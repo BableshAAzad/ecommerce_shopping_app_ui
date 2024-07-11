@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Loading from '../loader/Loading';
+import { AuthContext } from '../authprovider/AuthProvider';
 
 
 function SellerRegistration() {
@@ -11,6 +12,7 @@ function SellerRegistration() {
     // const [popupOpen, setPopupOpen] = useState(false);
     const navigate = useNavigate()
     const [isLoding, setIsLoding] = useState(false);
+    const { otpVerify } = useContext(AuthContext);
 
     const updateData = (e) => {
         setFormdata({ ...formdata, [e.target.name]: e.target.value })
@@ -31,10 +33,12 @@ function SellerRegistration() {
             setFormdata({ email: "", password: "" })
             setIsLoding(false)
             if (response.status === 202) {
-                navigate("/optVerification", { state: formdata })
+                otpVerify(true)
+                navigate("/opt-verification", { state: formdata })
             }
             console.log(response)
         } catch (error) {
+            otpVerify(false)
             console.log(error)
         }
     }

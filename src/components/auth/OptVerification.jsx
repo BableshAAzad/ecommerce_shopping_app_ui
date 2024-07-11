@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { Button, Modal } from "flowbite-react";
 import OtpInput from 'react-otp-input';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Loading from '../loader/Loading';
 import axios from 'axios';
+import { AuthContext } from '../authprovider/AuthProvider';
 
 function OptVerification() {
     const [openModal, setOpenModal] = useState(true);
@@ -11,6 +12,7 @@ function OptVerification() {
     const [isLoding, setIsLoding] = useState(false);
     const location = useLocation();
     const navigate = useNavigate()
+    const { otpVerify } = useContext(AuthContext);
 
 
     let formData = location.state;
@@ -35,11 +37,14 @@ function OptVerification() {
             setIsLoding(false)
 
             if (response.status === 201) {
-                navigate("/userOtpVerifiedPage", { state: response.data })
+                otpVerify(true)
+                navigate("/user-otp-verified-page", { state: response.data })
             }
             console.log(response)
         } catch (error) {
+            otpVerify(false)
             console.log(error)
+            setIsLoding(false)
         }
     }
 
