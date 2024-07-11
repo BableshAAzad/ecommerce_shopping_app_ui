@@ -1,32 +1,14 @@
-// import shop from "../../images/shop.jpg"
-// import { jwtDecode } from "jwt-decode";
+// import PopUp from "../popup/PopUp"
 
-// import { useContext } from "react";
-// import { AuthContext } from "../authprovider/AuthProvider";
+import PopupWarn from "../popup/PopupWarn"
 
 function HomePage() {
-    // const { isLogin, login } = useContext(AuthContext);
-
-    // // let currentTime = new Date();
-    // let atExpiredTime = localStorage.getItem("atExpiredTime");
-    // let rtExpiredTime = localStorage.getItem("rtExpiredTime");
-
-    // let userData = localStorage.getItem("userData");
-    // userData = JSON.parse(userData);
-
-    // console.log(atExpiredTime)
-    // console.log(rtExpiredTime)
-    // console.log(userData)
-    // console.log(isLogin)
-
-    // if (new Date(atExpiredTime) > new Date()) {
-    //     login(userData)
-    // }
 
     return (
         <div className="h-screen">
+            {/* <PopUp bgcolor="blue" msg="Good night"  /> */}
+            <PopupWarn clr="warning" url="/login-form" head="Welcome" msg="Good Morning" />
             <br /><br />
-            {/* <img src={shop} alt="shop" /> */}
             <h1 className="text-center text-2xl dark:text-white">Welcome To Ecommerce Shopping Application</h1>
 
         </div>

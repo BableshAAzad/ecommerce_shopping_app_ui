@@ -39,6 +39,7 @@ function SellerRegistration() {
             console.log(response)
         } catch (error) {
             otpVerify(false)
+            setIsLoding(false)
             console.log(error)
         }
     }
