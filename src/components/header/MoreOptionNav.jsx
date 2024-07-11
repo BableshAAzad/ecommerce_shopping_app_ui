@@ -2,7 +2,7 @@ import { Dropdown } from "flowbite-react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTrendUp, faBell, faDownload, faEllipsisVertical, faHeadset } from '@fortawesome/free-solid-svg-icons';
 import "./UserData.css"
-import { NavLink } from 'react-router-dom';
+import AppNavLink from "./AppNavLink";
 
 function MoreOptionNav() {
     return (
@@ -13,29 +13,13 @@ function MoreOptionNav() {
                     inline
                     label={<FontAwesomeIcon icon={faEllipsisVertical} />}>
 
-                    <Dropdown.Item>
-                        <NavLink to='/notificationPreferences'>
-                            <FontAwesomeIcon icon={faBell} /> Notification Preferences
-                        </NavLink >
-                    </Dropdown.Item>
+                    <AppNavLink path="/notification-preferences" icon={<FontAwesomeIcon icon={faBell} />} text="Notification Preferences" />
 
-                    <Dropdown.Item>
-                        <NavLink to='/customerCare'>
-                            <FontAwesomeIcon icon={faHeadset} /> 24x7 Customer Care
-                        </NavLink >
-                    </Dropdown.Item>
+                    <AppNavLink path="/customer-care" icon={<FontAwesomeIcon icon={faHeadset} />} text="24x7 Customer Care" />
 
-                    <Dropdown.Item>
-                        <NavLink to='/advertise'>
-                            <FontAwesomeIcon icon={faArrowTrendUp} /> Advertise
-                        </NavLink >
-                    </Dropdown.Item>
+                    <AppNavLink path="/advertise" icon={<FontAwesomeIcon icon={faArrowTrendUp} />} text="Advertise" />
 
-                    <Dropdown.Item>
-                        <NavLink to='/downloadApp'>
-                            <FontAwesomeIcon icon={faDownload} /> Download App
-                        </NavLink >
-                    </Dropdown.Item>
+                    <AppNavLink path="/download-app" icon={<FontAwesomeIcon icon={faDownload} />} text="Download App" />
 
                 </Dropdown>
             </div>

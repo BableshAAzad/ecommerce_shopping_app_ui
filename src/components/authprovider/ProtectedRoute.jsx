@@ -7,7 +7,7 @@ function ProtectedRoute({ children }) {
     const { isLogin } = useContext(AuthContext);
 
     if (!isLogin) {
-        return <Navigate to="/loginForm" />
+        return <Navigate to="/login-form" />
     }
     return (<>{children}</>)
 }

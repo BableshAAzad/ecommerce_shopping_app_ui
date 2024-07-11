@@ -9,11 +9,11 @@ import UserOtpVerifiedPage from "../auth/UserOtpVerifiedPage"
 import ErrorPage from "../errorpage/ErrorPage"
 import Loading from "../loader/Loading"
 import BecomeASeller from "../navbarpage/BecomeASeller"
-import CartComp from "../navbarpage/CartComp"
 import HomePage from "../navbarpage/HomePage"
 import { AuthContext } from "../authprovider/AuthProvider"
 import ProtectedRoute from "../authprovider/ProtectedRoute"
 import { ProtectedC } from "./ProtectedComp.jsx"
+import ProtectOtpRoute from "../authprovider/ProtectOtpRoute.jsx"
 
 function AllRoutes() {
     const { isLogin } = useContext(AuthContext);
@@ -24,36 +24,28 @@ function AllRoutes() {
                 <Route path="/" element={<App />}>
                     <Route path="" element={<HomePage />} />
 
-                    <Route path="customerRegistration" element={<CustomerRegistration />} />
-                    <Route path="sellerRegistration" element={<SellerRegistration />} />
+                    <Route path="customer-registration" element={<CustomerRegistration />} />
+                    <Route path="seller-registration" element={<SellerRegistration />} />
 
-                    <Route path="optVerification" element={<OptVerification />} />
-                    <Route path="userOtpVerifiedPage" element={<UserOtpVerifiedPage />} />
+                    <Route path="opt-verification" element={<ProtectOtpRoute>
+                        <OptVerification />
+                    </ProtectOtpRoute>} />
 
-                    <Route path="cart" element={<CartComp />} />
-                    <Route path="becomeASeller" element={<BecomeASeller />} />
-                    <Route path="loginForm" element={<LoginForm />} />
+                    <Route path="user-otp-verified-page" element={<ProtectOtpRoute>
+                        <UserOtpVerifiedPage />
+                    </ProtectOtpRoute>} />
+
+                    <Route path="become-a-seller" element={<BecomeASeller />} />
+                    <Route path="login-form" element={<LoginForm />} />
 
                     {/*! Protected Routes */}
-                    {ProtectedC.map(({ comp, urlC }, index) =>(
+                    {ProtectedC.map(({ comp, urlC }, index) => (
                         <Route key={index} path={urlC} element={
                             <ProtectedRoute>
                                 {comp}
                             </ProtectedRoute>
                         } />
                     ))}
-
-
-                    {/* <Route path="profilePage" element={
-                        <ProtectedRoute>
-                            <ProfilePage />
-                        </ProtectedRoute>
-                    } />
-                    <Route path="logout" element={
-                        <ProtectedRoute>
-                            <LogoutComp />
-                        </ProtectedRoute>
-                    } /> */}
 
                     <Route path="*" element={<ErrorPage />} />
                 </Route>
