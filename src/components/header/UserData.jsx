@@ -1,19 +1,21 @@
-import { useContext, useState } from 'react'
-import { Dropdown } from "flowbite-react";
+import { useContext } from 'react'
+import { Dropdown, Navbar } from "flowbite-react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCartShopping, faGift, faHeart, faRightToBracket, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faCoins, faGift, faHeart, faMoneyBills, faRightToBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 import "./UserData.css"
 import AppNavLink from './AppNavLink';
-import { useNavigate } from 'react-router-dom';
+import {NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../authprovider/AuthProvider';
 
 function UserData() {
-    const [isLogin, setIsLogin] = useState(false);
     const navigate = useNavigate();
-    const { logout } = useContext(AuthContext);
+    const { isLogin, logout } = useContext(AuthContext);
 
-    let login = (<><FontAwesomeIcon icon={faUser} />&nbsp;Login</>);
-    let username = "Bablesh";
+    let loginText = (<><FontAwesomeIcon icon={faUser} />&nbsp;Login</>);
+    let username = ""
+    if (isLogin) {
+        username = <><FontAwesomeIcon icon={faUser} />&nbsp; {isLogin.username} </>
+    }
 
     const logoutUser = () => {
         logout();
@@ -22,27 +24,36 @@ function UserData() {
 
     return (
         <>
-            <div className="navbtn dark:text-slate-400 hover:dark:text-slate-100">
+            <div className="navbtn text-base dark:text-slate-400 hover:dark:text-slate-100">
                 <Dropdown
                     arrowIcon={false}
                     inline
-                    label={!isLogin ? login : username}    >
-                    <Dropdown.Header>
-                        <span className="block text-sm">Bablesh AAzad</span>
-                        <span className="block truncate text-sm font-medium">aazadbablesh@gmail.com</span>
-                    </Dropdown.Header>
+                    label={!isLogin ? loginText : username} >
 
-                    <AppNavLink path="/customerRegistration" icon={<FontAwesomeIcon icon={faUser} />} text="Sing Up" />
+                    {!isLogin ? <Dropdown.Item>
+                        <div className="flex items-center justify-between">
+                            <span className="text-sm mr-2">New Customer?</span>
+                            <NavLink to="/customerRegistration">
+                                <Navbar.Link className="text-base font-medium text-blue-600 dark:text-blue-500" active={location.pathname === "/customerRegistration"} as="div">
+                                    Sing Up
+                                </Navbar.Link>
+                            </NavLink>
+                        </div>
+                    </Dropdown.Item> : <></>}
 
-                    <AppNavLink path="/loginForm" icon={<FontAwesomeIcon icon={faUser} />} text="Login" />
+                    <AppNavLink path={!isLogin ? "/loginForm" : "/myProfile"} icon={<FontAwesomeIcon icon={faUser} />} text="My Profile" />
 
-                    <AppNavLink path="/optVerification" icon={<FontAwesomeIcon icon={faCartShopping} />} text="Orders" />
+                    {!isLogin ? <></> : <AppNavLink path="/superCoinZone" icon={<FontAwesomeIcon icon={faCoins} />} text="Super Coin Zone" />}
+
+                    <AppNavLink path="/orders" icon={<FontAwesomeIcon icon={faCartShopping} />} text="Orders" />
 
                     <AppNavLink path="/wishlist" icon={<FontAwesomeIcon icon={faHeart} />} text="Wishlist" />
 
                     <AppNavLink path="/rewards" icon={<FontAwesomeIcon icon={faGift} />} text="Rewards" />
 
-                    <AppNavLink path="/logout" icon={<FontAwesomeIcon icon={faRightToBracket} />} text="Sign out" onClick={logoutUser} />
+                    {!isLogin ?
+                        <AppNavLink path="/giftCards" icon={<FontAwesomeIcon icon={faMoneyBills} />} text="Gift Cards" />
+                        : <AppNavLink path="/logout" icon={<FontAwesomeIcon icon={faRightToBracket} />} text="Sign out" onClick={logoutUser} />}
 
                 </Dropdown>
             </div>

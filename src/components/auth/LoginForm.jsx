@@ -47,8 +47,8 @@ function LoginForm() {
                 console.log(userData)
                 let nowDate = new Date().getTime()
                 localStorage.setItem("userData", JSON.stringify(userData))
-                localStorage.setItem("atExpiredTime", new Date(nowDate + (userData.accessExpiration * 1000)));
-                localStorage.setItem("rtExpiredTime", new Date(nowDate + (userData.refreshExpiration * 1000)));
+                localStorage.setItem("atExpiredTime", new Date(nowDate + (userData.accessExpiration * 1000)).toString());
+                localStorage.setItem("rtExpiredTime", new Date(nowDate + (userData.refreshExpiration * 1000)).toString());
                 login(userData);
                 navigate("/")
             }
