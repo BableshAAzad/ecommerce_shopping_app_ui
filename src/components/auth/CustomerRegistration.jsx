@@ -1,22 +1,30 @@
 import axios from 'axios';
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Loading from '../loader/Loading';
 import { AuthContext } from '../authprovider/AuthProvider';
+import PopupWarn from '../popup/PopupWarn';
 
 
 function CustomerRegistration() {
     // const [formdata, setFormdata] = useState({ email: "", password: "", password1: "", termAndCondition: "" });
     const [formdata, setFormdata] = useState({ email: "", password: "" });
-    // const [popupOpen, setPopupOpen] = useState(false);
-    const navigate = useNavigate()
     const [isLoding, setIsLoding] = useState(false);
+    const [popupOpen, setPopupOpen] = useState(false);
+    const [popupData, setPopupData] = useState({});
+    const navigate = useNavigate()
     const { otpVerify } = useContext(AuthContext);
 
     const updateData = (e) => {
         setFormdata({ ...formdata, [e.target.name]: e.target.value })
     }
+
+    useEffect(() => {
+        setTimeout(() => {
+            setPopupOpen(false);
+        }, 60000)
+    }, [popupOpen])
 
     const submitFormData = async (e) => {
         e.preventDefault();
@@ -30,16 +38,22 @@ function CustomerRegistration() {
                 });
             // setFormdata({ email: "", password: "", password1: "", termAndCondition: "" })
             // const response = { status: 202 }
-            setFormdata({ email: "", password: "" })
-            setIsLoding(false)
+            setFormdata({ email: "", password: "" });
+            setIsLoding(false);
             if (response.status === 202) {
-                otpVerify(true)
-                navigate("/opt-verification", { state: formdata })
+                otpVerify(true);
+                navigate("/opt-verification", { state: formdata });
             }
             console.log(response)
         } catch (error) {
-            otpVerify(false)
-            console.log(error)
+            otpVerify(false);
+            setIsLoding(false);
+            console.log(error.response.data);
+            let errorData = error.response.data;
+            if (errorData.status === 404) {
+                setPopupOpen(true);
+                setPopupData(errorData)
+            }
         }
     }
 
@@ -47,6 +61,7 @@ function CustomerRegistration() {
     return (
         <section className='h-screen'>
             {isLoding ? <Loading /> : ""}
+            {popupOpen && <PopupWarn clr="warning" url="/customer-registration" head={popupData.message} msg={popupData.rootCause.password} />}
             <h1 className='dark:text-white text-center text-2xl font-bold mt-4'>User Registration Page</h1>
             <div className='flex justify-center m-4'>
                 <form className="flex max-w-md flex-col gap-4 p-8 bg-blue-300  dark:bg-slate-800 rounded" onSubmit={submitFormData}>
