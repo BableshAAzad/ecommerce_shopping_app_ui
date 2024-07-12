@@ -1,32 +1,34 @@
 import { Suspense, useContext } from "react"
-import { Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom"
 import App from "../../app/App"
-import CustomerRegistration from "../auth/CustomerRegistration"
-import LoginForm from "../auth/LoginForm"
 import OptVerification from "../auth/OptVerification"
-import SellerRegistration from "../auth/SellerRegistration"
 import UserOtpVerifiedPage from "../auth/UserOtpVerifiedPage"
 import ErrorPage from "../errorpage/ErrorPage"
 import Loading from "../loader/Loading"
-import BecomeASeller from "../navbarpage/BecomeASeller"
 import HomePage from "../navbarpage/HomePage"
-import { AuthContext } from "../authprovider/AuthProvider"
-import ProtectedRoute from "../authprovider/ProtectedRoute"
-import { ProtectedC } from "./ProtectedComp.jsx"
+import { RouteComps } from "./ProtectedComp.jsx"
 import ProtectOtpRoute from "../authprovider/ProtectOtpRoute.jsx"
+import { AuthContext } from "../authprovider/AuthProvider.jsx"
 
 function AllRoutes() {
     const { isLogin } = useContext(AuthContext);
-
+    const navigate = useNavigate();
     return (
         <Suspense fallback={<Loading />}>
             <Routes>
                 <Route path="/" element={<App />}>
                     <Route path="" element={<HomePage />} />
 
-                    <Route path="customer-registration" element={<CustomerRegistration />} />
-                    <Route path="seller-registration" element={<SellerRegistration />} />
+                    {/* If User is loggedIn then not able to seen that components */}
+                    {/* {AfterLogC.map(({ comp, urlC }, index) => {
+                        <Route key={index} path={urlC} element={
+                            <AfterLoginProtectComp>
+                                {comp}
+                            </AfterLoginProtectComp>
+                        } />
+                    })} */}
 
+                    {/* That component is visible only at the time of otp verification */}
                     <Route path="opt-verification" element={<ProtectOtpRoute>
                         <OptVerification />
                     </ProtectOtpRoute>} />
@@ -35,17 +37,31 @@ function AllRoutes() {
                         <UserOtpVerifiedPage />
                     </ProtectOtpRoute>} />
 
-                    <Route path="become-a-seller" element={<BecomeASeller />} />
-                    <Route path="login-form" element={<LoginForm />} />
-
-                    {/*! Protected Routes */}
-                    {ProtectedC.map(({ comp, urlC }, index) => (
+                    {/*! Protected Routes -> user is seen after login */}
+                    {/* {ProtectedC.map(({ comp, urlC }, index) => (
                         <Route key={index} path={urlC} element={
                             <ProtectedRoute>
                                 {comp}
                             </ProtectedRoute>
                         } />
-                    ))}
+                    ))} */}
+
+                    {RouteComps.map(({ element, path, isPrivate, isVisibleAfterLogin, role }, index) => {
+                        if (!isLogin) {
+                            if (!isVisibleAfterLogin) {
+                                if (role.includes("CUSTOMER"))
+                                    return <Route key={index} path={path} element={element} />
+                                else if (role.includes("SELLER"))
+                                    return <Route key={index} path={path} element={element} />
+                                else if (role.includes("SELLER" && "CUSTOMER"))
+                                    return <Route key={index} path={path} element={element} />
+                            } else {
+                                return <Route key={index} path={path} element={element} />
+                            }
+                        } else if (!isPrivate) {
+                            return <Route key={index} path={path} element={element} />
+                        }
+                    })}
 
                     <Route path="*" element={<ErrorPage />} />
                 </Route>

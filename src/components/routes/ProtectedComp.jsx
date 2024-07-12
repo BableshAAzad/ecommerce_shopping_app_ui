@@ -1,4 +1,8 @@
-import LogoutComp from "../auth/LogoutComp";
+import CustomerRegistration from "../auth/CustomerRegistration";
+import LoginForm from "../auth/LoginForm";
+import LogoutAlert from "../auth/LogoutAlert";
+import SellerRegistration from "../auth/SellerRegistration";
+import BecomeASeller from "../navbarpage/BecomeASeller";
 import CartComp from "../navbarpage/CartComp";
 import GiftCardComp from "../navbarpage/GiftCardComp";
 import OrderComp from "../navbarpage/OrderComp";
@@ -7,38 +11,92 @@ import SuperCoinZone from "../navbarpage/SuperCoinZone";
 import WishListComp from "../navbarpage/WishListComp";
 import ProfilePage from "../user/ProfilePage";
 
-export const ProtectedC = [
+export const RouteComps = [
     {
-        comp: <CartComp />,
-        urlC: "cart"
+        element: <CartComp />,
+        path: "cart",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role : ["CUSTOMER", "SELLER"]
     },
     {
-        comp: <LogoutComp />,
-        urlC: "logout"
+        element: <LogoutAlert />,
+        path: "logout",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role : ["CUSTOMER", "SELLER"]
     },
     {
-        comp: <ProfilePage />,
-        urlC: "profile-page"
+        element: <ProfilePage />,
+        path: "profile-page",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role : ["CUSTOMER", "SELLER"]
     },
     {
-        comp: <SuperCoinZone />,
-        urlC: "super-coin-zone"
+        element: <SuperCoinZone />,
+        path: "super-coin-zone",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role : ["CUSTOMER", "SELLER"]
     },
     {
-        comp: <OrderComp />,
-        urlC: "orders"
+        element: <OrderComp />,
+        path: "orders",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role : ["CUSTOMER", "SELLER"]
     },
     {
-        comp: <WishListComp />,
-        urlC: "wish-list"
+        element: <WishListComp />,
+        path: "wish-list",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role : ["CUSTOMER", "SELLER"]
     },
     {
-        comp: <RewardComp />,
-        urlC: "rewards"
+        element: <RewardComp />,
+        path: "rewards",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role : ["CUSTOMER", "SELLER"]
     },
     {
-        comp: <GiftCardComp />,
-        urlC: "gift-cards"
+        element: <GiftCardComp />,
+        path: "gift-cards",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role : ["CUSTOMER", "SELLER"]
     },
+    // ^-----------------------------------------------
+    {
+        element: <CustomerRegistration />,
+        path: "customer-registration",
+        isPrivate: false,
+        isVisibleAfterLogin: false,
+        role : ["CUSTOMER"]
+    },
+    {
+        element: <SellerRegistration />,
+        path: "seller-registration",
+        isPrivate: false,
+        isVisibleAfterLogin: false,
+        role : ["SELLER"]
+    },
+    {
+        element: <BecomeASeller />,
+        path: "become-a-seller",
+        isPrivate: false,
+        isVisibleAfterLogin: false,
+        role : ["CUSTOMER"]
+    },
+    {
+        element: <LoginForm />,
+        path: "login-form",
+        isPrivate: false,
+        isVisibleAfterLogin: false,
+        role : ["CUSTOMER", "SELLER"]
+    },
+    // ^-----------------------------------------------
 
 ]

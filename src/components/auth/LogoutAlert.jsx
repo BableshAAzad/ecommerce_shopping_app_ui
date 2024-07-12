@@ -1,11 +1,13 @@
 import axios from "axios";
+import { Button, Modal } from "flowbite-react";
 import { useContext, useState } from "react";
+import { HiOutlineLogout } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../authprovider/AuthProvider";
 import Loading from "../loader/Loading";
-import logoutPic from "../../images/logout.png"
 
-function LogoutComp() {
+function LogoutAlert() {
+    const [openModal, setOpenModal] = useState(true);
     const navigate = useNavigate();
     const [isLoding, setIsLoding] = useState(false);
     const { login } = useContext(AuthContext);
@@ -40,14 +42,36 @@ function LogoutComp() {
             setIsLoding(false)
         }
     }
+
     return (
         <>
             {isLoding ? <Loading /> : ""}
-            <div className="h-screen ">
-                <img onLoad={handleLogout} className="ml-auto mr-auto h-3/5"  src={logoutPic} alt="walk" />
-            </div>
+            {/* <Button onClick={() => setOpenModal(true)}>Toggle modal</Button> */}
+            <br /><br /><br /><br /><br /><br /><br /><br /><br />
+            <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
+                <Modal.Header />
+                <Modal.Body>
+                    <div className="text-center">
+                        <HiOutlineLogout className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
+                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                            Are you sure want to Logout?
+                        </h3>
+                        <div className="flex justify-center gap-4">
+                            <Button color="failure" onClick={() => {
+                                setOpenModal(false);
+                                handleLogout();
+                            }}>
+                                {"Logout"}
+                            </Button>
+                            <Button color="gray" onClick={() => setOpenModal(false)}>
+                                No, cancel
+                            </Button>
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </>
     )
 }
 
-export default LogoutComp
+export default LogoutAlert
