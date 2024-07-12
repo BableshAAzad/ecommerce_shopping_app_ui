@@ -19,7 +19,7 @@ function UserOtpVerifiedPage() {
   useEffect(() => {
     setTimeout(() => {
       otpVerify(false)
-      console.log("otpVerify == false")
+      console.log("otpVerify ==> false")
     }, 180000)
   }, [])
 
