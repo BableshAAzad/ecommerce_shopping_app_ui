@@ -6,7 +6,7 @@ function ProtectOtpRoute({ children }) {
     const { isOtp } = useContext(AuthContext);
 
     if (!isOtp) {
-        return <Navigate to="/login-form" />
+        return <Navigate to="*" />
     }
     return (<>{children}</>)
 }
