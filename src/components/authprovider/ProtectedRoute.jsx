@@ -3,10 +3,13 @@ import { Navigate } from "react-router-dom";
 import { AuthContext } from "./AuthProvider";
 
 // eslint-disable-next-line react/prop-types
-function ProtectedRoute({ children }) {
+function ProtectedRoute({ children, role }) {
     const { isLogin } = useContext(AuthContext);
 
     if (!isLogin) {
+        return <Navigate to="/login-form" />
+    }
+    if (role && !role.includes(isLogin.userRole)) {
         return <Navigate to="/login-form" />
     }
     return (<>{children}</>)
