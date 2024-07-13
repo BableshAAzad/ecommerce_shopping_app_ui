@@ -6,13 +6,17 @@ import UserOtpVerifiedPage from "../auth/UserOtpVerifiedPage"
 import ErrorPage from "../errorpage/ErrorPage"
 import Loading from "../loader/Loading"
 import HomePage from "../navbarpage/HomePage"
-import { RouteComps } from "./ProtectedComp.jsx"
+import { RouteComps } from "./AllComponents.jsx"
 import ProtectOtpRoute from "../authprovider/ProtectOtpRoute.jsx"
 import { AuthContext } from "../authprovider/AuthProvider.jsx"
+import ProtectedRoute from "../authprovider/ProtectedRoute.jsx"
+import AfterLoginProtectComp from "../authprovider/AfterLoginProtectComp.jsx"
 
 function AllRoutes() {
     const { isLogin } = useContext(AuthContext);
     const navigate = useNavigate();
+
+    console.log(isLogin)
     return (
         <Suspense fallback={<Loading />}>
             <Routes>
@@ -47,20 +51,13 @@ function AllRoutes() {
                     ))} */}
 
                     {RouteComps.map(({ element, path, isPrivate, isVisibleAfterLogin, role }, index) => {
-                        if (!isLogin) {
-                            if (!isVisibleAfterLogin) {
-                                if (role.includes("CUSTOMER"))
+                        if (isLogin) {
+                            if (isVisibleAfterLogin)
+                                if (role.includes(isLogin.userRole))
                                     return <Route key={index} path={path} element={element} />
-                                else if (role.includes("SELLER"))
-                                    return <Route key={index} path={path} element={element} />
-                                else if (role.includes("SELLER" && "CUSTOMER"))
-                                    return <Route key={index} path={path} element={element} />
-                            } else {
+                        } else
+                            if (!isPrivate)
                                 return <Route key={index} path={path} element={element} />
-                            }
-                        } else if (!isPrivate) {
-                            return <Route key={index} path={path} element={element} />
-                        }
                     })}
 
                     <Route path="*" element={<ErrorPage />} />
