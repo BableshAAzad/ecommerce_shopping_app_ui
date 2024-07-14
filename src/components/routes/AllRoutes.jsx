@@ -13,7 +13,6 @@ import { AuthContext } from "../authprovider/AuthProvider.jsx"
 function AllRoutes() {
     const { isLogin } = useContext(AuthContext);
 
-    console.log(isLogin)
     return (
         <Suspense fallback={<Loading />}>
             <Routes>

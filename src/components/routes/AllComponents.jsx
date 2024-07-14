@@ -9,9 +9,10 @@ import OrderComp from "../navbarpage/OrderComp";
 import RewardComp from "../navbarpage/RewardComp";
 import SuperCoinZone from "../navbarpage/SuperCoinZone";
 import WishListComp from "../navbarpage/WishListComp";
-import CustomerComp from "../user/CustomerComp";
-import ProfilePage from "../user/ProfilePage";
-import SellerComp from "../user/SellerComp";
+import CustomerComp from "../customer/CustomerComp";
+import ProfilePage from "../userinfo/ProfilePage";
+import SellerComp from "../seller/SellerComp";
+import StorageComp from "../seller/StorageComp";
 
 export const RouteComps = [
     {
@@ -84,13 +85,23 @@ export const RouteComps = [
         isVisibleAfterLogin: true,
         role: ["CUSTOMER"]
     },
+    {
+        element: <StorageComp />,
+        path: "storage",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["SELLER"]
+    },
 
 
 
-
-
-
-    
+    {
+        element: <BecomeASeller />,
+        path: "become-a-seller",
+        isPrivate: false,
+        isVisibleAfterLogin: true,
+        role: ["CUSTOMER"]
+    },
     {
         element: <CustomerRegistration />,
         path: "customer-registration",
@@ -101,13 +112,6 @@ export const RouteComps = [
     {
         element: <SellerRegistration />,
         path: "seller-registration",
-        isPrivate: false,
-        isVisibleAfterLogin: false,
-        role: []
-    },
-    {
-        element: <BecomeASeller />,
-        path: "become-a-seller",
         isPrivate: false,
         isVisibleAfterLogin: false,
         role: []

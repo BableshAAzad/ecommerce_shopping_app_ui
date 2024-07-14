@@ -45,7 +45,7 @@ function AuthProvider({ children }) {
             console.error(error);
             if (error.response && error.response.status === 401) {
                 logout();
-                navigate("/loginForm");
+                navigate("/login-form");
             }
             refreshTokenCalled.current = false; // Reset the ref in case of error
         }
@@ -71,7 +71,7 @@ function AuthProvider({ children }) {
                 }
             } else {
                 logout();
-                navigate("/loginForm");
+                navigate("/login-form");
             }
         }
     }, [isLogin, navigate]);

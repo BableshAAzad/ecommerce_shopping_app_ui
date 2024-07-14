@@ -9,6 +9,7 @@ import "./Registration.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 
+// eslint-disable-next-line react/prop-types
 function Registration({ registrationType, pageTitle }) {
     const [credential, setCredential] = useState({ email: "", password: "", password1: "", termAndCondition: false });
     const [formdata, setFormdata] = useState({ email: "", password: "" });
@@ -69,6 +70,7 @@ function Registration({ registrationType, pageTitle }) {
         } catch (error) {
             otpVerify(false);
             setIsLoading(false);
+            console.log(error)
             console.log(error.response.data);
             let errorData = error.response.data;
             if (errorData.status === 404 || errorData.status === 400) {
@@ -106,7 +108,7 @@ function Registration({ registrationType, pageTitle }) {
                     </div>
                     <div>
                         <div className="mb-2 flex justify-between">
-                            <Label htmlFor="password2" value="Your password" />
+                            <Label htmlFor="password2" value="Password" />
                             <button type='button' className="dark:text-slate-400 text-xs"
                                 onClick={handleShowPassword}>{!showPassword ?
                                     <><FontAwesomeIcon icon={faEye} className='mr-1' />Show Password</> :
