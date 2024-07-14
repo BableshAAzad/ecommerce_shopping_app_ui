@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { faBoxOpen, faCartShopping, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { useContext, useState } from 'react';
+import { faBoxOpen, faCartShopping, faSearch, faWarehouse } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Navbar, TextInput } from "flowbite-react";
 import DarkModeOption from "../darkmode/DarkModeOption";
@@ -7,10 +7,12 @@ import "./HeaderComp.css"
 import "./UserData.css"
 import UserData from './UserData';
 import logo from "../../images/logo.png"
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import MoreOptionNav from './MoreOptionNav';
+import { AuthContext } from '../authprovider/AuthProvider';
 
 function HeaderComp() {
+    const { isLogin } = useContext(AuthContext);
     let [isSearchVisible, setIsSearchVisible] = useState(false);
     const location = useLocation();
 
@@ -20,7 +22,7 @@ function HeaderComp() {
 
     return (
         <>
-            <Navbar fluid className='bg-slate-100'>
+            <Navbar fluid className='bg-slate-200'>
                 <NavLink to='/' className='flex items-center navlogo'>
                     {/* <Navbar.Link active={location.pathname === "/"} as="div"> */}
                     {/* <img src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/fkheaderlogo_exploreplus-44005d.svg" width="160" height="40" title="Flipkart" alt="Flipkart" /> */}
@@ -46,9 +48,11 @@ function HeaderComp() {
                         </Navbar.Link>
                     </NavLink>
 
-                    <NavLink to="/become-a-seller" className='text-base'>
+                    <NavLink to={(isLogin === null || isLogin.userRole === 'CUSTOMER') ? "/become-a-seller" : "/storage"} className='text-base'>
                         <Navbar.Link active={location.pathname === "/become-a-seller"} as="div">
-                            <FontAwesomeIcon icon={faBoxOpen} /> Become a Seller
+                            {(isLogin === null || isLogin.userRole === 'CUSTOMER') ?
+                                <><FontAwesomeIcon icon={faBoxOpen} /> Become a Seller</> :
+                                <><FontAwesomeIcon icon={faWarehouse} /> Storage</>}
                         </Navbar.Link>
                     </NavLink>
 

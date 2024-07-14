@@ -2,16 +2,20 @@ import axios from "axios";
 import { Button, Modal } from "flowbite-react";
 import { useContext, useState } from "react";
 import { HiOutlineLogout } from "react-icons/hi";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../authprovider/AuthProvider";
 import Loading from "../loader/Loading";
+import logoutimg from "../../images/logout.png"
 
 function LogoutAlert() {
     const [openModal, setOpenModal] = useState(true);
     const navigate = useNavigate();
+    const location = useLocation();
     const [isLoding, setIsLoding] = useState(false);
-    const { login } = useContext(AuthContext);
+    const { login, logout } = useContext(AuthContext);
 
+    const previousLocation = location.state?.from || "/";
+    console.log(location.state?.from)
 
     const handleLogout = async () => {
         setIsLoding(true)
@@ -47,8 +51,11 @@ function LogoutAlert() {
         <>
             {isLoding ? <Loading /> : ""}
             {/* <Button onClick={() => setOpenModal(true)}>Toggle modal</Button> */}
-            <br /><br /><br /><br /><br /><br /><br /><br /><br />
-            <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
+            <br /><br /><br />
+            <Modal show={openModal} size="md" onClose={() => {
+                setOpenModal(false);
+                navigate(previousLocation);
+            }} popup>
                 <Modal.Header />
                 <Modal.Body>
                     <div className="text-center">
@@ -60,16 +67,21 @@ function LogoutAlert() {
                             <Button color="failure" onClick={() => {
                                 setOpenModal(false);
                                 handleLogout();
+                                logout();
                             }}>
                                 {"Logout"}
                             </Button>
-                            <Button color="gray" onClick={() => setOpenModal(false)}>
+                            <Button color="gray" onClick={() => {
+                                setOpenModal(false);
+                                navigate(previousLocation);
+                            }}>
                                 No, cancel
                             </Button>
                         </div>
                     </div>
                 </Modal.Body>
             </Modal>
+            <img src={logoutimg} alt="logout" className="ml-auto mr-auto" />
         </>
     )
 }

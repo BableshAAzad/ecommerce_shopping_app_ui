@@ -1,33 +1,33 @@
 import { useContext } from 'react'
 import { Dropdown, Navbar } from "flowbite-react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCartShopping, faCoins, faCreditCard, faGift, faHeart, faMoneyBills, faRightToBracket, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faChevronDown, faCoins, faCreditCard, faGift, faHeart, faMoneyBills, faUser, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
 import "./UserData.css"
 import AppNavLink from './AppNavLink';
-import {NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../authprovider/AuthProvider';
 
 function UserData() {
     const navigate = useNavigate();
-    const { isLogin, logout } = useContext(AuthContext);
+    const location = useLocation();
+    const { isLogin } = useContext(AuthContext);
 
-    let loginText = (<><FontAwesomeIcon icon={faUser} />&nbsp;Login</>);
+    let loginText = (<><FontAwesomeIcon icon={faUser} />&nbsp;Login&nbsp;<FontAwesomeIcon icon={faChevronDown} /></>);
     let username = ""
     if (isLogin) {
-        username = <><FontAwesomeIcon icon={faUser} />&nbsp; {isLogin.username} </>
+        username = <><FontAwesomeIcon icon={faUser} />&nbsp; {isLogin.username}&nbsp;<FontAwesomeIcon icon={faChevronDown} /> </>
     }
-
-    const logoutUser = () => {
-        logout();
-        navigate("/login-form")
-    }
+    const handleLogoutClick = (e) => {
+        console.log(e)
+        navigate("/logout", { state: { from: location.pathname } });
+    };
 
     return (
         <>
             <div className="navbtn text-base dark:text-slate-400 hover:dark:text-slate-100">
                 <Dropdown
                     arrowIcon={false}
-                    inline
+                    inline id='optbutton'
                     label={!isLogin ? loginText : username} >
 
                     {!isLogin ? <Dropdown.Item>
@@ -41,7 +41,11 @@ function UserData() {
                         </div>
                     </Dropdown.Item> : <></>}
 
+                    {!isLogin && <Dropdown.Divider />}
+
                     <AppNavLink path={!isLogin ? "/login-form" : "/profile-page"} icon={<FontAwesomeIcon icon={faUser} />} text="My Profile" />
+
+                    {isLogin && <Dropdown.Divider />}
 
                     {!isLogin ? <></> : <AppNavLink path="/super-coin-zone" icon={<FontAwesomeIcon icon={faCoins} />} text="Super Coin Zone" />}
 
@@ -53,10 +57,13 @@ function UserData() {
 
                     <AppNavLink path="/gift-cards" icon={<FontAwesomeIcon icon={faCreditCard} />} text="Gift Cards" />
 
+                    {isLogin && <Dropdown.Divider />}
+
                     {!isLogin ?
                         <AppNavLink path="/gift-cards" icon={<FontAwesomeIcon icon={faMoneyBills} />} text="Gift Cards" />
-                        : <AppNavLink path="/logout" icon={<FontAwesomeIcon icon={faRightToBracket} />} text="Sign out" onClick={logoutUser} />}
+                        : <button  type="button" className="logoutbtn text-slate-600 dark:text-slate-400 font-bold" onClick={handleLogoutClick} ><FontAwesomeIcon icon={faRightToBracket} />&nbsp; Logout</button>}
 
+                    {/* <AppNavLink path="/logout" icon={<FontAwesomeIcon icon={faRightToBracket} />} text="Sign out" onClick={()=>handleLogoutClick("hello")} /> */}
                 </Dropdown>
             </div>
         </>
