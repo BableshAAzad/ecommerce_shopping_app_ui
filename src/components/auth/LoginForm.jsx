@@ -7,6 +7,7 @@ import { AuthContext } from '../authprovider/AuthProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import PopupWarn from '../popup/PopupWarn';
+import "./Registration.css";
 
 function LoginForm() {
     const [formdata, setFormdata] = useState({ username: "", password: "" });
@@ -14,11 +15,25 @@ function LoginForm() {
     const [showPassword, setShowPassword] = useState(false)
     const [popupOpen, setPopupOpen] = useState(false);
     const [popupData, setPopupData] = useState({});
-    const navigate = useNavigate()
+    const [passwordClass, setPasswordClass] = useState("");
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+    const navigate = useNavigate();
     const { login } = useContext(AuthContext);
 
-    const updateData = (e) => {
-        setFormdata({ ...formdata, [e.target.name]: e.target.value })
+    const updateData = ({ target: { name, value } }) => {
+        setFormdata({ ...formdata, [name]: value });
+        if (name === 'password') {
+            if (value === "") {
+                setPasswordClass("");
+                setIsSubmitDisabled(true);
+            } else if (value.length < 8) {
+                setPasswordClass("warningD");
+                setIsSubmitDisabled(true);
+            } else {
+                setPasswordClass("successD");
+                setIsSubmitDisabled(false);
+            }
+        }
     }
 
     const handleShowPassword = () => {
@@ -64,6 +79,7 @@ function LoginForm() {
             }
             setIsLoding(false)
         } catch (error) {
+            setIsLoding(false)
             console.log(error)
             console.log(error.response.data);
             let errorData = error.response.data;
@@ -74,7 +90,6 @@ function LoginForm() {
                     setPopupOpen(true);
                 }, 0);
             }
-            setIsLoding(false)
         }
     }
 
@@ -93,7 +108,8 @@ function LoginForm() {
                         <div className="mb-2 block">
                             <Label htmlFor="usernamelogin" value="Your Username" />
                         </div>
-                        <TextInput id="usernamelogin" type="text" value={formdata.username} onChange={updateData} name="username" placeholder="abcd" autoComplete='true' required />
+                        <TextInput id="usernamelogin" type="text" value={formdata.username} onChange={updateData}
+                            name="username" placeholder="abcd" autoComplete='true' required />
                     </div>
                     <div>
                         <div className="mb-2 flex justify-between">
@@ -104,13 +120,15 @@ function LoginForm() {
                                     <><FontAwesomeIcon icon={faEyeSlash} className='mr-1' />Hide Password</>}
                             </button>
                         </div>
-                        <TextInput id="passwordlogin" type={!showPassword ? "password" : "text"} value={formdata.password} onChange={updateData} name="password" placeholder='Abc@123xyz' autoComplete='true' required />
+                        <TextInput id="passwordlogin" type={!showPassword ? "password" : "text"}
+                            className={passwordClass} value={formdata.password} onChange={updateData}
+                            name="password" placeholder='Abc@123xyz' autoComplete='true' required />
                     </div>
                     <div className="flex items-center gap-2">
                         <Checkbox id="remember" />
                         <Label htmlFor="remember">Remember me</Label>
                     </div>
-                    <Button type="submit">Submit</Button>
+                    <Button type="submit" disabled={isSubmitDisabled}>Submit</Button>
                 </form>
             </div>
         </section>
