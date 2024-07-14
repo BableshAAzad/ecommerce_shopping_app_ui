@@ -2,7 +2,8 @@ import { Alert } from "flowbite-react";
 import { useEffect } from "react";
 import { HiInformationCircle } from "react-icons/hi";
 
-function PopupWarn({ clr, head, msg, isOpen, setIsOpen }) {
+// eslint-disable-next-line react/prop-types
+function PopupWarn({ clr, head, msg, width, isOpen, setIsOpen }) {
     useEffect(() => {
         if (isOpen) {
             const timer = setTimeout(() => {
@@ -16,7 +17,7 @@ function PopupWarn({ clr, head, msg, isOpen, setIsOpen }) {
         <>
             {isOpen && (
                 <Alert
-                    className={`w-2/3 ml-auto mr-auto mt-4`}
+                    className={`${width} ml-auto mr-auto mt-4`} //w-2/3
                     icon={HiInformationCircle}
                     color={clr}
                     onDismiss={() => setIsOpen(false)}

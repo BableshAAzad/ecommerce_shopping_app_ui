@@ -14,10 +14,12 @@ function Registration({ registrationType, pageTitle }) {
     const [credential, setCredential] = useState({ email: "", password: "", password1: "", termAndCondition: false });
     const [formdata, setFormdata] = useState({ email: "", password: "" });
     const [isLoading, setIsLoading] = useState(false);
+    const [isWrongFormData, setIsWrongFormData] = useState(false);
     const [popupOpen, setPopupOpen] = useState(false);
     const [popupData, setPopupData] = useState({});
     const [showPassword, setShowPassword] = useState(false)
     const [passwordClass, setPasswordClass] = useState("");
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const navigate = useNavigate();
     const { otpVerify } = useContext(AuthContext);
 
@@ -34,14 +36,28 @@ function Registration({ registrationType, pageTitle }) {
             }));
         }
         // console.log(credential)
-        // console.log(formdata)
+        // console.log(checked)
+        // Validate password match and length only if password1 field is changed
         if (name === 'password1') {
             if (value === "") {
                 setPasswordClass("");
-            } else if (value !== credential.password) {
+                setIsSubmitDisabled(true);
+            } else if (value !== credential.password || value.length < 8) {
                 setPasswordClass("warningD");
+                setIsSubmitDisabled(true);
             } else {
                 setPasswordClass("successD");
+                // setIsSubmitDisabled(false);
+            }
+        }
+
+        // Check terms and conditions if password1 field is valid
+        if (name === 'termAndCondition') {
+            const passwordValid = credential.password1.length >= 8 && credential.password1 === credential.password;
+            if (checked && passwordValid) {
+                setIsSubmitDisabled(false);
+            } else {
+                setIsSubmitDisabled(true);
             }
         }
     };
@@ -49,9 +65,13 @@ function Registration({ registrationType, pageTitle }) {
     const submitFormData = async (e) => {
         e.preventDefault();
         if (!credential.termAndCondition || credential.password !== credential.password1) {
+            setIsWrongFormData(false)
+            setPopupOpen(false);
+            setTimeout(() => {
+                setIsWrongFormData(true)
+            }, 0);
             return;
         }
-
         try {
             setIsLoading(true);
             const response = await axios.post(`http://localhost:8080/api/v1/${registrationType}/register`,
@@ -87,15 +107,19 @@ function Registration({ registrationType, pageTitle }) {
         setShowPassword(!showPassword)
     }
 
-    const isSubmitDisabled = !credential.termAndCondition || credential.password !== credential.password1;
+    // const isSubmitDisabled = !credential.termAndCondition || credential.password !== credential.password1;
 
     return (
         <section className='h-screen'>
             {isLoading && <Loading />}
 
             {popupOpen && <PopupWarn isOpen={popupOpen}
-                setIsOpen={setPopupOpen} clr="warning" url="/customer-registration"
+                setIsOpen={setPopupOpen} clr="warning" width="w-2/3"
                 head={popupData.message} msg={popupData.rootCause.password || popupData.rootCause} />}
+
+            {isWrongFormData && <PopupWarn isOpen={isWrongFormData}
+                setIsOpen={setIsWrongFormData} clr="warning" width="w-2/3"
+                head={`Invalid data`} msg={`Please fill proper data`} />}
 
             <h1 className='dark:text-white text-center text-2xl font-bold mt-4'>{pageTitle} Registration Page</h1>
             <div className='flex justify-center m-4'>
