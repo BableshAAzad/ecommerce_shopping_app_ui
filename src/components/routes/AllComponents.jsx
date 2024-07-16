@@ -13,6 +13,7 @@ import CustomerComp from "../customer/CustomerComp";
 import ProfilePage from "../userinfo/ProfilePage";
 import SellerComp from "../seller/SellerComp";
 import StorageComp from "../seller/StorageComp";
+import ProductInfo from "../navbarpage/ProductInfo";
 
 export const RouteComps = [
     {
@@ -119,6 +120,13 @@ export const RouteComps = [
     {
         element: <LoginForm />,
         path: "login-form",
+        isPrivate: false,
+        isVisibleAfterLogin: false,
+        role: []
+    },
+    {
+        element: <ProductInfo />,
+        path: "/products/:pid",
         isPrivate: false,
         isVisibleAfterLogin: false,
         role: []
