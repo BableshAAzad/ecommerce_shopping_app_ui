@@ -12,8 +12,11 @@ import WishListComp from "../navbarpage/WishListComp";
 import CustomerComp from "../customer/CustomerComp";
 import ProfilePage from "../userinfo/ProfilePage";
 import SellerComp from "../seller/SellerComp";
-import StorageComp from "../seller/StorageComp";
 import ProductInfo from "../navbarpage/ProductInfo";
+import AddProduct from "../seller/AddProduct";
+import AddStorageType from "../seller/AddStorageType";
+import AddStorage from "../seller/AddStorage";
+import StorageOperation from "../seller/StorageOperation";
 
 export const RouteComps = [
     {
@@ -73,26 +76,50 @@ export const RouteComps = [
         role: ["CUSTOMER", "SELLER"]
     },
     {
-        element: <SellerComp />,
-        path: "seller",
-        isPrivate: true,
-        isVisibleAfterLogin: true,
-        role: ["SELLER"]
-    },
-    {
         element: <CustomerComp />,
-        path: "customer",
+        path: "customers",
         isPrivate: true,
         isVisibleAfterLogin: true,
         role: ["CUSTOMER"]
     },
     {
-        element: <StorageComp />,
-        path: "storage",
+        element: <SellerComp />,
+        path: "sellers",
         isPrivate: true,
         isVisibleAfterLogin: true,
         role: ["SELLER"]
     },
+    {
+        element: <StorageOperation />,
+        path: "sellers/storage-operations",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["SELLER"]
+    },
+    {
+        element: <AddProduct />,
+        path: "sellers/storage-operations/add-product",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["SELLER"]
+    },
+    {
+        element: <AddStorageType />,
+        path: "sellers/storage-operations/add-storage-type",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["SELLER"]
+    },
+    {
+        element: <AddStorage/>,
+        path: "sellers/storage-operations/add-storage",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["SELLER"]
+    },
+
+
+
 
 
 
@@ -126,7 +153,7 @@ export const RouteComps = [
     },
     {
         element: <ProductInfo />,
-        path: "/products/:pid",
+        path: "products/:pid",
         isPrivate: false,
         isVisibleAfterLogin: false,
         role: []

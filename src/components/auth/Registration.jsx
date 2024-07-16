@@ -8,6 +8,7 @@ import PopupWarn from '../popup/PopupWarn';
 import "./Registration.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import { HiMail } from 'react-icons/hi';
 
 // eslint-disable-next-line react/prop-types
 function Registration({ registrationType, pageTitle }) {
@@ -128,7 +129,7 @@ function Registration({ registrationType, pageTitle }) {
                         <div className="mb-2 block">
                             <Label htmlFor="email2" value="Your email" />
                         </div>
-                        <TextInput id="email2" type="email" value={credential.email} name="email" onChange={updateData} placeholder="name@flowbite.com" autoComplete='true' required shadow />
+                        <TextInput id="email2" type="email" value={credential.email} name="email" icon={HiMail} onChange={updateData} placeholder="name@flowbite.com" autoComplete='true' required shadow />
                     </div>
                     <div>
                         <div className="mb-2 flex justify-between">

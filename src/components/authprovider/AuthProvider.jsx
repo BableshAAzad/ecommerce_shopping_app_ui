@@ -1,12 +1,14 @@
 import { createContext, useState, useEffect, useRef } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Loading from "../loader/Loading"
 
 export const AuthContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 function AuthProvider({ children }) {
     const [isLogin, setIsLogin] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const [isOtp, setIsOtp] = useState(false);
     const navigate = useNavigate();
     const refreshTokenCalled = useRef(false); // Ref to track if refresh token function has been called
@@ -29,6 +31,7 @@ function AuthProvider({ children }) {
 
     const handleRefreshToken = async () => {
         try {
+            setIsLoading(true)
             const response = await axios.post("http://localhost:8080/api/v1/refreshLogin", "", {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true // Includes cookies with the request
@@ -41,6 +44,7 @@ function AuthProvider({ children }) {
                 console.log("RT regenerated successfully done");
                 refreshTokenCalled.current = false; // Reset the ref after successful refresh
             }
+            setIsLoading(false)
         } catch (error) {
             console.error(error);
             if (error.response && error.response.status === 401) {
@@ -48,6 +52,7 @@ function AuthProvider({ children }) {
                 navigate("/login-form");
             }
             refreshTokenCalled.current = false; // Reset the ref in case of error
+            setIsLoading(false)
         }
     };
 
@@ -78,6 +83,7 @@ function AuthProvider({ children }) {
 
     return (
         <AuthContext.Provider value={{ isLogin, login, logout, isOtp, otpVerify }}>
+            {isLoading && < Loading />}
             {children}
         </AuthContext.Provider>
     );

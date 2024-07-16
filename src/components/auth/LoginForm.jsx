@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import PopupWarn from '../popup/PopupWarn';
 import "./Registration.css";
+import { HiMail } from 'react-icons/hi';
 
 function LoginForm() {
     const [formdata, setFormdata] = useState({ username: "", password: "" });
@@ -109,7 +110,7 @@ function LoginForm() {
                             <Label htmlFor="usernamelogin" value="Your Username" />
                         </div>
                         <TextInput id="usernamelogin" type="text" value={formdata.username} onChange={updateData}
-                            name="username" placeholder="abcd" autoComplete='true' required />
+                            name="username" placeholder="abcd" icon={HiMail} autoComplete='true' required />
                     </div>
                     <div>
                         <div className="mb-2 flex justify-between">
