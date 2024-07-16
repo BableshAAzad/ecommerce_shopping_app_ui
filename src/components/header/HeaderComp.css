@@ -6,6 +6,10 @@
     display: inline-block;
     margin-left: 1rem;
 }
+/* .active{
+    background-color: rgb(70, 108, 233);
+    border-radius: 5px;
+} */
 
 
 /* @media only screen and (max-width: 550px) {
