@@ -6,15 +6,19 @@ import { useEffect, useState } from "react";
 import poductPic from "../../images/logo.png";
 import { Link } from "react-router-dom";
 import "./HomePage.css"
+import Loading from "../loader/Loading";
 
 function HomePage() {
     let [products, setProducts] = useState([]);
+    let [isLoading, setIsLoading] = useState(false);
 
     let getAllProducts = async () => {
+        setIsLoading(true)
         let response = await axios.get("http://localhost:8080/api/v1/products");
         response = response.data
         setProducts(response)
         console.log(response)
+        setIsLoading(false)
     }
     useEffect(() => {
         getAllProducts();
@@ -27,7 +31,7 @@ function HomePage() {
             <NetworkStatus />
             <h1 className="text-center text-2xl dark:text-white">Welcome To Ecommerce Shopping Application</h1>
 
-            <section className="flex flex-wrap m-2">
+            {isLoading ? <Loading /> : <section className="flex flex-wrap m-2">
                 {products.map(({ inventoryId, productTitle, price, productImage, description }) => {
                     return <Link to={`/products/${inventoryId}`} key={inventoryId} className="rounded-md m-2 cardShadow" title={productTitle}>
                         {productImage !== null ? productImage :
@@ -50,7 +54,7 @@ function HomePage() {
                         </div>
                     </Link>
                 })}
-            </section>
+            </section>}
 
             <br />
         </div >
