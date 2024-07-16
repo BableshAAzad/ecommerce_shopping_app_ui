@@ -48,7 +48,7 @@ function HeaderComp() {
                         </Navbar.Link>
                     </NavLink>
 
-                    <NavLink to={(isLogin === null || isLogin.userRole === 'CUSTOMER') ? "/become-a-seller" : "/storage"} className='text-base'>
+                    <NavLink to={(isLogin === null || isLogin.userRole === 'CUSTOMER') ? "/become-a-seller" : "/sellers"} className='text-base'>
                         <Navbar.Link active={location.pathname === "/become-a-seller"} as="div">
                             {(isLogin === null || isLogin.userRole === 'CUSTOMER') ?
                                 <><FontAwesomeIcon icon={faBoxOpen} /> Become a Seller</> :
