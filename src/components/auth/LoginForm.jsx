@@ -12,7 +12,7 @@ import { HiMail } from 'react-icons/hi';
 
 function LoginForm() {
     const [formdata, setFormdata] = useState({ username: "", password: "" });
-    const [isLoding, setIsLoding] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false)
     const [popupOpen, setPopupOpen] = useState(false);
     const [popupData, setPopupData] = useState({});
@@ -44,7 +44,7 @@ function LoginForm() {
     const submitFormData = async (e) => {
         // const submitFormData = (e) => {
 
-        setIsLoding(true)
+        setIsLoading(true)
         e.preventDefault();
         console.log(formdata)
         try {
@@ -78,9 +78,9 @@ function LoginForm() {
                 login(userData);
                 navigate("/")
             }
-            setIsLoding(false)
+            setIsLoading(false)
         } catch (error) {
-            setIsLoding(false)
+            setIsLoading(false)
             console.log(error)
             console.log(error.response.data);
             let errorData = error.response.data;
@@ -96,7 +96,7 @@ function LoginForm() {
 
     return (
         <section className='h-screen'>
-            {isLoding ? <Loading /> : ""}
+            {isLoading ? <Loading /> : ""}
 
             {popupOpen && <PopupWarn isOpen={popupOpen}
                 setIsOpen={setPopupOpen} clr="warning" url="/customer-registration"

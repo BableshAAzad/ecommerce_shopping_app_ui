@@ -2,21 +2,27 @@ import CustomerRegistration from "../auth/CustomerRegistration";
 import LoginForm from "../auth/LoginForm";
 import LogoutAlert from "../auth/LogoutAlert";
 import SellerRegistration from "../auth/SellerRegistration";
+import CustomerComp from "../customer/CustomerComp";
+import ErrorPage from "../errorpage/ErrorPage";
 import BecomeASeller from "../navbarpage/BecomeASeller";
 import CartComp from "../navbarpage/CartComp";
 import GiftCardComp from "../navbarpage/GiftCardComp";
+import HomePage from "../navbarpage/HomePage";
 import OrderComp from "../navbarpage/OrderComp";
+import ProductInfo from "../navbarpage/ProductInfo";
 import RewardComp from "../navbarpage/RewardComp";
 import SuperCoinZone from "../navbarpage/SuperCoinZone";
 import WishListComp from "../navbarpage/WishListComp";
-import CustomerComp from "../customer/CustomerComp";
-import ProfilePage from "../userinfo/ProfilePage";
+import AddProduct from "../seller/product/AddProduct";
+import ProductBySeller from "../seller/product/ProductBySeller";
 import SellerComp from "../seller/SellerComp";
-import ProductInfo from "../navbarpage/ProductInfo";
-import AddProduct from "../seller/AddProduct";
-import AddStorageType from "../seller/AddStorageType";
-import AddStorage from "../seller/AddStorage";
+import AddStorage from "../seller/storage/AddStorage";
+import Storage from "../seller/storage/Storage";
 import StorageOperation from "../seller/StorageOperation";
+import StorageType from "../seller/storagetype/StorageType";
+import AddStorageType from "../seller/storagetype/AddStorageType"
+import WareHouse from "../seller/WareHouse";
+import ProfilePage from "../userinfo/ProfilePage";
 
 export const RouteComps = [
     {
@@ -98,26 +104,53 @@ export const RouteComps = [
     },
     {
         element: <AddProduct />,
-        path: "sellers/storage-operations/add-product",
+        path: "sellers/products/add-product/:storageId",
         isPrivate: true,
         isVisibleAfterLogin: true,
         role: ["SELLER"]
     },
     {
         element: <AddStorageType />,
-        path: "sellers/storage-operations/add-storage-type",
+        path: "sellers/warehouses/add-storage-type",
         isPrivate: true,
         isVisibleAfterLogin: true,
         role: ["SELLER"]
     },
     {
-        element: <AddStorage/>,
-        path: "sellers/storage-operations/add-storage",
+        element: <StorageType />,
+        path: "sellers/warehouses/:wareHouseId/storage-types",
         isPrivate: true,
         isVisibleAfterLogin: true,
         role: ["SELLER"]
     },
-
+    {
+        element: <AddStorage />,
+        path: "sellers/warehouses/:wareHouseId/storage-types/:storageTypeId/add-storage",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["SELLER"]
+    },
+    {
+        element: <WareHouse />,
+        path: "sellers/wareHouses",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["SELLER"]
+    },
+    {
+        element: <Storage />,
+        path: "sellers/storages",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["SELLER"]
+    },
+    {
+        element: <ProductBySeller />,
+        path: "sellers/products",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["SELLER"]
+    },
 
 
 
@@ -129,6 +162,13 @@ export const RouteComps = [
         isPrivate: false,
         isVisibleAfterLogin: true,
         role: ["CUSTOMER"]
+    },
+    {
+        element: <HomePage />,
+        path: "",
+        isPrivate: false,
+        isVisibleAfterLogin: true,
+        role: []
     },
     {
         element: <CustomerRegistration />,
@@ -155,7 +195,21 @@ export const RouteComps = [
         element: <ProductInfo />,
         path: "products/:pid",
         isPrivate: false,
-        isVisibleAfterLogin: false,
+        isVisibleAfterLogin: true,
+        role: []
+    },
+
+
+
+
+
+
+
+    {
+        element: <ErrorPage />,
+        path: "*",
+        isPrivate: false,
+        isVisibleAfterLogin: true,
         role: []
     },
 

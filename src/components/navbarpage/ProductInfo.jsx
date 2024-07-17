@@ -10,7 +10,6 @@ import Loading from "../loader/Loading";
 function ProductInfo() {
     let { pid } = useParams()
     let [products, setProducts] = useState({});
-    let [categories, setCategories] = useState([])
     let [stocks, setStocks] = useState(0);
     let [orderQuantity, setOrderQuantity] = useState(1);
     let [isLoading, setIsLoading] = useState(false);
@@ -21,7 +20,6 @@ function ProductInfo() {
         response = response.data
         setProducts(response)
         console.log(response)
-        setCategories(response.materialTypes)
         setStocks(response.stocks[0].quantity)
         setIsLoading(false)
     }
@@ -29,8 +27,6 @@ function ProductInfo() {
     useEffect(() => {
         getAllProducts();
     }, [pid]);
-
-    let materialTypes = categories.map((ele) => ele + ", ");
 
     let handleOrderQuantity = (action) => {
         if (action === "increase" && orderQuantity < stocks) {
@@ -86,7 +82,8 @@ function ProductInfo() {
                         </p>
 
                         <p className="font-normal text-gray-700 dark:text-gray-400 mb-2">
-                            <span className="font-semibold">Categories:</span> {materialTypes}
+                            <span className="font-semibold">Categories:</span>
+                            {products.materialTypes ? products.materialTypes.map((ele) => ele + ", ") : "No Material Types"}
                         </p>
 
                         <section className="flex items-center mb-2">
