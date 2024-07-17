@@ -49,7 +49,7 @@ function WareHouse() {
                             </h5>
                         </div>
                         <hr />
-                        <Link to={`/sellers/storage-operations/add-storage`}
+                        <Link to={`/sellers/warehouses/${storeHouseId}/storage-types`}
                             className="text-blue-800 dark:text-blue-300 bg-yellow-400 dark:bg-yellow-800 block text-center">
                             Purchase Storage
                         </Link>

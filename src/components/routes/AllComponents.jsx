@@ -13,14 +13,14 @@ import ProductInfo from "../navbarpage/ProductInfo";
 import RewardComp from "../navbarpage/RewardComp";
 import SuperCoinZone from "../navbarpage/SuperCoinZone";
 import WishListComp from "../navbarpage/WishListComp";
-import AddStorageType from "../seller/AddStorageType";
 import AddProduct from "../seller/product/AddProduct";
 import ProductBySeller from "../seller/product/ProductBySeller";
 import SellerComp from "../seller/SellerComp";
 import AddStorage from "../seller/storage/AddStorage";
 import Storage from "../seller/storage/Storage";
 import StorageOperation from "../seller/StorageOperation";
-import StorageType from "../seller/StorageType";
+import StorageType from "../seller/storagetype/StorageType";
+import AddStorageType from "../seller/storagetype/AddStorageType"
 import WareHouse from "../seller/WareHouse";
 import ProfilePage from "../userinfo/ProfilePage";
 
@@ -111,14 +111,21 @@ export const RouteComps = [
     },
     {
         element: <AddStorageType />,
-        path: "sellers/storage-operations/add-storage-type",
+        path: "sellers/warehouses/add-storage-type",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["SELLER"]
+    },
+    {
+        element: <StorageType />,
+        path: "sellers/warehouses/:wareHouseId/storage-types",
         isPrivate: true,
         isVisibleAfterLogin: true,
         role: ["SELLER"]
     },
     {
         element: <AddStorage />,
-        path: "sellers/storage-operations/add-storage",
+        path: "sellers/warehouses/:wareHouseId/storage-types/:storageTypeId/add-storage",
         isPrivate: true,
         isVisibleAfterLogin: true,
         role: ["SELLER"]
@@ -133,13 +140,6 @@ export const RouteComps = [
     {
         element: <Storage />,
         path: "sellers/storages",
-        isPrivate: true,
-        isVisibleAfterLogin: true,
-        role: ["SELLER"]
-    },
-    {
-        element: <StorageType />,
-        path: "sellers/storage-types",
         isPrivate: true,
         isVisibleAfterLogin: true,
         role: ["SELLER"]
@@ -204,7 +204,7 @@ export const RouteComps = [
 
 
 
-    
+
     {
         element: <ErrorPage />,
         path: "*",

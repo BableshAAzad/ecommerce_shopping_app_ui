@@ -1,6 +1,9 @@
 import { useId, useState } from "react";
 import { materialTypesList } from "../MaterialTypes"
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
+import { useParams } from "react-router-dom";
+import Loading from "../../loader/Loading";
+import axios from "axios";
 
 function Storage() {
     let id = useId();
@@ -10,6 +13,8 @@ function Storage() {
         materialTypes: []
     })
     let [noOfStorageUnits, setNoOfStorageUnits] = useState({ no_of_storage_units: "" });
+    let { wareHouseId, storageTypeId } = useParams();
+    const [isLoading, setIsLoading] = useState(false);
 
     let handleFormData = ({ target: { name, value, checked } }) => {
         if (name === "materialTypes") {
@@ -33,14 +38,29 @@ function Storage() {
     }
 
     let sendProductData = async (e) => {
+        setIsLoading(true);
         e.preventDefault();
-        console.log(formData);
-        console.log(noOfStorageUnits);
+        try {
+            const response = await axios.post(`http://localhost:8080/api/v1/wareHouses/${wareHouseId}
+                /storageTypes/${storageTypeId}/storages?no_of_storage_units=${noOfStorageUnits.no_of_storage_units}`,
+                formData,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true // Includes cookies with the request
+                }
+            );
+            console.log(response);
+            setIsLoading(false);
+        } catch (error) {
+            console.log(error);
+            setIsLoading(false);
+        }
     }
 
     return (
         <>
-            <h1 className="font-bold text-2xl text-center dark:text-white">Add Storage Form</h1>
+            {isLoading ? <Loading /> : ""}
+            <h1 className="font-bold text-2xl text-center dark:text-white">Purchase Storage Form</h1>
             <section className="flex items-center justify-center">
 
                 <form className="flex max-w-md flex-col gap-4 p-4 border border-green-500 rounded-md m-2" onSubmit={sendProductData}>

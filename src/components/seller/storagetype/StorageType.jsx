@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom"
-import "../navbarpage/HomePage.css"
-import storageTypesImg from "../../images/storageTypesImg.png"
+import "../../navbarpage/HomePage.css"
+import storageTypesImg from "../../../images/storageTypesImg.png"
 
 function StorageType() {
     let [storageTypes, setStorageTypes] = useState([])
@@ -23,16 +23,19 @@ function StorageType() {
             console.log(error)
         }
     }
+
     useEffect(() => {
         getStorageTypes();
     }, [])
+
     return (
         <>
-            <h1 className="font-bold text-center text-2xl dark:text-white">Total StorageTypes</h1>
+            <Link to="/sellers/warehouses/add-storage-type" className="font-bold text-center block text-2xl text-blue-700 bg-slate-300 dark:bg-slate-700 rounded-xl mt-2">Add StorageTypes</Link>
+            <h1 className="font-bold text-center text-2xl dark:text-slate-400 bg-slate-300 dark:bg-slate-700 rounded-xl mt-2">Select StorageTypes</h1>
             <section className="flex flex-wrap m-2">
                 {storageTypes.map(({ storageTypeId, breadthInMeters, heightInMeters, lengthInMeters,
                     capacityWeightInKg, unitsAvailable }) => {
-                    return <Link to="" key={storageTypeId} className="rounded-md m-2 cardShadow">
+                    return <Link to={`${storageTypeId}/add-storage`} key={storageTypeId} className="rounded-md m-2 cardShadow">
                         <img
                             className="max-w-sm w-40 m-2 rounded-md"
                             alt="ProductImage"
