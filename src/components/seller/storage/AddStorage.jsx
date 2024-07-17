@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { materialTypesList } from "./MaterialTypes"
+import { materialTypesList } from "../MaterialTypes"
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 
 function Storage() {
