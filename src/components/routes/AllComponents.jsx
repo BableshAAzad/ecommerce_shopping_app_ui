@@ -16,13 +16,12 @@ import WishListComp from "../navbarpage/WishListComp";
 import AddProduct from "../seller/product/AddProduct";
 import ProductBySeller from "../seller/product/ProductBySeller";
 import SellerComp from "../seller/SellerComp";
-import AddStorage from "../seller/storage/AddStorage";
 import Storage from "../seller/storage/Storage";
-import StorageOperation from "../seller/StorageOperation";
-import StorageType from "../seller/storagetype/StorageType";
-import AddStorageType from "../seller/storagetype/AddStorageType"
 import WareHouse from "../seller/WareHouse";
 import ProfilePage from "../userinfo/ProfilePage";
+import StoragesByWareHouses from "../seller/storage/StoragesByWareHouses";
+import ProductInfoSeller from "../seller/product/ProductInfoSeller";
+import UpdateProduct from "../seller/product/ProductUpdate";
 
 export const RouteComps = [
     {
@@ -96,41 +95,6 @@ export const RouteComps = [
         role: ["SELLER"]
     },
     {
-        element: <StorageOperation />,
-        path: "sellers/storage-operations",
-        isPrivate: true,
-        isVisibleAfterLogin: true,
-        role: ["SELLER"]
-    },
-    {
-        element: <AddProduct />,
-        path: "sellers/products/add-product/:storageId",
-        isPrivate: true,
-        isVisibleAfterLogin: true,
-        role: ["SELLER"]
-    },
-    {
-        element: <AddStorageType />,
-        path: "sellers/warehouses/add-storage-type",
-        isPrivate: true,
-        isVisibleAfterLogin: true,
-        role: ["SELLER"]
-    },
-    {
-        element: <StorageType />,
-        path: "sellers/warehouses/:wareHouseId/storage-types",
-        isPrivate: true,
-        isVisibleAfterLogin: true,
-        role: ["SELLER"]
-    },
-    {
-        element: <AddStorage />,
-        path: "sellers/warehouses/:wareHouseId/storage-types/:storageTypeId/add-storage",
-        isPrivate: true,
-        isVisibleAfterLogin: true,
-        role: ["SELLER"]
-    },
-    {
         element: <WareHouse />,
         path: "sellers/wareHouses",
         isPrivate: true,
@@ -145,8 +109,36 @@ export const RouteComps = [
         role: ["SELLER"]
     },
     {
+        element: <StoragesByWareHouses />,
+        path: "sellers/warehouses/:wareHouseId/storages",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["SELLER"]
+    },
+    {
         element: <ProductBySeller />,
         path: "sellers/products",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["SELLER"]
+    },
+    {
+        element: <ProductInfoSeller />,
+        path: "sellers/products/product-info/:productId",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["SELLER"]
+    },
+    {
+        element: <AddProduct />,
+        path: "sellers/products/add-product/:storageId",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["SELLER"]
+    },
+    {
+        element: <UpdateProduct />,
+        path: "sellers/products/update-product/:productId",
         isPrivate: true,
         isVisibleAfterLogin: true,
         role: ["SELLER"]
