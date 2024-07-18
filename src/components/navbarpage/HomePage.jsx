@@ -25,21 +25,24 @@ function HomePage() {
     }, []);
 
     return (
-        // h-screen
-        <div className="">
+        <>
+            {isLoading && <Loading />}
             {/* <PopUp bgcolor="blue" msg="Good night"  /> */}
             <NetworkStatus />
             <h1 className="text-center text-2xl dark:text-white">Welcome To Ecommerce Shopping Application</h1>
 
-            {isLoading ? <Loading /> : <section className="flex flex-wrap m-2">
+
+            <section className="flex flex-wrap m-2">
                 {products.map(({ inventoryId, productTitle, price, productImage, description }) => {
-                    return <Link to={`/products/${inventoryId}`} key={inventoryId} className="rounded-md m-2 cardShadow" title={productTitle}>
-                        {productImage !== null ? productImage :
-                            <img
-                                className="max-w-sm w-40 m-2"
-                                alt="ProductImage"
-                                src={poductPic}
-                            />}
+                    return <Link to={`/products/${inventoryId}`} key={inventoryId} className="rounded-md m-2 w-44 cardShadow product-link" title={productTitle}>
+                        <div>
+                            {productImage !== null ? productImage :
+                                <img
+                                    alt="ProductImage"
+                                    src={poductPic}
+                                    className="max-w-sm w-40 m-2 product-picture"
+                                />}
+                        </div>
                         <div className="p-2">
                             <h5 className="text-xl font-bold tracking-tight text-gray-700 dark:text-slate-300">
                                 {productTitle}
@@ -54,10 +57,10 @@ function HomePage() {
                         </div>
                     </Link>
                 })}
-            </section>}
+            </section>
 
             <br />
-        </div >
+        </ >
     )
 }
 export default HomePage

@@ -29,7 +29,8 @@ function ProductInfoSeller() {
 
     return (
         <>
-            {isLoading ? <Loading /> : <div className="flex items-center justify-center">
+            {isLoading && <Loading />}
+            <div className="flex items-center justify-center">
                 <div className="flex flex-col md:flex-row items-center justify-center m-4 border border-green-500 rounded-md w-full md:w-1/2 p-4 cardShadow">
                     <section className="w-full md:w-1/2 text-center">
                         {product.productImage ? (
@@ -95,7 +96,7 @@ function ProductInfoSeller() {
                         </p>
                     </section>
                 </div>
-            </div>}
+            </div>
         </>
     )
 }
