@@ -9,7 +9,7 @@ function WareHouse() {
 
     let getWareHouses = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/api/v1/wareHouses",
+            const response = await axios.get("http://localhost:8080/api/v1/wareHouses-with-address",
                 {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true // Includes cookies with the request
@@ -30,8 +30,9 @@ function WareHouse() {
         <>
             <h1 className="font-bold text-center text-2xl dark:text-white">Total WareHouses</h1>
             <section className="flex flex-wrap m-2">
-                {wareHouses.map(({ storeHouseId, storeHoseName, totalCapacityInKg }) => {
-                    return <section key={storeHouseId} className="rounded-md m-2 cardShadow">
+                {wareHouses.map(({ StoreHouseId, Name, TotalCapacityInKg, Address:
+                    { addressId, addressLine, city, country, latitude, longitude, pincode, state } }) => {
+                    return <section key={StoreHouseId} className="rounded-md m-2 cardShadow">
                         <img
                             className="max-w-sm w-40 m-2 rounded-md"
                             alt="ProductImage"
@@ -39,19 +40,29 @@ function WareHouse() {
                         />
                         <div className="p-2">
                             <h5 className="text-xl font-bold tracking-tight text-gray-700 dark:text-slate-300">
-                                {storeHoseName}
+                                {Name}
                             </h5>
                             <h5 className="text-sm font-bold tracking-tight dark:text-white" >
-                                Total Capacity In KG : <span className="text-green-700 dark:text-green-300">{totalCapacityInKg}</span>
+                                Total Capacity In KG : <span className="text-green-700 dark:text-green-300">{TotalCapacityInKg}</span>
                             </h5>
-                            <h5 className="text-sm font-bold tracking-tight dark:text-white" >
-                                WareHouse ID : <span className="text-green-700 dark:text-green-300">{storeHouseId}</span>
-                            </h5>
+                            <p className="tracking-tight mb-1 text-slate-500" >
+                                WareHouse ID : {StoreHouseId}
+                            </p>
+                            <hr />
+                            <h5 className="text-sm font-bold tracking-tight dark:text-white" >Address : </h5>
+                            <p className="text-slate-500">AddressLine - {addressLine}</p>
+                            <p className="text-slate-500">city - {city}</p>
+                            <p className="text-slate-500">country - {country}</p>
+                            <p className="text-slate-500">latitude - {latitude}</p>
+                            <p className="text-slate-500">longitude - {longitude}</p>
+                            <p className="text-slate-500">pincode - {pincode}</p>
+                            <p className="text-slate-500">state - {state}</p>
+                            <p className="text-slate-500">addressId - {addressId}</p>
                         </div>
                         <hr />
-                        <Link to={`/sellers/warehouses/${storeHouseId}/storage-types`}
+                        <Link to={`/sellers/warehouses/${StoreHouseId}/storages`}
                             className="text-blue-800 dark:text-blue-300 bg-yellow-400 dark:bg-yellow-800 block text-center">
-                            Purchase Storage
+                            Add Products
                         </Link>
                     </section>
                 })}
