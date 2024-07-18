@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import giftBox from "../../../images/giftbox.png"
 import axios from "axios";
 import { AuthContext } from "../../authprovider/AuthProvider";
+import "../../navbarpage/HomePage.css"
 
 function ProductBySeller() {
   let [products, setProducts] = useState([]);
@@ -30,13 +31,15 @@ function ProductBySeller() {
 
   return (
     <>
+      {isLoading && <Loading />}
       <h1 className="font-bold text-center text-2xl dark:text-white">Your Products</h1>
-      {isLoading ? <Loading /> : <section className="flex flex-wrap m-2">
+
+      <section className="flex flex-wrap m-2">
         {products.map(({ inventoryId, productTitle, price, productImage, description }) => {
-          return <Link to={`/sellers/products/product-info/${inventoryId}`} key={inventoryId} className="rounded-md m-2 cardShadow" title={productTitle}>
+          return <Link to={`/sellers/products/product-info/${inventoryId}`} key={inventoryId} className="rounded-md m-2 w-44 cardShadow product-link" title={productTitle}>
             {productImage !== null ? productImage :
               <img
-                className="max-w-sm w-40 m-2"
+                className="max-w-sm w-40 m-2 product-picture"
                 alt="ProductImage"
                 src={giftBox}
               />}
@@ -54,7 +57,7 @@ function ProductBySeller() {
             </div>
           </Link>
         })}
-      </section>}
+      </section>
     </>
   )
 }

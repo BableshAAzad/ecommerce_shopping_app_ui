@@ -3,11 +3,14 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom"
 import "../navbarpage/HomePage.css"
 import wareHouseImg from "../../images/warehouseImg.png"
+import Loading from "../loader/Loading";
 
 function WareHouse() {
     let [wareHouses, setWareHouses] = useState([])
+    let [isLoading, setIsLoading] = useState(false);
 
     let getWareHouses = async () => {
+        setIsLoading(true)
         try {
             const response = await axios.get("http://localhost:8080/api/v1/wareHouses-with-address",
                 {
@@ -19,8 +22,10 @@ function WareHouse() {
                 setWareHouses(response.data)
             }
             console.log(response)
+            setIsLoading(false)
         } catch (error) {
             console.log(error)
+            setIsLoading(false)
         }
     }
     useEffect(() => {
@@ -28,6 +33,7 @@ function WareHouse() {
     }, [])
     return (
         <>
+            {isLoading && <Loading />}
             <h1 className="font-bold text-center text-2xl dark:text-white">Total WareHouses</h1>
             <section className="flex flex-wrap m-2">
                 {wareHouses.map(({ StoreHouseId, Name, TotalCapacityInKg, Address:

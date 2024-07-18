@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import storageImg from "../../../images/storageImg.png";
 import { AuthContext } from "../../authprovider/AuthProvider";
 import "../../navbarpage/HomePage.css";
@@ -8,6 +8,7 @@ import "../../navbarpage/HomePage.css";
 function Storage() {
     let [storages, setStorages] = useState([]);
     let { isLogin } = useContext(AuthContext);
+    let navigate = useNavigate();
 
     let getStorages = async () => {
         try {
@@ -25,10 +26,14 @@ function Storage() {
             console.log(error)
         }
     }
-    
+
     useEffect(() => {
         getStorages();
     }, [])
+
+    const handleNavigate = (storageId, materialTypes) => {
+        navigate(`/sellers/products/add-product/${storageId}`, { state: { storageData: materialTypes } })
+    }
 
     return (
         <>
@@ -78,10 +83,10 @@ function Storage() {
                             </h5>
                         </div>
                         <hr />
-                        <Link className="text-blue-800 dark:text-blue-300 bg-yellow-400 dark:bg-yellow-800 block text-center"
-                            to={`/sellers/products/add-product/${storageId}`}>
+                        <button className="text-blue-800 dark:text-blue-300 bg-yellow-400 dark:bg-yellow-800 block w-full text-center"
+                            onClick={() => handleNavigate(storageId, materialTypes)}>
                             Add Products
-                        </Link>
+                        </button>
                     </section>
                 })}
             </section>

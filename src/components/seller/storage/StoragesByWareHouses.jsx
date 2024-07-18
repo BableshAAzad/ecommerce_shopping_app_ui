@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import storageImg from "../../../images/storageImg.png";
 import "../../navbarpage/HomePage.css";
 import { AuthContext } from "../../authprovider/AuthProvider";
@@ -9,6 +9,7 @@ function StoragesByWareHouses() {
     let [storages, setStorages] = useState([]);
     let { wareHouseId } = useParams();
     let { isLogin } = useContext(AuthContext);
+    let navigate = useNavigate();
 
     let getStorages = async () => {
         try {
@@ -30,6 +31,12 @@ function StoragesByWareHouses() {
     useEffect(() => {
         getStorages();
     }, [])
+
+    const handleNavigate = (storageId, sellerId, materialTypes) => {
+        if (sellerId === null || sellerId === isLogin.userId) {
+            navigate(`/sellers/products/add-product/${storageId}`, { state: { storageData: materialTypes } });
+        }
+    };
 
     return (
         <>
@@ -79,10 +86,14 @@ function StoragesByWareHouses() {
                             </h5>
                         </div>
                         <hr />
-                        <Link className={`block text-center ${sellerId === isLogin.userId ? 'bg-green-500' : (sellerId === null ? "bg-purple-500" : "bg-red-500 cursor-not-allowed")} `}
-                            to={`${sellerId !== null && sellerId !== isLogin.userId ? "#" : '/sellers/products/add-product/'+storageId}`}>
-                            {sellerId === isLogin.userId ? "Your Storage Add More" : (sellerId === null ? "Add Here" : "Already Booked")}
-                        </Link>
+                        <button
+                            type="button"
+                            className={`block w-full text-center ${sellerId === isLogin.userId ? 'bg-green-500' : (sellerId === null ? "bg-purple-500" : "bg-red-500 cursor-not-allowed")}`}
+                            onClick={() => handleNavigate(storageId, sellerId, materialTypes)}
+                            disabled={sellerId !== null && sellerId !== isLogin.userId}
+                        >
+                            {sellerId === isLogin.userId ? "Your Storage Add More Products" : (sellerId === null ? "Add Here" : "Already Booked")}
+                        </button>
                     </section>
                 })}
             </section>

@@ -1,8 +1,8 @@
 import { Button, Checkbox, FileInput, Label, Textarea, TextInput } from "flowbite-react";
-import { useContext, useId, useState } from "react";
+import React, { useContext, useId, useState } from "react";
 import { materialTypesList } from "../MaterialTypes";
 import { AuthContext } from "../../authprovider/AuthProvider";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import Loading from "../../loader/Loading";
 import axios from "axios";
 
@@ -24,6 +24,10 @@ function AddProduct() {
     let [productQuantity, setProductQuantity] = useState({ quantity: "" });
     let { storageId } = useParams();
     const [isLoading, setIsLoading] = useState(false);
+    const location = useLocation();
+
+    let materials = location.state.storageData || [];
+    console.log(materials)
 
     let handleFormData = ({ target: { name, value, checked, type } }) => {
         if (name === "materialTypes") {
@@ -78,7 +82,7 @@ function AddProduct() {
                 <form className="flex max-w-md flex-col gap-4 p-4 border border-green-500 rounded-md m-2" onSubmit={sendProductData}>
                     <div>
                         <div className="mb-2 block">
-                            <Label htmlFor={`${id}sid`} value="Your Seller Id" />
+                            <Label htmlFor={`${id}sid`} color="success" value="Your Seller Id" />
                         </div>
                         <TextInput id={`${id}sid`} type="text" value={isLogin.userId} shadow disabled />
                     </div>
@@ -151,19 +155,23 @@ function AddProduct() {
                     <div className="mb-2 block">
                         <h3 className="text-purple-700 dark:text-purple-500">Material Types</h3>
                         <div className="grid grid-cols-2 gap-2 mt-2">
-                            {materialTypesList.map((type, index) => {
-                                return <div key={index}>
-                                    < Checkbox
-                                        id={`${id}${type}`}
-                                        name="materialTypes"
-                                        value={type}
-                                        onChange={handleFormData}
-                                        label={type}
-                                        className="mr-2"
-                                    />
-                                    <Label htmlFor={`${id}${type}`}>{type}</Label>
-                                </div>
-                            })}
+                            {materialTypesList.map((type, index) => (
+                                <React.Fragment key={index}>
+                                    {materials.includes(type) && (
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox
+                                                id={`${id}${type}`}
+                                                name="materialTypes"
+                                                value={type}
+                                                onChange={handleFormData}
+                                                label={type}
+                                                className="mr-2"
+                                            />
+                                            <Label htmlFor={`${id}${type}`}>{type}</Label>
+                                        </div>
+                                    )}
+                                </React.Fragment>
+                            ))}
                         </div>
                     </div>
 

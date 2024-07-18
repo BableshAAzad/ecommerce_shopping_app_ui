@@ -12,6 +12,7 @@ function AuthProvider({ children }) {
     const [isOtp, setIsOtp] = useState(false);
     const navigate = useNavigate();
     const refreshTokenCalled = useRef(false); // Ref to track if refresh token function has been called
+    const refreshCancelSource = useRef(axios.CancelToken.source());
 
     const login = (userData) => {
         setIsLogin(userData);
@@ -32,9 +33,12 @@ function AuthProvider({ children }) {
     const handleRefreshToken = async () => {
         try {
             setIsLoading(true)
+            refreshCancelSource.current.cancel('Cancelling previous refresh request');
+            refreshCancelSource.current = axios.CancelToken.source();
             const response = await axios.post("http://localhost:8080/api/v1/refreshLogin", "", {
                 headers: { "Content-Type": "application/json" },
-                withCredentials: true // Includes cookies with the request
+                withCredentials: true,
+                cancelToken: refreshCancelSource.current.token,
             });
             if (response.status === 200) {
                 let userData = response.data.data;
