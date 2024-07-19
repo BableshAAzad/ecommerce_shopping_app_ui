@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import PopupWarn from '../popup/PopupWarn';
 import "./Registration.css";
-import { HiMail } from 'react-icons/hi';
+import { HiUser, HiKey } from 'react-icons/hi';
 
 function LoginForm() {
     const [formdata, setFormdata] = useState({ username: "", password: "" });
@@ -110,7 +110,7 @@ function LoginForm() {
                             <Label htmlFor="usernamelogin" value="Your Username" />
                         </div>
                         <TextInput id="usernamelogin" type="text" value={formdata.username} onChange={updateData}
-                            name="username" placeholder="abcd" icon={HiMail} autoComplete='true' required />
+                            name="username" placeholder="abcd012" icon={HiUser} autoComplete='true' required />
                     </div>
                     <div>
                         <div className="mb-2 flex justify-between">
@@ -123,7 +123,7 @@ function LoginForm() {
                         </div>
                         <TextInput id="passwordlogin" type={!showPassword ? "password" : "text"}
                             className={passwordClass} value={formdata.password} onChange={updateData}
-                            name="password" placeholder='Abc@123xyz' autoComplete='true' required />
+                            name="password" placeholder='Abc@123xyz' icon={HiKey} autoComplete='true' required />
                     </div>
                     <div className="flex items-center gap-2">
                         <Checkbox id="remember" />
