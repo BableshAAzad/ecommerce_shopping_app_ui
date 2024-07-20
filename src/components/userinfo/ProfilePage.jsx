@@ -1,40 +1,83 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useState } from "react";
 import { AuthContext } from "../authprovider/AuthProvider"
-import { Button } from "flowbite-react";
+import { Button, Card } from "flowbite-react";
 import user from "../../images/user.png"
 import LogoutOperation from "./LogoutOperation";
+import axios from "axios";
+import Loading from "../loader/Loading";
+import { useNavigate } from "react-router-dom";
 
 function ProfilePage() {
     let { isLogin } = useContext(AuthContext);
     let [openModal, setOpenModal] = useState({ openStatus: false, val: "" });
+    let [isLoading, setIsLoading] = useState(false);
+    let [addressData, setAddressData] = useState([]);
+    let [userData, setUserData] = useState({})
+    let navigate = useNavigate();
 
     const handleLogout = (val) => {
         setOpenModal({ openStatus: true, val });
     };
 
+    let hadleUserData = async () => {
+        setIsLoading(true);
+        try {
+            const responseUser = await axios.get(`http://localhost:8080/api/v1/users/${isLogin.userId}`, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            });
+            console.log(responseUser.data)
+            setUserData(responseUser.data.data)
+            const responseAddress = await axios.get(`http://localhost:8080/api/v1/users/${isLogin.userId}/addresses`, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            });
+            console.log(responseAddress.data);
+            if (responseAddress.status === 200) {
+                setAddressData(responseAddress.data.data)
+            }
+            setIsLoading(false);
+        } catch (error) {
+            console.error(error);
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        hadleUserData();
+    }, [])
+
+    let handleUpdateAddress = ({ data }) => {
+        navigate("/profile-page/update-address", { state: data })
+    }
+
+    let hadleUserUpdate = () => {
+        navigate("/profile-page/update-profile", { state: userData })
+    }
+
     return (
         <>
+            {isLoading ? <Loading /> : ""}
             {openModal.openStatus && <LogoutOperation modelData={openModal} handleModel={setOpenModal} />}
-            <div className="">
-                <section className="max-w-lg ml-auto mr-auto flex justify-between">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="row-span-1 md:row-span-3">
                     <div className="p-2">
-                        <img src={user} alt="user" />
-                        <div className="">
-
+                        <img src={user} className=" ml-auto mr-auto" style={{ width: "18rem" }} alt="user" />
+                        <div className="flex flex-col items-center">
                             <Button onClick={() => handleLogout("logoutFromAllDevices")}
-                                className="m-2 ml-auto mr-auto" outline gradientDuoTone="redToYellow">
+                                className="m-2" outline gradientDuoTone="redToYellow">
                                 Logout from All Devices
                             </Button>
-
                             <Button onClick={() => handleLogout("logoutFromOtherDevices")}
-                                className="m-2 ml-auto mr-auto" outline gradientDuoTone="purpleToBlue">
+                                className="m-2" outline gradientDuoTone="purpleToBlue">
                                 Logout From Other Devices
                             </Button>
-
                         </div>
                     </div>
-                    <div className="">
+                </div>
+                <div className="col-span-1 md:col-span-2">
+                    <section className="p-2">
                         <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-slate-500">
                             Username : <span className="dark:text-slate-200">{isLogin.username}</span>
                         </h5>
@@ -44,12 +87,57 @@ function ProfilePage() {
                         <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-slate-500">
                             UserId : <span className="dark:text-slate-200">{isLogin.userId}</span>
                         </h5>
-                        <p className="font-normal text-gray-700 dark:text-gray-400">
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Commodi, consequuntur?
-                        </p>
-                    </div>
-                </section>
+                        <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-slate-500">
+                            Email : <span className="dark:text-slate-200">{userData.email}</span>
+                        </h5>
+                        <Button onClick={hadleUserUpdate} className="mt-2" outline pill>
+                            Edit Email or Password
+                        </Button>
+                    </section>
+                </div>
+                <div className="flex items-center text-2xl text-purple-700">
+                    <span>Address :</span>
+                    <Button
+                        className="ml-2"
+                        outline
+                        gradientDuoTone="purpleToPink"
+                        onClick={() => navigate("add-address")}
+                        disabled={(isLogin.userRole === "SELLER" && addressData.length >= 1) ||
+                            (isLogin.userRole === "CUSTOMER" && addressData.length >= 4)}
+                    >
+                        Add Address
+                    </Button>
+                </div>
+                <div className="row-span-1 md:row-span-2 col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 m-2">
+                    {addressData.map(({ addressId, addressType, city, country, pincode,
+                        state, streetAddress, streetAddressAdditional }, index) => {
+                        return <Card key={addressId} className="max-w-sm">
+                            <h5 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
+                                Address : {addressType}
+                            </h5>
+                            <p className="font-mono text-gray-700 dark:text-gray-400">
+                                <span className="font-bold">Street and HNO : </span> {streetAddress}
+                            </p>
+                            <p className="font-mono text-gray-700 dark:text-gray-400">
+                                <span className="font-bold">Area : </span> {streetAddressAdditional}
+                            </p>
+                            <p className="font-mono text-gray-700 dark:text-gray-400">
+                                <span className="font-bold">City : </span>  {city}
+                            </p>
+                            <p className="font-mono text-gray-700 dark:text-gray-400">
+                                <span className="font-bold">State : </span> {state}
+                            </p>
+                            <p className="font-mono text-gray-700 dark:text-gray-400">
+                                <span className="font-bold">Country : </span> {country} - {pincode}
+                            </p>
+                            <Button onClick={() => handleUpdateAddress({ data: addressData[index] })} outline gradientDuoTone="pinkToOrange">
+                                Edit Address
+                            </Button>
+                        </Card>
+                    })}
+                </div>
             </div>
+
         </>
     )
 }
