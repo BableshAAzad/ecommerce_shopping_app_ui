@@ -22,6 +22,9 @@ import ProfilePage from "../userinfo/ProfilePage";
 import StoragesByWareHouses from "../seller/storage/StoragesByWareHouses";
 import ProductInfoSeller from "../seller/product/ProductInfoSeller";
 import UpdateProduct from "../seller/product/ProductUpdate";
+import AddAddress from "../userinfo/AddAddress";
+import UpdateAddress from "../userinfo/UpdateAddress";
+import UpdateUser from "../userinfo/UpdateUser";
 
 export const RouteComps = [
     {
@@ -41,6 +44,27 @@ export const RouteComps = [
     {
         element: <ProfilePage />,
         path: "profile-page",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["CUSTOMER", "SELLER"]
+    },
+    {
+        element: <UpdateUser />,
+        path: "profile-page/update-profile",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["CUSTOMER", "SELLER"]
+    },
+    {
+        element: <AddAddress />,
+        path: "profile-page/add-address",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["CUSTOMER", "SELLER"]
+    },
+    {
+        element: <UpdateAddress />,
+        path: "profile-page/update-address",
         isPrivate: true,
         isVisibleAfterLogin: true,
         role: ["CUSTOMER", "SELLER"]
@@ -143,8 +167,6 @@ export const RouteComps = [
         isVisibleAfterLogin: true,
         role: ["SELLER"]
     },
-
-
 
 
 
