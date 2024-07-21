@@ -42,8 +42,6 @@ function LoginForm() {
     }
 
     const submitFormData = async (e) => {
-        // const submitFormData = (e) => {
-
         setIsLoading(true)
         e.preventDefault();
         console.log(formdata)
@@ -55,17 +53,6 @@ function LoginForm() {
                     withCredentials: true // Includes cookies with the request
                 }
             );
-            // let response = {
-            //     status: 200,
-            //     data: {
-            //         data: {
-            //             userId: 101,
-            //             username: "aazadbablesh",
-            //             accessExpiration: 3600,
-            //             refreshExpiration: 1296000
-            //         }
-            //     }
-            // }
             setFormdata({ username: "", password: "" })
             // console.log(response.data)
             if (response.status === 200) {

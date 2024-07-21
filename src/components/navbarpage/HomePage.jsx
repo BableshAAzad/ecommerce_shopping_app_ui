@@ -1,12 +1,12 @@
 // import PopUp from "../popup/PopUp"
 
 import axios from "axios"
-import NetworkStatus from "../network/NetworkStatus"
 import { useEffect, useState } from "react";
 import poductPic from "../../images/logo.png";
 import { Link } from "react-router-dom";
 import "./HomePage.css"
 import Loading from "../loader/Loading";
+import { Carousel } from "flowbite-react";
 
 function HomePage() {
     let [products, setProducts] = useState([]);
@@ -27,12 +27,21 @@ function HomePage() {
     return (
         <>
             {isLoading && <Loading />}
-            {/* <PopUp bgcolor="blue" msg="Good night"  /> */}
-            <NetworkStatus />
-            <h1 className="text-center text-2xl dark:text-white">Welcome To Ecommerce Shopping Application</h1>
+            <h1 className="text-center text-2xl dark:text-white">Welcome To Ecommerce Shopping Application </h1>
 
 
-            <section className="flex flex-wrap m-2">
+            <div className="h-28 sm:h-32 xl:h-36 2xl:h-40">
+                <Carousel slideInterval={2000}>
+                    <img src="https://rukminim1.flixcart.com/fk-p-flap/480/210/image/cae744eea25fde98.jpeg?q=20" alt="Product1" />
+                    <img src="https://rukminim1.flixcart.com/fk-p-flap/480/210/image/4aad095f9ca5ebd9.jpg?q=20" alt="Product2" />
+                    <img src="https://rukminim1.flixcart.com/fk-p-flap/480/210/image/9a6168fc495cba89.jpeg?q=20" alt="Product3" />
+                    <img src="https://rukminim1.flixcart.com/fk-p-flap/480/210/image/1714eddc8e812927.jpeg?q=20" alt="Product4" />
+                    <img src="https://rukminim1.flixcart.com/fk-p-flap/480/210/image/845d5893ef37c283.jpeg?q=20" alt="Product5" />
+                </Carousel>
+            </div>
+
+
+            <section className="flex flex-wrap m-1">
                 {products.map(({ inventoryId, productTitle, price, productImage, description }) => {
                     return <Link to={`/products/${inventoryId}`} key={inventoryId} className="rounded-md m-2 w-44 cardShadow product-link" title={productTitle}>
                         <div>
