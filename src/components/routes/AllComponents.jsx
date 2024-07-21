@@ -25,7 +25,8 @@ import UpdateProduct from "../seller/product/ProductUpdate";
 import AddAddress from "../userinfo/AddAddress";
 import UpdateAddress from "../userinfo/UpdateAddress";
 import UpdateUser from "../userinfo/UpdateUser";
-import Contact from "../userinfo/Contact";
+import AddContact from "../userinfo/AddContact";
+import UpdateContact from "../userinfo/UpdateContact";
 
 export const RouteComps = [
     {
@@ -71,8 +72,15 @@ export const RouteComps = [
         role: ["CUSTOMER", "SELLER"]
     },
     {
-        element: <Contact />,
+        element: <AddContact />,
         path: "profile-page/addresses/add-contact/:addressId",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["CUSTOMER", "SELLER"]
+    },
+    {
+        element: <UpdateContact />,
+        path: "profile-page/addresses/update-contact",
         isPrivate: true,
         isVisibleAfterLogin: true,
         role: ["CUSTOMER", "SELLER"]

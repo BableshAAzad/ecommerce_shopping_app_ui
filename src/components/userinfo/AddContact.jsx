@@ -7,7 +7,7 @@ import PopupWarn from '../popup/PopupWarn';
 import "../auth/Registration.css";
 import { HiOutlinePhone } from 'react-icons/hi';
 
-function Contact() {
+function AddContact() {
     const [formdata, setFormdata] = useState({ contactNumber: "", priority: "" });
     const [isLoading, setIsLoading] = useState(false);
     const [popupOpen, setPopupOpen] = useState(false);
@@ -101,10 +101,13 @@ function Contact() {
                         </fieldset>
                     </div>
                     <Button type="submit" disabled={isSubmitDisabled}>Add Contact</Button>
+                    <span className='dark:text-red-400 text-red-800 text-xs'>
+                        Note : If Add button is still disabled then re-enter details.
+                    </span>
                 </form>
             </div>
         </section>
     )
 }
 
-export default Contact
+export default AddContact

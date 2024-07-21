@@ -150,7 +150,10 @@ function ProfilePage() {
                                     return <div key={contactId} className="flex justify-around">
                                         <span className="text-sm text-slate-500 dark:text-slate-400">{priority}</span>
                                         <span className="text-slate-700 dark:text-slate-300 mr-1">{contactNumber}</span>
-                                        <Link to="/" ><FontAwesomeIcon className="text-blue-600" icon={faPenToSquare} /></Link>
+                                        <Link to="/profile-page/addresses/update-contact"
+                                            state={{contactId : contactId, contactNumber: contactNumber, priority: priority }} >
+                                            <FontAwesomeIcon className="text-blue-600" icon={faPenToSquare} />
+                                        </Link>
                                     </div>
                                 })}
 

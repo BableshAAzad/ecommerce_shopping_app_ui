@@ -117,6 +117,9 @@ function LoginForm() {
                         <Label htmlFor="remember">Remember me</Label>
                     </div>
                     <Button type="submit" disabled={isSubmitDisabled}>Submit</Button>
+                    <span className='dark:text-red-400 text-red-800 text-xs'>
+                        Note : If submit button is still disabled then re-enter details.
+                    </span>
                 </form>
             </div>
         </section>
