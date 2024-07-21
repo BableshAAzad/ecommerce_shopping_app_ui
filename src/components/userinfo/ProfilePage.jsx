@@ -6,7 +6,10 @@ import user from "../../images/user.png"
 import LogoutOperation from "./LogoutOperation";
 import axios from "axios";
 import Loading from "../loader/Loading";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { faMobileRetro } from "@fortawesome/free-solid-svg-icons";
 
 function ProfilePage() {
     let { isLogin } = useContext(AuthContext);
@@ -52,7 +55,7 @@ function ProfilePage() {
         navigate("/profile-page/update-address", { state: data })
     }
 
-    let hadleUserUpdate = () => {
+    let handleUserUpdate = () => {
         navigate("/profile-page/update-profile", { state: userData })
     }
 
@@ -90,13 +93,14 @@ function ProfilePage() {
                         <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-slate-500">
                             Email : <span className="dark:text-slate-200">{userData.email}</span>
                         </h5>
-                        <Button onClick={hadleUserUpdate} className="mt-2" outline pill>
+                        <Button onClick={handleUserUpdate} className="mt-2" outline pill>
                             Edit Email or Password
                         </Button>
                     </section>
                 </div>
+
                 <div className="flex items-center text-2xl text-purple-700">
-                    <span>Address :</span>
+                    <span>Address ({`${isLogin.userRole === "SELLER" ? "max-1" : "max-4"}`}) :</span>
                     <Button
                         className="ml-2"
                         outline
@@ -110,7 +114,7 @@ function ProfilePage() {
                 </div>
                 <div className="row-span-1 md:row-span-2 col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 m-2">
                     {addressData.map(({ addressId, addressType, city, country, pincode,
-                        state, streetAddress, streetAddressAdditional }, index) => {
+                        state, streetAddress, streetAddressAdditional, contacts }, index) => {
                         return <Card key={addressId} className="max-w-sm">
                             <h5 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
                                 Address : {addressType}
@@ -133,6 +137,24 @@ function ProfilePage() {
                             <Button onClick={() => handleUpdateAddress({ data: addressData[index] })} outline gradientDuoTone="pinkToOrange">
                                 Edit Address
                             </Button>
+                            <hr />
+
+                            <div className="">
+                                <h5 className="text-base font-bold tracking-tight text-gray-900 dark:text-white mb-1">
+                                    <FontAwesomeIcon icon={faMobileRetro} /> Contact :&nbsp;
+                                    {contacts.length >= 2 ? <span className="text-slate-500">Max-2</span> : <Link className="text-sm text-blue-600 hover:underline" to={`/profile-page/addresses/add-contact/${addressId}`}>
+                                        Add Contact
+                                    </Link>}
+                                </h5>
+                                {contacts.map(({ contactId, contactNumber, priority }) => {
+                                    return <div key={contactId} className="flex justify-around">
+                                        <span className="text-sm text-slate-500 dark:text-slate-400">{priority}</span>
+                                        <span className="text-slate-700 dark:text-slate-300 mr-1">{contactNumber}</span>
+                                        <Link to="/" ><FontAwesomeIcon className="text-blue-600" icon={faPenToSquare} /></Link>
+                                    </div>
+                                })}
+
+                            </div>
                         </Card>
                     })}
                 </div>

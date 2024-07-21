@@ -10,11 +10,14 @@ import logo from "../../images/logo.png"
 import { NavLink, useLocation } from 'react-router-dom';
 import MoreOptionNav from './MoreOptionNav';
 import { AuthContext } from '../authprovider/AuthProvider';
+import NetworkStatus from "../network/NetworkStatus"
+import useStore from '../zustandstore/useStore';
 
 function HeaderComp() {
     const { isLogin } = useContext(AuthContext);
     let [isSearchVisible, setIsSearchVisible] = useState(false);
     const location = useLocation();
+    let { productQuantities } = useStore()
 
     let handleSearchIconClick = () => {
         setIsSearchVisible(!isSearchVisible);
@@ -27,7 +30,7 @@ function HeaderComp() {
                     {/* <Navbar.Link active={location.pathname === "/"} as="div"> */}
                     {/* <img src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/fkheaderlogo_exploreplus-44005d.svg" width="160" height="40" title="Flipkart" alt="Flipkart" /> */}
                     <img src={logo} alt="EcommerceShoppingApp" width="47" height="40" title="EcommerceShoppingApp" />
-                    <span className="self-center sitename dark:text-white text-xl font-semibold break-words md:whitespace-normal">Ecommerce Shopping App</span>
+                    <span className="self-center sitename dark:text-white text-xl font-semibold break-words md:whitespace-normal">Ecommerce Shopping App <NetworkStatus /> </span>
                     {/* </Navbar.Link> */}
                 </NavLink>
                 <div className="flex md:order-1 md:w-1/4">
@@ -42,9 +45,15 @@ function HeaderComp() {
                 <Navbar.Collapse className="md:order-2">
                     <UserData />
 
-                    <NavLink to="/cart" className="text-base">
-                        <Navbar.Link active={location.pathname === "/cart"} as="div">
-                            <FontAwesomeIcon icon={faCartShopping} /> Cart
+                    <NavLink to="/cart" className="text-base relative">
+                        <Navbar.Link active={location.pathname === "/cart"} as="div" className="relative">
+                            <FontAwesomeIcon className='position-relative' icon={faCartShopping} />
+                            Cart
+                            {productQuantities ?
+                                <div className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
+                                    {productQuantities}
+                                </div> : ""
+                            }
                         </Navbar.Link>
                     </NavLink>
 
