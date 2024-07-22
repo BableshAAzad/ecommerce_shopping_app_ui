@@ -17,7 +17,7 @@ function HeaderComp() {
     const { isLogin } = useContext(AuthContext);
     let [isSearchVisible, setIsSearchVisible] = useState(false);
     const location = useLocation();
-    let { productQuantities } = useStore()
+    let { products } = useStore()
 
     let handleSearchIconClick = () => {
         setIsSearchVisible(!isSearchVisible);
@@ -49,9 +49,9 @@ function HeaderComp() {
                         <Navbar.Link active={location.pathname === "/cart"} as="div" className="relative">
                             <FontAwesomeIcon className='position-relative' icon={faCartShopping} />
                             Cart
-                            {productQuantities ?
+                            {products.length !== 0 ?
                                 <div className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
-                                    {productQuantities}
+                                    {products.length}
                                 </div> : ""
                             }
                         </Navbar.Link>
