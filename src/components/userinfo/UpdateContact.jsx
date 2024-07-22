@@ -103,7 +103,7 @@ function UpdateContact() {
                         </fieldset>
                     </div>
                     <Button type="submit" disabled={isSubmitDisabled}>Update Contact</Button>
-                    <span className='dark:text-red-400 text-red-800 text-xs'>
+                    <span className='dark:text-slate-400 text-slate-800 text-xs'>
                         Note : If update button is still disabled then re-enter details.
                     </span>
                 </form>

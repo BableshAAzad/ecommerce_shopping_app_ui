@@ -165,7 +165,7 @@ function Registration({ registrationType, pageTitle }) {
                         </Label>
                     </div>
                     <Button type="submit" disabled={isSubmitDisabled}>Register new account</Button>
-                    <span className='dark:text-red-400 text-red-800 text-xs'>
+                    <span className='dark:text-slate-400 text-slate-800 text-xs'>
                         Note : If Register button is still disabled then re-enter details.
                     </span>
                 </form>
