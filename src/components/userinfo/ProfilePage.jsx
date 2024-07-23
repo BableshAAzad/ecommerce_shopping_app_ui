@@ -61,7 +61,7 @@ function ProfilePage() {
 
     return (
         <>
-            {isLoading ? <Loading /> : ""}
+            {isLoading && <Loading />}
             {openModal.openStatus && <LogoutOperation modelData={openModal} handleModel={setOpenModal} />}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="row-span-1 md:row-span-3">

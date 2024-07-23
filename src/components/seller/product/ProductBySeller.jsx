@@ -34,7 +34,7 @@ function ProductBySeller() {
       {isLoading && <Loading />}
       <h1 className="font-bold text-center text-2xl dark:text-white">Your Products</h1>
 
-      <section className="flex flex-wrap m-2">
+      <section className="flex flex-wrap m-1 justify-around">
         {products.map(({ inventoryId, productTitle, price, productImage, description }) => {
           return <Link to={`/sellers/products/product-info/${inventoryId}`} key={inventoryId} className="rounded-md m-2 w-44 cardShadow product-link" title={productTitle}>
             {productImage !== null ? productImage :

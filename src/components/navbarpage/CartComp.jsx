@@ -1,41 +1,115 @@
 import { Button, Table } from "flowbite-react";
-import useStore from "../zustandstore/useStore";
 import giftbox from "../../images/giftbox.png";
+import { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import { AuthContext } from "../authprovider/AuthProvider";
+import Loading from "../loader/Loading";
 
 function CartComp() {
-    const {
-        products, productQuantities, totalPrice, removeProduct, removeAllProducts,
-        increaseTotalPrice, decreaseTotalPrice, clearTotalPrice,
-        addProductQuantities, decrementProductQuantities, clearProductQuantities,
-        updateProductQuantity
-    } = useStore();
+    let [isLoading, setIsLoading] = useState(false);
+    let { isLogin } = useContext(AuthContext);
+    let [cartProduct, setCartProduct] = useState([])
+    let [totalItemAndPrice, setTotalItemAndPrice] = useState({totalItem : 0, totalPrice : 0}); // i want to logic to calculate totalPrice and totalItem quantity
 
-    let handleRemoveProduct = (inventoryId, price, productQuantity) => {
-        removeProduct(inventoryId);
-        decrementProductQuantities(productQuantity);
-        decreaseTotalPrice(productQuantity * price);
-    }
-    let handleOrderQuantity = (action, inventoryId, price, currentQuantity, stocks) => {
-        console.log(currentQuantity, stocks)
-        if (action === "increase" && currentQuantity < stocks) {
-            increaseTotalPrice(price);
-            addProductQuantities(1);
-            updateProductQuantity(inventoryId, 1);
-        } else if (action === "decrease" && currentQuantity > 1) {
-            decreaseTotalPrice(price);
-            decrementProductQuantities(1);
-            updateProductQuantity(inventoryId, -1);
+
+    let handleOrderQuantity = (action, cartProductId, selectedQuantity, productQuantity) => {
+        if (action === "increase" && selectedQuantity < productQuantity) {
+            handleIncreatAndDecreaseCartProduct(cartProductId, selectedQuantity + 1);
+        } else if (action === "decrease" && selectedQuantity > 1) {
+            handleIncreatAndDecreaseCartProduct(cartProductId, selectedQuantity - 1);
         }
     };
 
-    let handleClearCart = () => {
-        clearTotalPrice();
-        clearProductQuantities();
-        removeAllProducts();
+    let handleCartProduct = async () => {
+        setIsLoading(true);
+        try {
+            const responseCartProducts = await axios.get(`http://localhost:8080/api/v1/customers/${isLogin.userId}/cart-products`, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            });
+            console.log(responseCartProducts)
+            setCartProduct(responseCartProducts.data.data)
+            setIsLoading(false);
+            console.log(cartProduct)
+        } catch (error) {
+            console.error(error);
+            setIsLoading(false);
+        }
+    }
+    useEffect(() => {
+        handleCartProduct();
+    }, []);
+
+    useEffect(() => {
+        let totalItem = 0;
+        let totalPrice = 0;
+        cartProduct.forEach(product => {
+            totalItem += product.selectedQuantity;
+            totalPrice += product.selectedQuantity * product.product.productPrice;
+        });
+        setTotalItemAndPrice({ totalItem, totalPrice });
+    }, [cartProduct]);
+
+    let handleRemoveCartProduct = async (cartProductId) => {
+        setIsLoading(true);
+        try {
+            const responseCartProducts = await axios.delete(`http://localhost:8080/api/v1/customers/${isLogin.userId}/cart-products/${cartProductId}`,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                });
+            console.log(responseCartProducts)
+            setCartProduct(cartProduct.filter(product => product.cartProductId !== cartProductId));
+            setIsLoading(false);
+            console.log(cartProduct)
+        } catch (error) {
+            console.error(error);
+            setIsLoading(false);
+        }
+    }
+
+    let handleRemoveAllCartProduct = async () => {
+        setIsLoading(true);
+        try {
+            const responseCartProducts = await axios.delete(`http://localhost:8080/api/v1/customers/${isLogin.userId}/cart-products`,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                });
+            console.log(responseCartProducts)
+            setIsLoading(false);
+            setCartProduct([])
+            alert(responseCartProducts.data.message)
+        } catch (error) {
+            console.error(error);
+            setIsLoading(false);
+        }
+    }
+
+    let handleIncreatAndDecreaseCartProduct = async (cartProductId, selectedQuantity) => {
+        setIsLoading(true);
+        try {
+            const responseCartProducts = await axios.put(`http://localhost:8080/api/v1/customers/cart-products/${cartProductId}?selectedQuantity=${selectedQuantity}`,
+                "", {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            });
+            console.log(responseCartProducts)
+            setCartProduct(cartProduct.map(product =>
+                product.cartProductId === cartProductId
+                    ? { ...product, selectedQuantity }
+                    : product
+            ));
+            setIsLoading(false);
+        } catch (error) {
+            console.error(error);
+            setIsLoading(false);
+        }
     }
 
     return (
         <div className="px-1">
+            {isLoading && <Loading />}
             <h1 className="font-bold text-2xl dark:text-white mb-4">CartComp page</h1>
 
             <div className="overflow-x-auto w-full">
@@ -46,7 +120,6 @@ function CartComp() {
                         <Table.HeadCell>Quantity</Table.HeadCell>
                         <Table.HeadCell>Available Stock</Table.HeadCell>
                         <Table.HeadCell>Description</Table.HeadCell>
-                        <Table.HeadCell>Product Types</Table.HeadCell>
                         <Table.HeadCell>Product Image</Table.HeadCell>
                         <Table.HeadCell>
                             <span className="sr-only">Edit</span>
@@ -57,31 +130,30 @@ function CartComp() {
                     </Table.Head>
 
                     <Table.Body className="divide-y">
-                        {products.map(({ inventoryId, productTitle, price, description, materialTypes, productImage, productQuantity, stocks }) => {
-                            return <Table.Row key={inventoryId} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                        {cartProduct.map(({ cartProductId, selectedQuantity, product: { productTitle, productDescription, productPrice, productQuantity, productImage } }) => {
+                            return <Table.Row key={cartProductId} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                                     {productTitle}
                                 </Table.Cell>
-                                <Table.Cell>{price}</Table.Cell>
+                                <Table.Cell>{productPrice}</Table.Cell>
 
                                 <Table.Cell>
                                     <Button.Group>
                                         <Button outline pill size="xs"
-                                            onClick={() => handleOrderQuantity("decrease", inventoryId, price, productQuantity, stocks)}>
+                                            onClick={() => handleOrderQuantity("decrease", cartProductId, selectedQuantity, productQuantity)}>
                                             -
                                         </Button>
                                         <Button outline pill size="xs" disabled>
-                                            {productQuantity}
+                                            {selectedQuantity}
                                         </Button>
                                         <Button outline pill size="xs"
-                                            onClick={() => handleOrderQuantity("increase", inventoryId, price, productQuantity, stocks)}>
+                                            onClick={() => handleOrderQuantity("increase", cartProductId, selectedQuantity, productQuantity)}>
                                             +
                                         </Button>
                                     </Button.Group>
                                 </Table.Cell>
-                                <Table.Cell>{stocks}</Table.Cell>
-                                <Table.Cell>{description}</Table.Cell>
-                                <Table.Cell>{materialTypes}</Table.Cell>
+                                <Table.Cell>{productQuantity}</Table.Cell>
+                                <Table.Cell>{productDescription}</Table.Cell>
                                 <Table.Cell>
                                     {/* <img src={productImage} alt="Product" className="w-16 h-16 object-cover" /> */}
                                     <img src={productImage ? productImage : giftbox} alt="Product" className="w-16 h-16 object-cover" />
@@ -92,7 +164,7 @@ function CartComp() {
                                     </Button>
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <Button onClick={() => handleRemoveProduct(inventoryId, price, productQuantity)} outline gradientDuoTone="pinkToOrange">
+                                    <Button onClick={() => { handleRemoveCartProduct(cartProductId) }} outline gradientDuoTone="pinkToOrange">
                                         Remove
                                     </Button>
                                 </Table.Cell>
@@ -104,16 +176,16 @@ function CartComp() {
 
             <footer className={`flex flex-wrap justify-between px-4 py-2 bg-gray-200
                    dark:bg-gray-800 text-gray-800 dark:text-white mt-4 rounded-b-lg`}>
-                <div>Total Items: {productQuantities}</div>
-                <div>Total Price : {totalPrice} Rs/-</div>
+                <div>Total Items: {totalItemAndPrice.totalItem}</div>
+                <div>Total Price : {totalItemAndPrice.totalPrice} Rs/-</div>
                 <div className="flex flex-wrap gap-3">
                     <div>
-                        <Button outline gradientDuoTone="greenToBlue" disabled={productQuantities ? false : true}>
+                        <Button outline gradientDuoTone="greenToBlue" disabled={cartProduct.length === 0 ? true : false}>
                             Order All
                         </Button>
                     </div>
                     <div>
-                        <Button onClick={handleClearCart} outline gradientDuoTone="purpleToBlue" disabled={productQuantities ? false : true}>
+                        <Button onClick={handleRemoveAllCartProduct} outline gradientDuoTone="purpleToBlue" disabled={cartProduct.length === 0 ? true : false}>
                             Remove All
                         </Button>
                     </div>
