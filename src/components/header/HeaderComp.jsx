@@ -11,13 +11,11 @@ import { NavLink, useLocation } from 'react-router-dom';
 import MoreOptionNav from './MoreOptionNav';
 import { AuthContext } from '../authprovider/AuthProvider';
 import NetworkStatus from "../network/NetworkStatus"
-import useStore from '../zustandstore/useStore';
 
 function HeaderComp() {
     const { isLogin } = useContext(AuthContext);
     let [isSearchVisible, setIsSearchVisible] = useState(false);
     const location = useLocation();
-    let { products } = useStore()
 
     let handleSearchIconClick = () => {
         setIsSearchVisible(!isSearchVisible);
@@ -45,15 +43,10 @@ function HeaderComp() {
                 <Navbar.Collapse className="md:order-2">
                     <UserData />
 
-                    <NavLink to="/cart" className="text-base relative">
-                        <Navbar.Link active={location.pathname === "/cart"} as="div" className="relative">
-                            <FontAwesomeIcon className='position-relative' icon={faCartShopping} />
-                            Cart
-                            {products.length !== 0 ?
-                                <div className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
-                                    {products.length}
-                                </div> : ""
-                            }
+                    <NavLink to="/cart" className="text-base">
+                        <Navbar.Link active={location.pathname === "/cart"} as="div">
+                            <FontAwesomeIcon icon={faCartShopping} />
+                            &nbsp;Cart
                         </Navbar.Link>
                     </NavLink>
 

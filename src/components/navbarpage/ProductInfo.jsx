@@ -1,12 +1,12 @@
 import axios from "axios";
 import { Button } from "flowbite-react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 import productImg from "../../images/logo.png"
 import { HiShoppingBag, HiShoppingCart } from "react-icons/hi";
 import "./HomePage.css"
 import Loading from "../loader/Loading";
-import useStore from "../zustandstore/useStore";
+import { AuthContext } from "../authprovider/AuthProvider";
 
 function ProductInfo() {
     let { pid } = useParams()
@@ -14,7 +14,7 @@ function ProductInfo() {
     let [stocks, setStocks] = useState(0);
     let [orderQuantity, setOrderQuantity] = useState(1);
     let [isLoading, setIsLoading] = useState(false);
-    const { addProduct, addProductQuantities, increaseTotalPrice } = useStore();
+    let { isLogin } = useContext(AuthContext);
 
     let getAllProducts = async () => {
         setIsLoading(true)
@@ -38,30 +38,43 @@ function ProductInfo() {
         }
     };
 
-    let handleProduct = (product) => {
-        addProduct({
-            inventoryId: product.inventoryId,
-            productTitle: product.productTitle,
-            lengthInMeters: product.lengthInMeters,
-            breadthInMeters: product.breadthInMeters,
-            heightInMeters: product.heightInMeters,
-            weightInKg: product.weightInKg,
-            price: product.price,
-            description: product.description,
-            productImage: product.productImage,
-            materialTypes: product.materialTypes,
-            sellerId: product.sellerId,
-            productQuantity : orderQuantity,
-            stocks : stocks
-        });
-        addProductQuantities(orderQuantity)
-        increaseTotalPrice(orderQuantity*product.price)
-        // console.log(product)
+    let handleCartProduct = async (product) => {
+        setIsLoading(true);
+        // product.preventDefault();
+        let tempProduct = {
+            "selectedQuantity": orderQuantity,
+            "product": {
+                "productId": product.inventoryId,
+                "productTitle" : product.productTitle,
+                "productDescription": product.description,
+                "productPrice": product.price,
+                "productQuantity": product.stocks[0].quantity,
+                "availabilityStatus": "YES"
+            }
+        }
+        try {
+            const response = await axios.post(`http://localhost:8080/api/v1/customers/${isLogin.userId}/cart-products`,
+                tempProduct,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true // Includes cookies with the request
+                }
+            );
+            console.log(response);
+            setIsLoading(false);
+            if (response.status === 201) {
+                alert(response.data.message)
+            }
+        } catch (error) {
+            console.log(error);
+            setIsLoading(false);
+        }
     }
 
     return (
         <>
-            {isLoading ? <Loading /> : <div className="flex items-center justify-center">
+            {isLoading && <Loading />}
+            <div className="flex items-center justify-center">
                 <div className="flex flex-col md:flex-row items-center justify-center m-4 border border-green-500 rounded-md w-full md:w-1/2 p-4 cardShadow">
                     <section className="w-full md:w-1/2 text-center">
                         {product.productImage ? (
@@ -79,7 +92,7 @@ function ProductInfo() {
                         )}
 
                         <div className="flex flex-wrap gap-2 items-center justify-center mb-2">
-                            <Button onClick={() => handleProduct(product)} gradientDuoTone="purpleToBlue">
+                            <Button onClick={() => handleCartProduct(product)} gradientDuoTone="purpleToBlue">
                                 <HiShoppingCart className="mr-2 h-5 w-5" />
                                 Add To Cart
                             </Button>
@@ -143,7 +156,7 @@ function ProductInfo() {
                         </p>
                     </section>
                 </div>
-            </div>}
+            </div>
         </>
     )
 }
