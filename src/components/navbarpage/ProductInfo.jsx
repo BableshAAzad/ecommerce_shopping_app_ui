@@ -1,12 +1,13 @@
 import axios from "axios";
 import { Button } from "flowbite-react";
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import productImg from "../../images/logo.png"
 import { HiShoppingBag, HiShoppingCart } from "react-icons/hi";
 import "./HomePage.css"
 import Loading from "../loader/Loading";
 import { AuthContext } from "../authprovider/AuthProvider";
+import PopupWarn from "../popup/PopupWarn";
 
 function ProductInfo() {
     let { pid } = useParams()
@@ -15,6 +16,9 @@ function ProductInfo() {
     let [orderQuantity, setOrderQuantity] = useState(1);
     let [isLoading, setIsLoading] = useState(false);
     let { isLogin } = useContext(AuthContext);
+    let navigate = useNavigate();
+    const [popupOpen, setPopupOpen] = useState(false);
+    const [popupData, setPopupData] = useState({});
 
     let getAllProducts = async () => {
         setIsLoading(true)
@@ -45,7 +49,7 @@ function ProductInfo() {
             "selectedQuantity": orderQuantity,
             "product": {
                 "productId": product.inventoryId,
-                "productTitle" : product.productTitle,
+                "productTitle": product.productTitle,
                 "productDescription": product.description,
                 "productPrice": product.price,
                 "productQuantity": product.stocks[0].quantity,
@@ -63,17 +67,30 @@ function ProductInfo() {
             console.log(response);
             setIsLoading(false);
             if (response.status === 201) {
-                alert(response.data.message)
+                setTimeout(() => {
+                    setPopupData(response.data);
+                    setPopupOpen(true);
+                }, 0);
             }
         } catch (error) {
             console.log(error);
             setIsLoading(false);
+
+            setTimeout(() => {
+                setPopupData(error.response.data);
+                setPopupOpen(true);
+            }, 0);
         }
     }
 
     return (
         <>
             {isLoading && <Loading />}
+
+            {popupOpen && <PopupWarn isOpen={popupOpen} width="w-[90%]"
+                setIsOpen={setPopupOpen} clr="green"
+                head={popupData.message} />}
+
             <div className="flex items-center justify-center">
                 <div className="flex flex-col md:flex-row items-center justify-center m-4 border border-green-500 rounded-md w-full md:w-1/2 p-4 cardShadow">
                     <section className="w-full md:w-1/2 text-center">
@@ -96,7 +113,11 @@ function ProductInfo() {
                                 <HiShoppingCart className="mr-2 h-5 w-5" />
                                 Add To Cart
                             </Button>
-                            <Button gradientDuoTone="purpleToPink">
+                            <Button onClick={() => {
+                                handleCartProduct(product), navigate("/cart/addresses",
+                                    { state: { product: product, quantity: orderQuantity } })
+                            }}
+                                gradientDuoTone="purpleToPink">
                                 <HiShoppingBag className="mr-2 h-5 w-5" />
                                 Buy Now
                             </Button>

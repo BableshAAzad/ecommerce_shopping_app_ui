@@ -27,6 +27,8 @@ import UpdateAddress from "../userinfo/UpdateAddress";
 import UpdateUser from "../userinfo/UpdateUser";
 import AddContact from "../userinfo/AddContact";
 import UpdateContact from "../userinfo/UpdateContact";
+import OrderAddress from "../cart/OrderAddress";
+import CartItemDetail from "../cart/CartItemDetail";
 
 export const RouteComps = [
     {
@@ -35,6 +37,20 @@ export const RouteComps = [
         isPrivate: true,
         isVisibleAfterLogin: true,
         role: ["CUSTOMER", "SELLER"]
+    },
+    {
+        element: <OrderAddress />,
+        path: "cart/addresses",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["CUSTOMER"]
+    },
+    {
+        element: <CartItemDetail />,
+        path: "cart/addresses/order-preview",
+        isPrivate: true,
+        isVisibleAfterLogin: true,
+        role: ["CUSTOMER"]
     },
     {
         element: <LogoutAlert />,

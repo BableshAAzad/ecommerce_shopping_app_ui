@@ -82,11 +82,11 @@ function LoginForm() {
     }
 
     return (
-        <section className=''>
+        <>
             {isLoading ? <Loading /> : ""}
 
-            {popupOpen && <PopupWarn isOpen={popupOpen}
-                setIsOpen={setPopupOpen} clr="warning" url="/customer-registration"
+            {popupOpen && <PopupWarn isOpen={popupOpen} width="w-[90%]"
+                setIsOpen={setPopupOpen} clr="warning"
                 head={popupData.message} msg={popupData.rootCause.password || popupData.rootCause} />}
 
             <h1 className='dark:text-white text-center text-2xl font-bold mt-4'>User Login Page</h1>
@@ -151,7 +151,7 @@ function LoginForm() {
                 </a>
 
             </div>
-        </section>
+        </>
     )
 }
 

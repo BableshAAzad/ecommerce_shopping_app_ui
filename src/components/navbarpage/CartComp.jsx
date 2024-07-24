@@ -4,13 +4,14 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../authprovider/AuthProvider";
 import Loading from "../loader/Loading";
+import { useNavigate } from "react-router-dom";
 
 function CartComp() {
     let [isLoading, setIsLoading] = useState(false);
     let { isLogin } = useContext(AuthContext);
     let [cartProduct, setCartProduct] = useState([])
-    let [totalItemAndPrice, setTotalItemAndPrice] = useState({totalItem : 0, totalPrice : 0}); // i want to logic to calculate totalPrice and totalItem quantity
-
+    let [totalItemAndPrice, setTotalItemAndPrice] = useState({ totalItem: 0, totalPrice: 0 });
+    let navigate = useNavigate();
 
     let handleOrderQuantity = (action, cartProductId, selectedQuantity, productQuantity) => {
         if (action === "increase" && selectedQuantity < productQuantity) {
@@ -130,36 +131,38 @@ function CartComp() {
                     </Table.Head>
 
                     <Table.Body className="divide-y">
-                        {cartProduct.map(({ cartProductId, selectedQuantity, product: { productTitle, productDescription, productPrice, productQuantity, productImage } }) => {
+                        {cartProduct.map(({ cartProductId, selectedQuantity, product }) => {
                             return <Table.Row key={cartProductId} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                                    {productTitle}
+                                    {product.productTitle}
                                 </Table.Cell>
-                                <Table.Cell>{productPrice}</Table.Cell>
+                                <Table.Cell>{product.productPrice}</Table.Cell>
 
                                 <Table.Cell>
                                     <Button.Group>
                                         <Button outline pill size="xs"
-                                            onClick={() => handleOrderQuantity("decrease", cartProductId, selectedQuantity, productQuantity)}>
+                                            onClick={() => handleOrderQuantity("decrease", cartProductId, selectedQuantity, product.productQuantity)}>
                                             -
                                         </Button>
                                         <Button outline pill size="xs" disabled>
                                             {selectedQuantity}
                                         </Button>
                                         <Button outline pill size="xs"
-                                            onClick={() => handleOrderQuantity("increase", cartProductId, selectedQuantity, productQuantity)}>
+                                            onClick={() => handleOrderQuantity("increase", cartProductId, selectedQuantity, product.productQuantity)}>
                                             +
                                         </Button>
                                     </Button.Group>
                                 </Table.Cell>
-                                <Table.Cell>{productQuantity}</Table.Cell>
-                                <Table.Cell>{productDescription}</Table.Cell>
+                                <Table.Cell>{product.productQuantity}</Table.Cell>
+                                <Table.Cell>{product.productDescription}</Table.Cell>
                                 <Table.Cell>
                                     {/* <img src={productImage} alt="Product" className="w-16 h-16 object-cover" /> */}
-                                    <img src={productImage ? productImage : giftbox} alt="Product" className="w-16 h-16 object-cover" />
+                                    <img src={product.productImage ? product.productImage : giftbox} alt="Product" className="w-16 h-16 object-cover" />
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <Button outline gradientDuoTone="greenToBlue">
+                                    <Button onClick={() => navigate("/cart/addresses",
+                                        { state: { product: product, quantity: selectedQuantity } })}
+                                        outline gradientDuoTone="greenToBlue">
                                         Order
                                     </Button>
                                 </Table.Cell>
