@@ -3,7 +3,7 @@ import { Button } from "flowbite-react";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom"
 import productImg from "../../images/logo.png"
-import { HiShoppingBag, HiShoppingCart } from "react-icons/hi";
+import { HiShoppingBag, HiShoppingCart, HiBell, HiExclamation } from "react-icons/hi";
 import "./HomePage.css"
 import Loading from "../loader/Loading";
 import { AuthContext } from "../authprovider/AuthProvider";
@@ -109,18 +109,28 @@ function ProductInfo() {
                         )}
 
                         <div className="flex flex-wrap gap-2 items-center justify-center mb-2">
-                            <Button onClick={() => handleCartProduct(product)} gradientDuoTone="purpleToBlue">
-                                <HiShoppingCart className="mr-2 h-5 w-5" />
-                                Add To Cart
+                            {stocks === 0 ? <Button gradientDuoTone="purpleToBlue">
+                                <HiBell className="mr-2 h-5 w-5" />
+                                Add to Wishlist
                             </Button>
-                            <Button onClick={() => {
-                                handleCartProduct(product), navigate("/cart/addresses",
-                                    { state: { product: product, quantity: orderQuantity } })
-                            }}
-                                gradientDuoTone="purpleToPink">
-                                <HiShoppingBag className="mr-2 h-5 w-5" />
-                                Buy Now
+                                :
+                                <Button onClick={() => handleCartProduct(product)} gradientDuoTone="purpleToBlue">
+                                    <HiShoppingCart className="mr-2 h-5 w-5" />
+                                    Add To Cart
+                                </Button>}
+                            {stocks === 0 ? <Button gradientDuoTone="purpleToPink">
+                                <HiExclamation className="mr-2 h-5 w-5" />
+                                Out Of Stocks
                             </Button>
+                                :
+                                <Button onClick={() => {
+                                    handleCartProduct(product), navigate("/cart/addresses",
+                                        { state: { product: product, quantity: orderQuantity } })
+                                }}
+                                    gradientDuoTone="purpleToPink">
+                                    <HiShoppingBag className="mr-2 h-5 w-5" />
+                                    Buy Now
+                                </Button>}
                         </div>
                     </section>
 

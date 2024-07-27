@@ -68,7 +68,7 @@ function OrderComp() {
 
             // Create a URL for the PDF and open it in a new tab
             const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-            window.open(url, '_blank'); // Opens in a new tab
+            window.open(url, '_blank');
 
             setIsLoading(false);
         } catch (error) {
