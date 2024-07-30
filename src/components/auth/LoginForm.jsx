@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react'
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Loading from '../loader/Loading';
 import { AuthContext } from '../authprovider/AuthProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -20,6 +20,7 @@ function LoginForm() {
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const navigate = useNavigate();
     const { login } = useContext(AuthContext);
+
 
     const updateData = ({ target: { name, value } }) => {
         setFormdata({ ...formdata, [name]: value });
@@ -53,6 +54,7 @@ function LoginForm() {
                     withCredentials: true // Includes cookies with the request
                 }
             );
+
             setFormdata({ username: "", password: "" })
             // console.log(response.data)
             if (response.status === 200) {
@@ -125,22 +127,22 @@ function LoginForm() {
             </div>
             <div className="social-button-container flex justify-center items-center flex-col space-y-4 mt-2 mb-4">
 
-                <a className="px-3 py-2 w-1/4 border flex justify-center items-center font-bold gap-2 bg-gray-300
+                <Link className="px-3 py-2 w-1/4 border flex justify-center items-center font-bold gap-2 bg-gray-300
                  dark:bg-gray-600 border-slate-200 hover:bg-gray-400 dark:border-slate-700 rounded-lg
                   text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500
                    hover:text-slate-900 dark:hover:text-slate-300 dark:hover:bg-gray-800 hover:shadow 
                    transition duration-150"
-                    href='/oauth2/authorization/google'>
+                    to='http://localhost:8080/oauth2/authorization/google'>
                     <img className="w-5 h-5" src="https://www.svgrepo.com/show/475656/google-color.svg"
                         loading="lazy" alt="google logo" />
                     <span>Login with Google</span>
-                </a>
+                </Link>
 
-                <a className="py-2 px-3 w-1/4 flex justify-center items-center bg-gray-600 hover:bg-gray-800
+                <Link className="py-2 px-3 w-1/4 flex justify-center items-center bg-gray-600 hover:bg-gray-800
                  focus:ring-gray-500 focus:ring-offset-gray-200 text-white transition ease-in duration-200 
                  text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2
                   rounded-lg"
-                    href='/oauth2/authorization/github'>
+                    to='http://localhost:8080/oauth2/authorization/github'>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                         className="mr-2" viewBox="0 0 1792 1792">
                         <path
@@ -148,7 +150,7 @@ function LoginForm() {
                         </path>
                     </svg>
                     Login with GitHub
-                </a>
+                </Link>
 
             </div>
         </>
