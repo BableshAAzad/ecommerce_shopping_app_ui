@@ -149,7 +149,7 @@ function ProductInfo() {
                         </p>
 
                         <p className="font-normal text-gray-700 dark:text-gray-400 mb-2">
-                            <span className="font-semibold">Categories:</span>
+                            <span className="font-semibold">Categories: </span>
                             {product.materialTypes ? product.materialTypes.map((ele) => ele + ", ") : "No Material Types"}
                         </p>
 

@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { faBoxOpen, faCartShopping, faSearch, faWarehouse } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Navbar, TextInput } from "flowbite-react";
+import { Navbar } from "flowbite-react";
 import DarkModeOption from "../darkmode/DarkModeOption";
 import "./HeaderComp.css"
 import "./UserData.css"
@@ -11,14 +11,16 @@ import { NavLink, useLocation } from 'react-router-dom';
 import MoreOptionNav from './MoreOptionNav';
 import { AuthContext } from '../authprovider/AuthProvider';
 import NetworkStatus from "../network/NetworkStatus"
+import SearchResultsModal from '../navbarpage/searchproduct/SearchResultsModal';
 
 function HeaderComp() {
     const { isLogin } = useContext(AuthContext);
-    let [isSearchVisible, setIsSearchVisible] = useState(false);
+    // const [isSearchVisible, setIsSearchVisible] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
     const location = useLocation();
 
-    let handleSearchIconClick = () => {
-        setIsSearchVisible(!isSearchVisible);
+    const handleSearchClick = () => {
+        setOpenModal(true);
     };
 
     return (
@@ -32,12 +34,27 @@ function HeaderComp() {
                 </NavLink>
                 <div className="flex md:order-1 md:w-1/4">
                     <Navbar.Toggle />
-                    <button onClick={handleSearchIconClick} className="md:hidden p-2 dark:text-white">
+                    <button onClick={handleSearchClick} className="md:hidden p-2 dark:text-white">
                         <FontAwesomeIcon icon={faSearch} />
                     </button>
-                    <div className={`w-full ${isSearchVisible ? 'block' : 'hidden'} md:block`}>
-                        <TextInput className="w-full" placeholder="Search Products" />
+                    {/* <div className={`w-full ${isSearchVisible ? 'block' : 'hidden'} md:block`}>
+                        <TextInput className="w-full" placeholder="Search Products"  />
+                    </div> */}
+                    <div className={`w-full hidden md:block`}>
+                        <div
+                            className="w-full cursor-pointer rounded-md p-2 bg-white dark:bg-slate-700
+                             text-gray-700 dark:text-slate-300 flex items-center"
+                            onClick={handleSearchClick}
+                        >
+                            <FontAwesomeIcon icon={faSearch} className="mr-2" />
+                            <span className="flex-grow">Search Products</span>
+                        </div>
+                        <SearchResultsModal
+                            openModal={openModal}
+                            setOpenModal={setOpenModal}
+                        />
                     </div>
+
                 </div>
                 <Navbar.Collapse className="md:order-2">
                     <UserData />
@@ -64,6 +81,10 @@ function HeaderComp() {
                     <MoreOptionNav />
                 </Navbar.Collapse>
             </Navbar>
+
+
+
+            {/* <SearchResultsModal openModal={openModal} setOpenModal={setOpenModal}/> */}
         </>
     );
 }

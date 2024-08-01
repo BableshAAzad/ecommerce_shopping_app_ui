@@ -33,7 +33,7 @@ function UpdateProduct() {
             }
         } else {
             if (type === "number")
-                setFormData({ ...formData, [name]: Number(value) });
+                setFormData({ ...formData, [name]: value });
             else
                 setFormData({ ...formData, [name]: value });
         }
@@ -52,6 +52,9 @@ function UpdateProduct() {
                 }
             );
             console.log(response);
+            if (response.status === 200) {
+                alert("Product is updated")
+            }
             setIsLoading(false);
         } catch (error) {
             console.log(error);
