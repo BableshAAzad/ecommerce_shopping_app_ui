@@ -27,9 +27,9 @@ function AddProduct() {
     const location = useLocation();
 
     let materials = location.state.storageData || [];
-    console.log(materials)
+    // console.log(materials)
 
-    let handleFormData = ({ target: { name, value, checked, type } }) => {
+    let handleFormData = ({ target: { name, value, checked } }) => {
         if (name === "materialTypes") {
             if (checked) {
                 setFormData(prevState => ({
@@ -43,11 +43,8 @@ function AddProduct() {
                 }));
             }
         } else if (name === "quantity") {
-            setProductQuantity({ ...productQuantity, [name]: Number(value) })
+            setProductQuantity({ ...productQuantity, [name]: value })
         } else {
-            if (type === "number")
-                setFormData({ ...formData, [name]: Number(value) });
-            else
                 setFormData({ ...formData, [name]: value });
         }
         // console.log(formData);
@@ -66,6 +63,9 @@ function AddProduct() {
                 }
             );
             console.log(response);
+            if (response.status === 200) {
+                alert("Product is added")
+            }
             setIsLoading(false);
         } catch (error) {
             console.log(error);
