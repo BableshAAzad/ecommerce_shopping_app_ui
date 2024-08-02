@@ -43,6 +43,9 @@ function ProductInfo() {
     };
 
     let handleCartProduct = async (product) => {
+        if (!isLogin) {
+            navigate("/login-form");
+        }
         setIsLoading(true);
         // product.preventDefault();
         let tempProduct = {
@@ -109,14 +112,17 @@ function ProductInfo() {
                                     <HiShoppingCart className="mr-2 h-5 w-5" />
                                     Add To Cart
                                 </Button>}
-                            {stocks === 0 ? <Button gradientDuoTone="purpleToPink">
+                            {stocks === 0 ? <Button gradientMonochrome="failure">
                                 <HiExclamation className="mr-2 h-5 w-5" />
                                 Out Of Stocks
                             </Button>
                                 :
                                 <Button onClick={() => {
-                                    handleCartProduct(product), navigate("/cart/addresses",
-                                        { state: { product: product, quantity: orderQuantity } })
+                                    handleCartProduct(product);
+                                    {
+                                        !isLogin ? navigate("/login-form") :
+                                        navigate("/cart/addresses", { state: { product: product, quantity: orderQuantity } })
+                                    }
                                 }}
                                     gradientDuoTone="purpleToPink">
                                     <HiShoppingBag className="mr-2 h-5 w-5" />

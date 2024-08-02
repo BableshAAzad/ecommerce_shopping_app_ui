@@ -1,15 +1,17 @@
-import axios from "axios"
+import axios from "axios";
 import { useEffect, useState } from "react";
 import productPic from "../../images/logo.png";
-import empty_bag from "../../images/empty_bag.png"
+import empty_bag from "../../images/empty_bag.png";
 import { Link } from "react-router-dom";
-import "./HomePage.css"
+import "./HomePage.css";
+import Spinner from "../loader/Spinner";
 import Loading from "../loader/Loading";
-import { Button, Carousel } from "flowbite-react";
+import { Button } from "flowbite-react";
 import CategorizedProduct from "./searchproduct/CategorizedProduct";
 import FilterProduct from "./searchproduct/FilterProduct";
 import { HiOutlineFilter } from "react-icons/hi";
 import InfiniteScroll from 'react-infinite-scroll-component';
+import CarouselHome from "./carousel/CarouselHome";
 
 function HomePage() {
     let [products, setProducts] = useState([]);
@@ -17,71 +19,131 @@ function HomePage() {
     const [isOpen, setIsOpen] = useState(false);
     let [page, setPage] = useState(0);
     let [totalResults, setTotalResults] = useState(0);
-
+    let [isFilterApplied, setIsFilterApplied] = useState(false);
+    let [filterData, setFilterData] = useState({});
+    let [category, setCategory] = useState("");
 
     let getAllProducts = async () => {
-        setIsLoading(true)
+        setIsLoading(true);
         let response = await axios.get(`http://localhost:8080/api/v1/products?page=${page}&size=5`);
-        response = response.data
-        console.log(response)
-        setProducts(response.data.content)
-        setTotalResults(response.data.page.totalElements)
-        setIsLoading(false)
-    }
+        response = response.data;
+        console.log(response);
+        setProducts(response.data.content);
+        setTotalResults(response.data.page.totalElements);
+        setIsLoading(false);
+    };
+
     useEffect(() => {
         getAllProducts();
     }, []);
 
     let fetchMoreProducts = async () => {
         let response = await axios.get(`http://localhost:8080/api/v1/products?page=${page + 1}&size=5`);
-        response = response.data
-        console.log(response)
+        response = response.data;
+        console.log(response);
         setPage(page + 1);
-        setProducts(products.concat(response.data.content))
-        setTotalResults(response.data.page.totalElements)
-    }
+        setProducts(products.concat(response.data.content));
+        setTotalResults(response.data.page.totalElements);
+    };
+
+    const handleFilterProducts = async (filterData, reset = false) => {
+        if (reset) {
+            setPage(0);
+            setIsFilterApplied(false);
+            setFilterData({});
+            getAllProducts();
+        } else {
+            setFilterData(filterData);
+            let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=0&size=5`, filterData, {
+                headers: { "Content-Type": "application/json" },
+            });
+            response = response.data;
+            console.log(response);
+            setPage(0);
+            setProducts(response.data.content);
+            setTotalResults(response.data.page.totalElements);
+            setIsFilterApplied(true);
+        }
+    };
+
+    let fetchMoreFilteredProducts = async () => {
+        let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=${page + 1}&size=5`, filterData, {
+            headers: { "Content-Type": "application/json" },
+        });
+        response = response.data;
+        console.log(response);
+        setPage(page + 1);
+        setProducts(products.concat(response.data.content));
+        setTotalResults(response.data.page.totalElements);
+    };
+
+    useEffect(() => {
+        const handleCategoryProducts = async () => {
+            setPage(0);
+            if (category.trim().length > 0) {
+                let response = await axios.get(`http://localhost:8080/api/v1/products/search/${category}?page=0&size=5`);
+                response = response.data;
+                console.log(response)
+                setProducts(response.data.content);
+                setTotalResults(response.data.page.totalElements);
+            } else {
+                setProducts([]);
+            }
+        };
+
+        handleCategoryProducts();
+    }, [category]);
+
+    let fetchMoreCategoryProducts = async () => {
+        let response = await axios.get(`http://localhost:8080/api/v1/products/search/${category}?page=${page + 1}&size=5`);
+        response = response.data;
+        console.log(response);
+        setPage(page + 1);
+        setProducts(products.concat(response.data.content));
+        setTotalResults(response.data.page.totalElements);
+    };
+
+    const determineFetchMore = () => {
+        if (isFilterApplied) {
+            return fetchMoreFilteredProducts;
+        } else if (category.trim().length > 0) {
+            return fetchMoreCategoryProducts;
+        } else {
+            return fetchMoreProducts;
+        }
+    };
 
     return (
-        <>
+        <div>
             {isLoading && <Loading />}
-            <h1 className="text-center text-2xl dark:text-white">Welcome To Ecommerce Shopping Application </h1>
-
-            <FilterProduct isOpen={isOpen} setIsOpen={setIsOpen} setProducts={setProducts} />
+            {/* <h1 className="text-center text-2xl dark:text-white mt-16 pt-1">Welcome To Ecommerce Shopping Application </h1> */}
+            <FilterProduct isOpen={isOpen} setIsOpen={setIsOpen} setProducts={setProducts} handleFilterProducts={handleFilterProducts} />
 
             <div>
-                <CategorizedProduct setProducts={setProducts} />
+                <CategorizedProduct setCategory={setCategory} />
             </div>
 
-            <div className="h-28 sm:h-32 xl:h-36 2xl:h-40">
-                <Carousel slideInterval={2000}>
-                    <img src="https://rukminim1.flixcart.com/fk-p-flap/480/210/image/cae744eea25fde98.jpeg?q=20" alt="Product1" />
-                    <img src="https://rukminim1.flixcart.com/fk-p-flap/480/210/image/4aad095f9ca5ebd9.jpg?q=20" alt="Product2" />
-                    <img src="https://rukminim1.flixcart.com/fk-p-flap/480/210/image/9a6168fc495cba89.jpeg?q=20" alt="Product3" />
-                    <img src="https://rukminim1.flixcart.com/fk-p-flap/480/210/image/1714eddc8e812927.jpeg?q=20" alt="Product4" />
-                    <img src="https://rukminim1.flixcart.com/fk-p-flap/480/210/image/845d5893ef37c283.jpeg?q=20" alt="Product5" />
-                </Carousel>
-            </div>
+            <CarouselHome />
             <br />
             <section className="flex justify-start gap-4">
-                <Button onClick={() => setIsOpen(true)}
-                    outline gradientDuoTone="cyanToBlue">
+                <Button onClick={() => setIsOpen(true)} outline gradientDuoTone="cyanToBlue">
                     <HiOutlineFilter className="size-6 pr-2" />
                     Filter Products
                 </Button>
-                <p className="dark:text-cyan-300 text-cyan-600  text-xl pt-2">Filter Products here 👈</p>
+                <p className="dark:text-cyan-300 text-cyan-600 text-xl pt-2">Filter Products here 👈</p>
             </section>
 
             <InfiniteScroll
                 dataLength={products.length}
-                next={fetchMoreProducts}
+                next={determineFetchMore()}
                 hasMore={products.length !== totalResults}
-                loader={<Loading />}
+                loader={<Spinner />}
                 scrollableTarget="row"
             >
                 <section className="flex flex-wrap m-1 justify-around">
                     {products.length > 0 ?
                         products.map(({ inventoryId, productTitle, price, productImage, description }) => {
-                            return <Link to={`/products/${inventoryId}`} key={inventoryId} className="rounded-md m-2 w-44 cardShadow product-link" title={productTitle}>
+                            return <Link to={`/products/${inventoryId}`} key={inventoryId + productTitle} className="rounded-md m-2 w-44 cardShadow product-link" title={productTitle}>
                                 <div>
                                     <img
                                         alt="ProductImage"
@@ -106,7 +168,8 @@ function HomePage() {
                 </section>
             </InfiniteScroll>
             <br />
-        </ >
-    )
+        </div>
+    );
 }
-export default HomePage
+
+export default HomePage;

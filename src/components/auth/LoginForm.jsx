@@ -91,7 +91,10 @@ function LoginForm() {
                 setIsOpen={setPopupOpen} clr="warning"
                 head={popupData.message} msg={popupData.rootCause.password || popupData.rootCause} />}
 
-            <h1 className='dark:text-white text-center text-2xl font-bold mt-4'>User Login Page</h1>
+            <h1 className='dark:text-slate-300 text-center text-2xl font-bold mt-4'>Sign In To Your Account</h1>
+            <h4 className='text-slate-600 text-center text-base font-bold mt-1'>Don{`'`}t Have an Account?
+                <Link className='text-blue-700 underline' to="/customer-registration"> SIGN UP</Link>
+            </h4>
             <div className='flex justify-center m-4 '>
                 <form className="flex max-w-md flex-col gap-4 p-8 bg-blue-300  dark:bg-slate-800 rounded" onSubmit={submitFormData}>
                     <div>
@@ -123,11 +126,14 @@ function LoginForm() {
                         Note : If submit button is still disabled then re-enter details.
                     </span>
                 </form>
-
             </div>
-            <div className="social-button-container flex justify-center items-center flex-col space-y-4 mt-2 mb-4">
+            <div className='text-center ml-auto mr-auto'>
+                <Link to="/" className='text-blue-800 font-bold mt-1 underline'>FORGOT PASSWORD?</Link>
+            </div>
 
-                <Link className="px-3 py-2 w-1/4 border flex justify-center items-center font-bold gap-2 bg-gray-300
+            <div className="social-button-container w-96 ml-auto mr-auto flex justify-center items-center flex-col space-y-4 mt-2 mb-4">
+
+                <Link className="px-3 py-2 w-full border flex justify-center items-center font-bold gap-2 bg-gray-300
                  dark:bg-gray-600 border-slate-200 hover:bg-gray-400 dark:border-slate-700 rounded-lg
                   text-slate-700 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-500
                    hover:text-slate-900 dark:hover:text-slate-300 dark:hover:bg-gray-800 hover:shadow 
@@ -138,7 +144,7 @@ function LoginForm() {
                     <span>Login with Google</span>
                 </Link>
 
-                <Link className="py-2 px-3 w-1/4 flex justify-center items-center bg-gray-600 hover:bg-gray-800
+                <Link className="py-2 px-3 w-full flex justify-center items-center bg-gray-600 hover:bg-gray-800
                  focus:ring-gray-500 focus:ring-offset-gray-200 text-white transition ease-in duration-200 
                  text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2
                   rounded-lg"

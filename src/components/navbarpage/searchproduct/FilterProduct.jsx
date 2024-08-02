@@ -4,10 +4,9 @@ import { materialTypesList } from "../../seller/MaterialTypes";
 import { useId, useState } from "react";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
 
 // eslint-disable-next-line react/prop-types
-export default function FilterProduct({ isOpen, setIsOpen, setProducts }) {
+export default function FilterProduct({ isOpen, setIsOpen, handleFilterProducts }) {
     const handleClose = () => setIsOpen(false);
     const id = useId();
     const [filterData, setFilterData] = useState({
@@ -34,28 +33,9 @@ export default function FilterProduct({ isOpen, setIsOpen, setProducts }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const dataToSubmit = {
-            ...filterData,
-            minPrice: filterData.minPrice ? parseFloat(filterData.minPrice) : "",
-            maxPrice: filterData.maxPrice ? parseFloat(filterData.maxPrice) : "",
-        };
-        console.log("Filter Data: ", dataToSubmit);
-        try {
-            const response = await axios.post(`http://localhost:8080/api/v1/products/filter`,
-                dataToSubmit,
-                {
-                    headers: { "Content-Type": "application/json" },
-                }
-            );
-            console.log(response);
-            if (response.status === 200) {
-                setProducts(response.data.data)
-            }
-            handleClose();
-        } catch (error) {
-            console.log(error);
-            handleClose();
-        }
+        console.log("Filter Data: ", filterData);
+        handleFilterProducts(filterData);
+        handleClose();
     };
 
     const handleReset = () => {
@@ -67,6 +47,7 @@ export default function FilterProduct({ isOpen, setIsOpen, setProducts }) {
             sortOrder: "newToOld",
             materialTypes: []
         });
+        handleFilterProducts({}, true);
     };
 
     return (

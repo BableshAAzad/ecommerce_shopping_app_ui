@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../authprovider/AuthProvider";
 import Loading from "../loader/Loading";
-
+import empty_bag from "../../images/empty_bag.png"
 
 function OrderComp() {
     let [isLoading, setIsLoading] = useState(false);
@@ -32,30 +32,6 @@ function OrderComp() {
     useEffect(() => {
         handleOrders();
     }, []);
-
-    // let downloadInvoice = async (orderId) => {
-    //     setIsLoading(true);
-    //     try {
-    //         const response = await axios.get(`http://localhost:8080/api/v1/customers/purchase-orders/${orderId}`, {
-    //             headers: { "Content-Type": "application/json" },
-    //             responseType: 'blob', // This is important for handling binary data
-    //             withCredentials: true,
-    //         });
-
-    //         // Create a link element, set the download attribute with a filename, and trigger a click to start the download
-    //         const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-    //         const link = document.createElement('a');
-    //         link.href = url;
-    //         link.setAttribute('download', `invoice_${orderId}.pdf`);
-    //         document.body.appendChild(link);
-    //         link.click();
-
-    //         setIsLoading(false);
-    //     } catch (error) {
-    //         console.error(error);
-    //         setIsLoading(false);
-    //     }
-    // };
 
     let downloadInvoice = async (orderId) => {
         setIsLoading(true);
@@ -98,7 +74,7 @@ function OrderComp() {
                         </Table.Head>
 
                         <Table.Body className="divide-y">
-                            {orders.map(({ orderId, inventoryTitle, invoiceDate, inventoryImage, invoiceLink }) => {
+                            {orders.length > 0 ? orders.map(({ orderId, inventoryTitle, invoiceDate, inventoryImage, invoiceLink }) => {
                                 return <Table.Row key={orderId} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                                     <Table.Cell className="px-3 py-1">{orderId}</Table.Cell>
                                     <Table.Cell className="px-1 py-1 whitespace-nowrap font-medium text-gray-900 dark:text-white">
@@ -114,7 +90,11 @@ function OrderComp() {
                                         </Button>
                                     </Table.Cell>
                                 </Table.Row>
-                            })}
+                            }) : (<Table.Row >
+                                <Table.Cell >
+                                    <img src={empty_bag} alt="No_Products" />
+                                </Table.Cell>
+                            </Table.Row>)}
                         </Table.Body>
                     </Table>
                 </div>

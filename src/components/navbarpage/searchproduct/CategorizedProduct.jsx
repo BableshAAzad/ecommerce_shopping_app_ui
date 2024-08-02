@@ -1,12 +1,9 @@
 import "./CategorizedProduct.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTv, faShirt, faUserTie, faCouch, faBagShopping, faCartFlatbedSuitcase } from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useState } from "react";
-import axios from "axios";
 
 // eslint-disable-next-line react/prop-types
-export default function CategorizedProduct({ setProducts }) {
-    const [inputQuery, setInputQuery] = useState("")
+export default function CategorizedProduct({ setCategory }) {
     let productTypes = [
         { productType: "Electronics", typeIcon: faTv, text_color: "cyan", query: "ELECTRONIC" },
         { productType: "Fashion", typeIcon: faUserTie, text_color: "blue", query: "LEATHER" },
@@ -16,22 +13,6 @@ export default function CategorizedProduct({ setProducts }) {
         { productType: "Home Accessories", typeIcon: faCartFlatbedSuitcase, text_color: "green", query: "SOLID" }
     ];
 
-    useEffect(() => {
-        const handleSearchChange = async () => {
-            if (inputQuery.trim().length > 0) {
-                const response = await axios.get(`http://localhost:8080/api/v1/products/search/${inputQuery}`);
-                console.log(response)
-                if (response.status === 200) {
-                    setProducts(response.data.data);
-                    console.log(response.data.data)
-                }
-            } else {
-                setProducts([]);
-            }
-        };
-
-        handleSearchChange();
-    }, [inputQuery]);
 
     return (
         <div className="p-2 filter-product-main">
@@ -44,7 +25,7 @@ export default function CategorizedProduct({ setProducts }) {
                             <button className={`inline-block p-1 text-sm
                     rounded-t-lg hover:text-gray-600 hover:border-gray-300
                      dark:hover:text-gray-300 text-${text_color}-600`}
-                                type="button" onClick={() => setInputQuery(query)}>
+                                type="button" onClick={() => setCategory(query)}>
                                 <FontAwesomeIcon icon={typeIcon} className="pr-2 lg:size-5 sm:size-4" />
                                 {productType}
                             </button>
