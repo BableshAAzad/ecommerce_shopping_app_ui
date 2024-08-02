@@ -11,7 +11,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import MoreOptionNav from './MoreOptionNav';
 import { AuthContext } from '../authprovider/AuthProvider';
 import NetworkStatus from "../network/NetworkStatus"
-import SearchResultsModal from '../navbarpage/searchproduct/SearchResultsModal';
+import SearchProductModal from '../navbarpage/searchproduct/SearchProductModal';
 
 function HeaderComp() {
     const { isLogin } = useContext(AuthContext);
@@ -49,7 +49,7 @@ function HeaderComp() {
                             <FontAwesomeIcon icon={faSearch} className="mr-2" />
                             <span className="flex-grow">Search Products</span>
                         </div>
-                        <SearchResultsModal
+                        <SearchProductModal
                             openModal={openModal}
                             setOpenModal={setOpenModal}
                         />
@@ -82,9 +82,6 @@ function HeaderComp() {
                 </Navbar.Collapse>
             </Navbar>
 
-
-
-            {/* <SearchResultsModal openModal={openModal} setOpenModal={setOpenModal}/> */}
         </>
     );
 }

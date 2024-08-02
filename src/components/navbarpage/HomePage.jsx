@@ -1,41 +1,55 @@
 import axios from "axios"
 import { useEffect, useState } from "react";
-import poductPic from "../../images/logo.png";
+import productPic from "../../images/logo.png";
 import empty_bag from "../../images/empty_bag.png"
 import { Link } from "react-router-dom";
 import "./HomePage.css"
 import Loading from "../loader/Loading";
 import { Button, Carousel } from "flowbite-react";
-import { FilterProduct } from "./searchproduct/FilterProduct";
-import { SortingProduct } from "./searchproduct/SortingProduct";
+import CategorizedProduct from "./searchproduct/CategorizedProduct";
+import FilterProduct from "./searchproduct/FilterProduct";
 import { HiOutlineFilter } from "react-icons/hi";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 function HomePage() {
     let [products, setProducts] = useState([]);
     let [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    let [page, setPage] = useState(0);
+    let [totalResults, setTotalResults] = useState(0);
+
 
     let getAllProducts = async () => {
         setIsLoading(true)
-        let response = await axios.get("http://localhost:8080/api/v1/products");
+        let response = await axios.get(`http://localhost:8080/api/v1/products?page=${page}&size=5`);
         response = response.data
-        setProducts(response)
         console.log(response)
+        setProducts(response.data.content)
+        setTotalResults(response.data.page.totalElements)
         setIsLoading(false)
     }
     useEffect(() => {
         getAllProducts();
     }, []);
 
+    let fetchMoreProducts = async () => {
+        let response = await axios.get(`http://localhost:8080/api/v1/products?page=${page + 1}&size=5`);
+        response = response.data
+        console.log(response)
+        setPage(page + 1);
+        setProducts(products.concat(response.data.content))
+        setTotalResults(response.data.page.totalElements)
+    }
+
     return (
         <>
             {isLoading && <Loading />}
             <h1 className="text-center text-2xl dark:text-white">Welcome To Ecommerce Shopping Application </h1>
 
-            <SortingProduct isOpen={isOpen} setIsOpen={setIsOpen} setProducts={setProducts} />
+            <FilterProduct isOpen={isOpen} setIsOpen={setIsOpen} setProducts={setProducts} />
 
             <div>
-                <FilterProduct setProducts={setProducts} />
+                <CategorizedProduct setProducts={setProducts} />
             </div>
 
             <div className="h-28 sm:h-32 xl:h-36 2xl:h-40">
@@ -57,34 +71,40 @@ function HomePage() {
                 <p className="dark:text-cyan-300 text-cyan-600  text-xl pt-2">Filter Products here 👈</p>
             </section>
 
-            <section className="flex flex-wrap m-1 justify-around">
-                {products.length > 0 ?
-                    products.map(({ inventoryId, productTitle, price, productImage, description }) => {
-                        return <Link to={`/products/${inventoryId}`} key={inventoryId} className="rounded-md m-2 w-44 cardShadow product-link" title={productTitle}>
-                            <div>
-                                {productImage !== "" ? productImage :
+            <InfiniteScroll
+                dataLength={products.length}
+                next={fetchMoreProducts}
+                hasMore={products.length !== totalResults}
+                loader={<Loading />}
+                scrollableTarget="row"
+            >
+                <section className="flex flex-wrap m-1 justify-around">
+                    {products.length > 0 ?
+                        products.map(({ inventoryId, productTitle, price, productImage, description }) => {
+                            return <Link to={`/products/${inventoryId}`} key={inventoryId} className="rounded-md m-2 w-44 cardShadow product-link" title={productTitle}>
+                                <div>
                                     <img
                                         alt="ProductImage"
-                                        src={poductPic}
+                                        src={productImage ? productImage : productPic}
                                         className="max-w-sm w-40 m-2 product-picture"
-                                    />}
-                            </div>
-                            <div className="p-2">
-                                <h5 className="text-xl font-bold tracking-tight text-gray-700 dark:text-slate-300">
-                                    {productTitle}
-                                </h5>
-                                <h5 className="text-sm font-bold tracking-tight dark:text-white" >
-                                    Price : <span className="text-green-700 dark:text-green-300">{price !== 0.0 ? price : 100.20 + " Rs"}</span>
-                                    &nbsp;<span className="text-base font-normal leading-tight text-gray-500 line-through">70% off</span>
-                                </h5>
-                                <p className="text-sm text-gray-700 dark:text-gray-400">
-                                    {description !== null ? description : "It is a demo product"}
-                                </p>
-                            </div>
-                        </Link>
-                    }) : <img src={empty_bag} alt="No_Products" />}
-            </section>
-
+                                    />
+                                </div>
+                                <div className="p-2">
+                                    <h5 className="text-xl font-bold tracking-tight text-gray-700 dark:text-slate-300">
+                                        {productTitle}
+                                    </h5>
+                                    <h5 className="text-sm font-bold tracking-tight dark:text-white" >
+                                        Price : <span className="text-green-700 dark:text-green-300">{price !== 0.0 ? price : 100.20 + " Rs"}</span>
+                                        &nbsp;<span className="text-base font-normal leading-tight text-gray-500 line-through">70% off</span>
+                                    </h5>
+                                    <p className="text-sm text-gray-700 dark:text-gray-400">
+                                        {description !== null ? description : "It is a demo product"}
+                                    </p>
+                                </div>
+                            </Link>
+                        }) : <img src={empty_bag} alt="No_Products" />}
+                </section>
+            </InfiniteScroll>
             <br />
         </ >
     )

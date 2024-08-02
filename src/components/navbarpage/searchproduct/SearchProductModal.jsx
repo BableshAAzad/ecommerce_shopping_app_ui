@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { Spinner } from "flowbite-react";
 
 // eslint-disable-next-line react/prop-types
-function SearchResultsModal({ openModal, setOpenModal }) {
+function SearchProductModal({ openModal, setOpenModal }) {
     const [searchResults, setSearchResults] = useState([]);
     const [inputQuery, setInputQuery] = useState("");
     let [isLoading, setIsLoading] = useState(false);
@@ -92,4 +92,4 @@ function SearchResultsModal({ openModal, setOpenModal }) {
     );
 }
 
-export default SearchResultsModal;
+export default SearchProductModal;
