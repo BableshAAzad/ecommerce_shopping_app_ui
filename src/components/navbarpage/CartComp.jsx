@@ -5,6 +5,7 @@ import axios from "axios";
 import { AuthContext } from "../authprovider/AuthProvider";
 import Loading from "../loader/Loading";
 import { useNavigate } from "react-router-dom";
+import empty_bag from "../../images/empty_bag.png"
 
 function CartComp() {
     let [isLoading, setIsLoading] = useState(false);
@@ -131,7 +132,7 @@ function CartComp() {
                     </Table.Head>
 
                     <Table.Body className="divide-y">
-                        {cartProduct.map(({ cartProductId, selectedQuantity, product }) => {
+                        {cartProduct.length > 0 ? cartProduct.map(({ cartProductId, selectedQuantity, product }) => {
                             return <Table.Row key={cartProductId} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                                     {product.productTitle}
@@ -172,7 +173,11 @@ function CartComp() {
                                     </Button>
                                 </Table.Cell>
                             </Table.Row>
-                        })}
+                        }) : (<Table.Row className="flex justify-center">
+                            <Table.Cell >
+                                <img src={empty_bag} alt="No_Products" />
+                            </Table.Cell>
+                        </Table.Row>)}
                     </Table.Body>
                 </Table>
             </div>

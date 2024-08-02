@@ -8,8 +8,9 @@ function App() {
   return (
     <div className="dark:bg-slate-900">
       <HeaderComp />
+      <div className="pt-16"></div>
       <Outlet />
-      <FooterComp/>
+      <FooterComp />
     </div>
   )
 }
