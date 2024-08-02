@@ -37,12 +37,11 @@ function ProductBySeller() {
       <section className="flex flex-wrap m-1 justify-around">
         {products.map(({ inventoryId, productTitle, price, productImage, description }) => {
           return <Link to={`/sellers/products/product-info/${inventoryId}`} key={inventoryId} className="rounded-md m-2 w-44 cardShadow product-link" title={productTitle}>
-            {productImage !== "" ? productImage :
-              <img
-                className="max-w-sm w-40 m-2 product-picture"
-                alt="ProductImage"
-                src={giftBox}
-              />}
+            <img
+              className="max-w-sm w-40 m-2 product-picture"
+              alt="ProductImage"
+              src={productImage ? productImage : giftBox}
+            />
             <div className="p-2">
               <h5 className="text-xl font-bold tracking-tight text-gray-700 dark:text-slate-300">
                 {productTitle}

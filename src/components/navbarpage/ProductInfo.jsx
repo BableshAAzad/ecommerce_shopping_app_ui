@@ -94,20 +94,11 @@ function ProductInfo() {
             <div className="flex items-center justify-center">
                 <div className="flex flex-col md:flex-row items-center justify-center m-4 border border-green-500 rounded-md w-full md:w-1/2 p-4 cardShadow">
                     <section className="w-full md:w-1/2 text-center">
-                        {product.productImage ? (
-                            <img
-                                className="w-full max-w-sm mx-auto m-2 object-cover"
-                                alt="ProductImage"
-                                src={product.productImage}
-                            />
-                        ) : (
-                            <img
-                                className="w-full max-w-sm mx-auto m-2 object-cover"
-                                alt="ProductImage"
-                                src={productImg}
-                            />
-                        )}
-
+                        <img
+                            className="w-full max-w-sm mx-auto m-2 object-cover"
+                            alt="ProductImage"
+                            src={product.productImage ? product.productImage : productImg}
+                        />
                         <div className="flex flex-wrap gap-2 items-center justify-center mb-2">
                             {stocks === 0 ? <Button gradientDuoTone="purpleToBlue">
                                 <HiBell className="mr-2 h-5 w-5" />
