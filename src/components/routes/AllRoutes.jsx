@@ -7,6 +7,7 @@ import Loading from "../loader/Loading"
 import { RouteComps } from "./AllComponents.jsx"
 import ProtectOtpRoute from "../authprovider/ProtectOtpRoute.jsx"
 import { AuthContext } from "../authprovider/AuthProvider.jsx"
+import UpdatePasswordPage from "../auth/UpdatePasswordPage.jsx"
 
 function AllRoutes() {
     const { isLogin } = useContext(AuthContext);
@@ -24,6 +25,11 @@ function AllRoutes() {
                     <Route path="user-otp-verified-page" element={<ProtectOtpRoute>
                         <UserOtpVerifiedPage />
                     </ProtectOtpRoute>} />
+
+                    <Route path="update-password-page" element={<ProtectOtpRoute>
+                        <UpdatePasswordPage />
+                    </ProtectOtpRoute>} />
+                    
 
                     {RouteComps.map(({ element, path, isPrivate, isVisibleAfterLogin, role }, index) => {
                         if (isLogin) {
