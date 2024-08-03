@@ -8,7 +8,7 @@ function App() {
   return (
     <div className="dark:bg-slate-900">
       <HeaderComp />
-      <div className="pt-16"></div>
+      <div className="pt-16 md:pt-24"></div>
       <Outlet />
       <FooterComp />
     </div>

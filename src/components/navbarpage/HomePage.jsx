@@ -25,7 +25,7 @@ function HomePage() {
 
     let getAllProducts = async () => {
         setIsLoading(true);
-        let response = await axios.get(`http://localhost:8080/api/v1/products?page=${page}&size=5`);
+        let response = await axios.get(`http://localhost:8080/api/v1/products?page=${page}&size=10`);
         response = response.data;
         console.log(response);
         setProducts(response.data.content);
@@ -38,7 +38,7 @@ function HomePage() {
     }, []);
 
     let fetchMoreProducts = async () => {
-        let response = await axios.get(`http://localhost:8080/api/v1/products?page=${page + 1}&size=5`);
+        let response = await axios.get(`http://localhost:8080/api/v1/products?page=${page + 1}&size=10`);
         response = response.data;
         console.log(response);
         setPage(page + 1);
@@ -54,7 +54,7 @@ function HomePage() {
             getAllProducts();
         } else {
             setFilterData(filterData);
-            let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=0&size=5`, filterData, {
+            let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=0&size=10`, filterData, {
                 headers: { "Content-Type": "application/json" },
             });
             response = response.data;
@@ -67,7 +67,7 @@ function HomePage() {
     };
 
     let fetchMoreFilteredProducts = async () => {
-        let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=${page + 1}&size=5`, filterData, {
+        let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=${page + 1}&size=10`, filterData, {
             headers: { "Content-Type": "application/json" },
         });
         response = response.data;
@@ -81,7 +81,7 @@ function HomePage() {
         const handleCategoryProducts = async () => {
             setPage(0);
             if (category.trim().length > 0) {
-                let response = await axios.get(`http://localhost:8080/api/v1/products/search/${category}?page=0&size=5`);
+                let response = await axios.get(`http://localhost:8080/api/v1/products/search/${category}?page=0&size=10`);
                 response = response.data;
                 console.log(response)
                 setProducts(response.data.content);
@@ -95,7 +95,7 @@ function HomePage() {
     }, [category]);
 
     let fetchMoreCategoryProducts = async () => {
-        let response = await axios.get(`http://localhost:8080/api/v1/products/search/${category}?page=${page + 1}&size=5`);
+        let response = await axios.get(`http://localhost:8080/api/v1/products/search/${category}?page=${page + 1}&size=10`);
         response = response.data;
         console.log(response);
         setPage(page + 1);

@@ -22,7 +22,7 @@ function OptVerification() {
     const { otpVerify } = useContext(AuthContext);
     const timerRef = useRef(null);
 
-    var formData = location.state;
+    let formData = location.state;
     // console.log(formData)
 
     // useEffect(() => {
@@ -93,6 +93,45 @@ function OptVerification() {
         }
     }
 
+    let handlePasswordReset = async () => {
+        try {
+            setIsLoding(true)
+            console.log({ email: formData.email, opt: otp.join('') })
+            const response = await axios.post("http://localhost:8080/api/v1/users/otpVerification",
+                { email: formData.email, otp: otp.join('') },
+                {
+                    headers: { "Content-Type": "application/json" },
+                });
+
+            setOtp(["", "", "", "", "", ""])
+            setIsLoding(false)
+            console.log(response)
+            if (response.status === 200) {
+                otpVerify(true)
+                navigate("/update-password-page", { state: response.data.data })
+            }
+        } catch (error) {
+            console.log("catch block")
+            otpVerify(true)
+            console.log(error)
+            setIsLoding(false)
+            let errorData = error.response.data;
+            if (errorData.status === 400 || errorData.status === 403) {
+                setErrorOtpData(errorData)
+                setIsOtpExpired(true)
+            }
+        }
+    }
+
+    let handleSubmit = () => {
+        if (formData.password !== "Ecommerce@123!") {
+            setOpenModal(false)
+            submitOtp()
+        } else {
+            handlePasswordReset()
+        }
+    }
+
     // ^-------------------------------------------------------------------------------------------------------
     const resentOtp = async () => {
         try {
@@ -142,6 +181,9 @@ function OptVerification() {
                         {popupOpen && <PopupWarn isOpen={popupOpen}
                             setIsOpen={setPopupOpen} clr="success" width="w-full"
                             head={`Otp re-sended`} msg={"Check Otp on your mail id"} />}
+                        <PopupWarn isOpen={isOtpExpired}
+                            setIsOpen={setIsOtpExpired} clr="warning" width="w-full"
+                            head={errorOtpData.message} msg={errorOtpData.rootCause} />
 
                         <h2 className="text-3xl font-medium text-gray-900 dark:text-white">Email verification</h2>
                         <div className="countdown-timer text-green-600 dark:text-green-300">
@@ -171,9 +213,8 @@ function OptVerification() {
                         </section>
                         <div className="flex justify-center gap-4 m-3">
                             <Button color="success" onClick={() => {
-                                setOpenModal(false),
-                                    submitOtp()
-                            }}>
+                                handleSubmit()
+                            }} disabled={formatTime(time) == `0:00` ? true : false}>
                                 {"Verify Email"}
                             </Button>
                             <Button color="blue" onClick={() => {
@@ -187,7 +228,7 @@ function OptVerification() {
             </Modal>
 
             {isLoding ? "" : <div className="text-center h-screen">
-                <h1 className="font-bold text-2xl mb-10 text-red-600">☹...Registration Failed...☹</h1>
+                <h1 className="font-bold text-2xl mb-10 text-red-600">☹...Operation Failed...☹</h1>
                 <br />
                 <Link to="/seller-registration" className="bg-purple-600 w-fit ml-auto mr-auto text-white rounded p-3">
                     Seller Registration Page

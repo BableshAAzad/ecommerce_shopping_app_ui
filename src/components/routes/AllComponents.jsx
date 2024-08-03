@@ -29,6 +29,7 @@ import AddContact from "../userinfo/AddContact";
 import UpdateContact from "../userinfo/UpdateContact";
 import OrderAddress from "../cart/OrderAddress";
 import CartItemDetail from "../cart/CartItemDetail";
+import ForgotPassword from "../auth/ForgotPassword";
 
 export const RouteComps = [
     {
@@ -233,6 +234,13 @@ export const RouteComps = [
     {
         element: <LoginForm />,
         path: "login-form",
+        isPrivate: false,
+        isVisibleAfterLogin: false,
+        role: []
+    },
+    {
+        element: <ForgotPassword />,
+        path: "forgot-password",
         isPrivate: false,
         isVisibleAfterLogin: false,
         role: []
