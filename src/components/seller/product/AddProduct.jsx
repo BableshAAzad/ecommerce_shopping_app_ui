@@ -18,10 +18,11 @@ function AddProduct() {
         weightInKg: "",
         price: "",
         description: "",
-        productImage: "",
+        productImage : null,
         materialTypes: [],
     })
     let [productQuantity, setProductQuantity] = useState({ quantity: "" });
+    let [productImage, setProductImage] = useState(null);
     let { storageId } = useParams();
     const [isLoading, setIsLoading] = useState(false);
     const location = useLocation();
@@ -29,7 +30,7 @@ function AddProduct() {
     let materials = location.state.storageData || [];
     // console.log(materials)
 
-    let handleFormData = ({ target: { name, value, checked } }) => {
+    let handleFormData = ({ target: { name, value, checked, files } }) => {
         if (name === "materialTypes") {
             if (checked) {
                 setFormData(prevState => ({
@@ -44,21 +45,27 @@ function AddProduct() {
             }
         } else if (name === "quantity") {
             setProductQuantity({ ...productQuantity, [name]: value })
+        } else if (name === "productImage") {
+            setProductImage(files[0]);
+            setFormData({ ...formData, [name]: URL.createObjectURL(files[0]) });
         } else {
-                setFormData({ ...formData, [name]: value });
+            setFormData({ ...formData, [name]: value });
         }
-        // console.log(formData);
+        // console.log(formData.productImage)
     }
 
     let sendProductData = async (e) => {
         setIsLoading(true);
         e.preventDefault();
-        console.log(productQuantity);
         try {
+            if (productImage) {
+                // console.log(productImage);
+                formData = { ...formData, productImage: productImage }
+            }
             const response = await axios.post(`http://localhost:8080/api/v1/storages/${storageId}/products?quantity=${productQuantity.quantity}`,
                 formData,
                 {
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "multipart/form-data" },
                     withCredentials: true // Includes cookies with the request
                 }
             );
@@ -149,7 +156,9 @@ function AddProduct() {
                         <div className="mb-2 block">
                             <Label htmlFor={`${id}pimg`} value="Product Image" />
                         </div>
-                        <FileInput id={`${id}pimg`} name="productImage" value={formData.productImage} onChange={handleFormData} helperText="A product image is only jpeg, jpg, png format are allowed" />
+                        <FileInput id={`${id}pimg`} name="productImage" onChange={handleFormData} helperText="A product image is only jpeg, jpg, png format are allowed" />
+
+                        {productImage && <img src={formData.productImage} alt="product_Image" className="max-w-40 max-h-48 ml-auto mr-auto mt-2 rounded-lg"/>}
                     </div>
 
                     <div className="mb-2 block">

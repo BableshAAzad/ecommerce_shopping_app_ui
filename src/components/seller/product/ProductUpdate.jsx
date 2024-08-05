@@ -11,6 +11,7 @@ function UpdateProduct() {
     let { isLogin } = useContext(AuthContext);
     let { productId } = useParams();
     const [isLoading, setIsLoading] = useState(false);
+    let [productImage, setProductImage] = useState(null);
 
     const location = useLocation();
     let product = location.state.productData || {};
@@ -18,7 +19,7 @@ function UpdateProduct() {
 
     let [formData, setFormData] = useState(product)
 
-    let handleFormData = ({ target: { name, value, checked, type } }) => {
+    let handleFormData = ({ target: { name, value, checked, type, files } }) => {
         if (name === "materialTypes") {
             if (checked) {
                 setFormData(prevState => ({
@@ -31,6 +32,9 @@ function UpdateProduct() {
                     materialTypes: prevState.materialTypes.filter(type => type !== value)
                 }));
             }
+        } else if (name === "productImage") {
+            setProductImage(files[0])
+            setFormData({ ...formData, [name]: URL.createObjectURL(files[0]) });
         } else {
             if (type === "number")
                 setFormData({ ...formData, [name]: value });
@@ -43,11 +47,26 @@ function UpdateProduct() {
     let sendProductData = async (e) => {
         setIsLoading(true);
         e.preventDefault();
+        // if (productImage) {
+        //     console.log(productImage);
+        //     formData = { ...formData, productImage: productImage }
+        // }
+        // console.log(formData)
+        const multipartFormData = new FormData();
+        Object.keys(formData).forEach(key => {
+            if (key !== 'productImage') {
+                multipartFormData.append(key, formData[key]);
+            }
+        });
+
+        if (productImage) {
+            multipartFormData.append('productImage', productImage);
+        }
         try {
-            const response = await axios.put(`http://localhost:8080/api/v1/sellers/products/` + productId,
-                formData,
+            const response = await axios.put(`http://localhost:8080/api/v1/sellers/products/${productId}`,
+                multipartFormData,
                 {
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "multipart/form-data" },
                     withCredentials: true // Includes cookies with the request
                 }
             );
@@ -66,8 +85,8 @@ function UpdateProduct() {
     return (
         <>
             {isLoading ? <Loading /> : ""}
-            <h1 className="font-bold text-2xl text-center dark:text-white">Update Product Form</h1>
-            <section className="flex items-center justify-center min-h-screen">
+            <h1 className="font-bold text-2xl mb-2 text-center dark:text-white">Update Product Form</h1>
+            <section className="flex items-center justify-center">
                 <form className="flex max-w-md flex-col gap-4 p-4 border border-green-500 rounded-md m-2" onSubmit={sendProductData}>
                     <div>
                         <div className="mb-2 block">
@@ -149,6 +168,8 @@ function UpdateProduct() {
                         </div>
                         <FileInput id={`${id}pimg`} name="productImage" value="" onChange={handleFormData}
                             helperText="A product image is only jpeg, jpg, png format are allowed" />
+                        {formData.productImage !== null && formData.productImage !== "" ?
+                            <img src={formData.productImage} alt="product_Image" className="max-w-40 max-h-48 ml-auto mr-auto mt-2 rounded-lg" /> : ""}
                     </div>
 
                     <div className="mb-2 block">
