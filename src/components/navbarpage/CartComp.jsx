@@ -157,7 +157,6 @@ function CartComp() {
                                 <Table.Cell>{product.productQuantity}</Table.Cell>
                                 <Table.Cell>{product.productDescription}</Table.Cell>
                                 <Table.Cell>
-                                    {/* <img src={productImage} alt="Product" className="w-16 h-16 object-cover" /> */}
                                     <img src={product.productImage ? product.productImage : giftbox} alt="Product" className="w-16 h-16 object-cover" />
                                 </Table.Cell>
                                 <Table.Cell>
@@ -193,7 +192,8 @@ function CartComp() {
                         </Button>
                     </div>
                     <div>
-                        <Button onClick={handleRemoveAllCartProduct} outline gradientDuoTone="purpleToBlue" disabled={cartProduct.length === 0 ? true : false}>
+                        <Button onClick={handleRemoveAllCartProduct} outline gradientDuoTone="purpleToBlue"
+                         disabled={cartProduct.length === 0 ? true : false}>
                             Remove All
                         </Button>
                     </div>

@@ -3,29 +3,36 @@ import React, { useContext, useEffect, useId, useState } from "react";
 import axios from "axios";
 import { addressType } from "./AddressTypes"
 import { useLocation, useNavigate } from "react-router-dom";
-import AuthProvider from "../authprovider/AuthProvider";
+import { AuthContext } from "../authprovider/AuthProvider";
 
 function UpdateAddress() {
     let id = useId();
     const navigate = useNavigate();
     const location = useLocation();
-    let { setProgress, setIsLoading } = useContext(AuthProvider);
+    let { setProgress,
+        setIsLoading,
+        setPreviousLocation,
+        setModelMessage,
+        setOpenModal } = useContext(AuthContext);
+
+    // console.log(location)
+    const previousLocation = location.state?.from || "/";
 
     useEffect(() => {
-        if (!location.state) {
+        if (!location.state.data) {
             navigate("/profile-page");
-        } else if (!location.state.addressId)
+        } else if (!location.state.data.addressId)
             navigate("/profile-page");
-    }, [location.state, navigate]);
+    }, [location.state.data, navigate]);
 
     let [addressData, setAddressData] = useState({
-        streetAddress: location.state?.streetAddress ?? "",
-        streetAddressAdditional: location.state?.streetAddressAdditional ?? "",
-        city: location.state?.city ?? "",
-        state: location.state?.state ?? "",
-        country: location.state?.country ?? "India",
-        pincode: location.state?.pincode ?? "",
-        addressType: location.state?.addressType ?? "",
+        streetAddress: location.state.data?.streetAddress ?? "",
+        streetAddressAdditional: location.state.data?.streetAddressAdditional ?? "",
+        city: location.state.data?.city ?? "",
+        state: location.state.data?.state ?? "",
+        country: location.state.data?.country ?? "India",
+        pincode: location.state.data?.pincode ?? "",
+        addressType: location.state.data?.addressType ?? "",
     });
 
     let handleaddressData = ({ target: { name, value, type } }) => {
@@ -42,7 +49,7 @@ function UpdateAddress() {
         console.log(addressData);
         setProgress(70)
         try {
-            const response = await axios.put(`http://localhost:8080/api/v1/users/addresses/${location.state.addressId}`,
+            const response = await axios.put(`http://localhost:8080/api/v1/users/addresses/${location.state.data.addressId}`,
                 addressData,
                 {
                     headers: { "Content-Type": "application/json" },
@@ -53,8 +60,9 @@ function UpdateAddress() {
             if (response.status === 200) {
                 setIsLoading(false);
                 setProgress(100)
-                alert(response.data.message)
-                navigate("/profile-page")
+                // alert(response.data.message)
+                // navigate("/profile-page")
+                handleSuccessResponse(response.data.message)
             }
             console.log(response);
         } catch (error) {
@@ -64,10 +72,17 @@ function UpdateAddress() {
             setIsLoading(false);
         }
     }
+
+    let handleSuccessResponse = (msg) => {
+        setPreviousLocation(previousLocation)
+        setModelMessage(msg)
+        setOpenModal(true)
+    }
+
     return (
         <div>
             <h1 className="font-bold text-2xl text-center dark:text-white">Update Address Form</h1>
-            <section className="flex items-center justify-center min-h-screen">
+            <section className="flex items-center justify-center">
                 <form className="flex max-w-md flex-col gap-4 p-4 border border-green-500 rounded-md m-2"
                     onSubmit={sendProductData}>
 

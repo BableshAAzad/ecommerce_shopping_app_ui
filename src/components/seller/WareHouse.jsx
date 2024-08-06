@@ -3,11 +3,11 @@ import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom"
 import "../navbarpage/HomePage.css"
 import wareHouseImg from "../../images/warehouseImg.png"
-import AuthProvider from "../authprovider/AuthProvider";
+import { AuthContext } from "../authprovider/AuthProvider";
 
 function WareHouse() {
     let [wareHouses, setWareHouses] = useState([])
-    let { setProgress, setIsLoading } = useContext(AuthProvider);
+    let { setProgress, setIsLoading } = useContext(AuthContext);
 
     let getWareHouses = async () => {
         setIsLoading(true);
@@ -36,7 +36,7 @@ function WareHouse() {
     useEffect(() => {
         getWareHouses();
     }, [])
-    
+
     return (
         <>
             <h1 className="font-bold text-center text-2xl dark:text-white">Total WareHouses</h1>

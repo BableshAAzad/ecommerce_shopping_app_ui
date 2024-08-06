@@ -4,14 +4,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import productImg from "../../../images/giftbox.png"
 import { Button } from "flowbite-react";
 import { HiArrowRight, HiTrash } from "react-icons/hi";
-import AuthProvider from "../../authprovider/AuthProvider";
+import { AuthContext } from "../../authprovider/AuthProvider";
 
 function ProductInfoSeller() {
     let { productId } = useParams();
     let [product, setProduct] = useState({});
     let [stocks, setStocks] = useState(0);
     let navigate = useNavigate();
-    let {setProgress, setIsLoading} = useContext(AuthProvider);
+    let {setProgress, setIsLoading} = useContext(AuthContext);
 
     let getProduct = async () => {
         setProgress(40)

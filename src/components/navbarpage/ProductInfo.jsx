@@ -17,7 +17,6 @@ function ProductInfo() {
     let navigate = useNavigate();
     const [popupOpen, setPopupOpen] = useState(false);
     const [popupData, setPopupData] = useState({});
-
     let getProduct = async () => {
         setProgress(30)
         setIsLoading(true)
@@ -112,7 +111,8 @@ function ProductInfo() {
                                 Add to Wishlist
                             </Button>
                                 :
-                                <Button onClick={() => handleCartProduct(product)} gradientDuoTone="purpleToBlue">
+                                <Button onClick={() => handleCartProduct(product)} gradientDuoTone="purpleToBlue"
+                                    disabled={isLogin.userRole === "SELLER" ? true : false}>
                                     <HiShoppingCart className="mr-2 h-5 w-5" />
                                     Add To Cart
                                 </Button>}
@@ -125,10 +125,12 @@ function ProductInfo() {
                                     handleCartProduct(product);
                                     {
                                         !isLogin ? navigate("/login-form") :
-                                            navigate("/cart/addresses", { state: { product: product, quantity: orderQuantity } })
+                                            navigate("/cart/addresses",
+                                                { state: { product: product, quantity: orderQuantity } })
                                     }
                                 }}
-                                    gradientDuoTone="purpleToPink">
+                                    gradientDuoTone="purpleToPink"
+                                    disabled={isLogin.userRole === "SELLER" ? true : false} >
                                     <HiShoppingBag className="mr-2 h-5 w-5" />
                                     Buy Now
                                 </Button>}

@@ -1,24 +1,30 @@
 import { useContext, useId, useState } from 'react'
 import { Button, Label, Radio, TextInput } from "flowbite-react";
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import PopupWarn from '../popup/PopupWarn';
 import "../auth/Registration.css";
 import { HiOutlinePhone } from 'react-icons/hi';
-import AuthProvider from '../authprovider/AuthProvider';
+import { AuthContext } from '../authprovider/AuthProvider';
 
 function AddContact() {
-    const [formData, setFormData] = useState({ contactNumber: "", priority: "" });
-    const [popupOpen, setPopupOpen] = useState(false);
-    const [popupData, setPopupData] = useState({});
-    const [contactValid, setContactValid] = useState("");
-    const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-    const navigate = useNavigate();
-    const { addressId } = useParams();
-    const id = useId();
-    let { setProgress, setIsLoading } = useContext(AuthProvider);
+    let [formData, setFormData] = useState({ contactNumber: "", priority: "" });
+    let [popupOpen, setPopupOpen] = useState(false);
+    let [popupData, setPopupData] = useState({});
+    let [contactValid, setContactValid] = useState("");
+    let [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+    let { addressId } = useParams();
+    let id = useId();
+    let { setProgress,
+        setIsLoading,
+        setPreviousLocation,
+        setModelMessage,
+        setOpenModal } = useContext(AuthContext);
+    let location = useLocation();
+    let previousLocation = location.state?.from || "/";
+    // console.log(previousLocation)
 
-    const updateData = ({ target: { name, value } }) => {
+    let updateData = ({ target: { name, value } }) => {
         setFormData({ ...formData, [name]: value });
         if (name === 'contactNumber') {
             if (value === "") {
@@ -34,14 +40,14 @@ function AddContact() {
         }
     }
 
-    const submitFormData = async (e) => {
+    let submitFormData = async (e) => {
         setProgress(30)
         setIsLoading(true)
         e.preventDefault();
         console.log(formData)
         setProgress(70)
         try {
-            const response = await axios.post(`http://localhost:8080/api/v1/addresses/${addressId}/contacts`,
+            let response = await axios.post(`http://localhost:8080/api/v1/addresses/${addressId}/contacts`,
                 formData,
                 {
                     headers: { "Content-Type": "application/json" },
@@ -52,10 +58,11 @@ function AddContact() {
             setFormData({ contactNumber: "", priority: "" })
             console.log(response.data)
             if (response.status === 201) {
-                alert(response.data.message)
+                // alert(response.data.message)
                 setIsLoading(false)
                 setProgress(100)
-                navigate("/profile-page")
+                // navigate("/profile-page")
+                handleSuccessResponse(response.data.message)
             }
         } catch (error) {
             console.log(error)
@@ -72,6 +79,12 @@ function AddContact() {
             setProgress(100)
             setIsLoading(false)
         }
+    }
+
+    let handleSuccessResponse = (msg) => {
+        setPreviousLocation(previousLocation)
+        setModelMessage(msg)
+        setOpenModal(true)
     }
 
     return (
@@ -104,7 +117,7 @@ function AddContact() {
                         </fieldset>
                     </div>
                     <Button type="submit" disabled={isSubmitDisabled}>Add Contact</Button>
-                    <span className='dark:text-red-400 text-red-800 text-xs'>
+                    <span className='dark:text-slate-400 text-slate-800 text-xs'>
                         Note : If Add button is still disabled then re-enter details.
                     </span>
                 </form>

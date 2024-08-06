@@ -5,7 +5,7 @@ import { Button, Card } from "flowbite-react";
 import user from "../../images/user.png"
 import LogoutOperation from "./LogoutOperation";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { faMobileRetro } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +16,7 @@ function ProfilePage() {
     let [addressData, setAddressData] = useState([]);
     let [userData, setUserData] = useState({})
     let navigate = useNavigate();
+    let location = useLocation();
 
     const handleLogout = (val) => {
         setOpenModal({ openStatus: true, val });
@@ -25,7 +26,7 @@ function ProfilePage() {
         setProgress(30)
         setIsLoading(true);
         try {
-        setProgress(50)
+            setProgress(50)
             const responseUser = await axios.get(`http://localhost:8080/api/v1/users/${isLogin.userId}`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
@@ -55,7 +56,9 @@ function ProfilePage() {
     }, [])
 
     let handleUpdateAddress = ({ data }) => {
-        navigate("/profile-page/update-address", { state: data })
+        console.log(data)
+        navigate("/profile-page/update-address",
+            { state: { data: data, from: location.pathname } })
     }
 
     let handleUserUpdate = () => {
@@ -107,7 +110,7 @@ function ProfilePage() {
                         className="ml-2"
                         outline
                         gradientDuoTone="purpleToPink"
-                        onClick={() => navigate("add-address")}
+                        onClick={() => navigate("add-address", { state: { from: location.pathname } })}
                         disabled={(isLogin.userRole === "SELLER" && addressData.length >= 1) ||
                             (isLogin.userRole === "CUSTOMER" && addressData.length >= 4)}
                     >
@@ -136,30 +139,41 @@ function ProfilePage() {
                             <p className="font-mono text-gray-700 dark:text-gray-400">
                                 <span className="font-bold">Country : </span> {country} - {pincode}
                             </p>
-                            <Button onClick={() => handleUpdateAddress({ data: addressData[index] })} outline gradientDuoTone="pinkToOrange">
+                            <Button onClick={() => handleUpdateAddress({ data: addressData[index] })}
+                                outline gradientDuoTone="pinkToOrange">
                                 Edit Address
                             </Button>
                             <hr />
 
-                            <div className="">
+                            <section>
                                 <h5 className="text-base font-bold tracking-tight text-gray-900 dark:text-white mb-1">
                                     <FontAwesomeIcon icon={faMobileRetro} /> Contact :&nbsp;
-                                    {contacts.length >= 2 ? <span className="text-slate-500">Max-2</span> : <Link className="text-sm text-blue-600 hover:underline" to={`/profile-page/addresses/add-contact/${addressId}`}>
-                                        Add Contact
-                                    </Link>}
+                                    {contacts.length >= 2 ?
+                                        <span className="text-slate-500">Max-2</span> :
+                                        <Link className="text-sm text-blue-600 hover:underline"
+                                            to={`/profile-page/addresses/add-contact/${addressId}`}
+                                            state={{ from: location.pathname }}>
+                                            Add Contact
+                                        </Link>}
                                 </h5>
                                 {contacts.map(({ contactId, contactNumber, priority }) => {
                                     return <div key={contactId} className="flex justify-around">
                                         <span className="text-sm text-slate-500 dark:text-slate-400">{priority}</span>
                                         <span className="text-slate-700 dark:text-slate-300 mr-1">{contactNumber}</span>
                                         <Link to="/profile-page/addresses/update-contact"
-                                            state={{ contactId: contactId, contactNumber: contactNumber, priority: priority }} >
+                                            state={{
+                                                addressId : addressId,
+                                                contactId: contactId,
+                                                contactNumber: contactNumber,
+                                                priority: priority,
+                                                from: location.pathname
+                                            }} >
                                             <FontAwesomeIcon className="text-blue-600" icon={faPenToSquare} />
                                         </Link>
                                     </div>
                                 })}
 
-                            </div>
+                            </section>
                         </Card>
                     })}
                 </div>
