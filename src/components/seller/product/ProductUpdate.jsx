@@ -3,21 +3,17 @@ import React, { useContext, useId, useState } from "react";
 import { materialTypesList } from "../MaterialTypes";
 import { AuthContext } from "../../authprovider/AuthProvider";
 import { useLocation, useParams } from "react-router-dom";
-import Loading from "../../loader/Loading";
 import axios from "axios";
 
 function UpdateProduct() {
     let id = useId();
-    let { isLogin } = useContext(AuthContext);
+    let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
     let { productId } = useParams();
-    const [isLoading, setIsLoading] = useState(false);
     let [productImage, setProductImage] = useState(null);
-
+    let [formData, setFormData] = useState(product)
     const location = useLocation();
     let product = location.state.productData || {};
-    console.log(product)
-
-    let [formData, setFormData] = useState(product)
+    // console.log(product)
 
     let handleFormData = ({ target: { name, value, checked, type, files } }) => {
         if (name === "materialTypes") {
@@ -45,13 +41,10 @@ function UpdateProduct() {
     }
 
     let sendProductData = async (e) => {
+        setProgress(40)
         setIsLoading(true);
         e.preventDefault();
-        // if (productImage) {
-        //     console.log(productImage);
-        //     formData = { ...formData, productImage: productImage }
-        // }
-        // console.log(formData)
+        setProgress(60)
         const multipartFormData = new FormData();
         Object.keys(formData).forEach(key => {
             if (key !== 'productImage') {
@@ -62,6 +55,7 @@ function UpdateProduct() {
         if (productImage) {
             multipartFormData.append('productImage', productImage);
         }
+        setProgress(70)
         try {
             const response = await axios.put(`http://localhost:8080/api/v1/sellers/products/${productId}`,
                 multipartFormData,
@@ -70,21 +64,22 @@ function UpdateProduct() {
                     withCredentials: true // Includes cookies with the request
                 }
             );
+            setProgress(90)
             console.log(response);
-            if (response.status === 200) {
+            if (response.status === 201) {
                 alert("Product is updated")
             }
-            setIsLoading(false);
         } catch (error) {
             console.log(error);
+        } finally {
             setIsLoading(false);
+            setProgress(100)
         }
     }
 
 
     return (
         <>
-            {isLoading ? <Loading /> : ""}
             <h1 className="font-bold text-2xl mb-2 text-center dark:text-white">Update Product Form</h1>
             <section className="flex items-center justify-center">
                 <form className="flex max-w-md flex-col gap-4 p-4 border border-green-500 rounded-md m-2" onSubmit={sendProductData}>

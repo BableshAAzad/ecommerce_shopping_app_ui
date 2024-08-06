@@ -3,12 +3,11 @@ import React, { useContext, useId, useState } from "react";
 import { materialTypesList } from "../MaterialTypes";
 import { AuthContext } from "../../authprovider/AuthProvider";
 import { useLocation, useParams } from "react-router-dom";
-import Loading from "../../loader/Loading";
 import axios from "axios";
 
 function AddProduct() {
     let id = useId();
-    let { isLogin } = useContext(AuthContext);
+    let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
     let [formData, setFormData] = useState({
         sellerId: isLogin.userId,
         productTitle: "",
@@ -18,13 +17,12 @@ function AddProduct() {
         weightInKg: "",
         price: "",
         description: "",
-        productImage : null,
+        productImage: null,
         materialTypes: [],
     })
     let [productQuantity, setProductQuantity] = useState({ quantity: "" });
     let [productImage, setProductImage] = useState(null);
     let { storageId } = useParams();
-    const [isLoading, setIsLoading] = useState(false);
     const location = useLocation();
 
     let materials = location.state.storageData || [];
@@ -57,11 +55,13 @@ function AddProduct() {
     let sendProductData = async (e) => {
         setIsLoading(true);
         e.preventDefault();
+        setProgress(50)
         try {
             if (productImage) {
                 // console.log(productImage);
                 formData = { ...formData, productImage: productImage }
             }
+            setProgress(70)
             const response = await axios.post(`http://localhost:8080/api/v1/storages/${storageId}/products?quantity=${productQuantity.quantity}`,
                 formData,
                 {
@@ -69,21 +69,22 @@ function AddProduct() {
                     withCredentials: true // Includes cookies with the request
                 }
             );
+            setProgress(90)
             console.log(response);
-            if (response.status === 200) {
+            if (response.status === 201) {
                 alert("Product is added")
             }
-            setIsLoading(false);
         } catch (error) {
             console.log(error);
+        } finally {
             setIsLoading(false);
+            setProgress(100)
         }
     }
 
 
     return (
         <>
-            {isLoading ? <Loading /> : ""}
             <h1 className="font-bold text-2xl text-center dark:text-white">Add Product Form</h1>
             <section className="flex items-center justify-center min-h-screen">
                 <form className="flex max-w-md flex-col gap-4 p-4 border border-green-500 rounded-md m-2" onSubmit={sendProductData}>
@@ -158,7 +159,7 @@ function AddProduct() {
                         </div>
                         <FileInput id={`${id}pimg`} name="productImage" onChange={handleFormData} helperText="A product image is only jpeg, jpg, png format are allowed" />
 
-                        {productImage && <img src={formData.productImage} alt="product_Image" className="max-w-40 max-h-48 ml-auto mr-auto mt-2 rounded-lg"/>}
+                        {productImage && <img src={formData.productImage} alt="product_Image" className="max-w-40 max-h-48 ml-auto mr-auto mt-2 rounded-lg" />}
                     </div>
 
                     <div className="mb-2 block">

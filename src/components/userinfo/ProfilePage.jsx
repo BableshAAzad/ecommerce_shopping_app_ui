@@ -5,16 +5,14 @@ import { Button, Card } from "flowbite-react";
 import user from "../../images/user.png"
 import LogoutOperation from "./LogoutOperation";
 import axios from "axios";
-import Loading from "../loader/Loading";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { faMobileRetro } from "@fortawesome/free-solid-svg-icons";
 
 function ProfilePage() {
-    let { isLogin } = useContext(AuthContext);
+    let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
     let [openModal, setOpenModal] = useState({ openStatus: false, val: "" });
-    let [isLoading, setIsLoading] = useState(false);
     let [addressData, setAddressData] = useState([]);
     let [userData, setUserData] = useState({})
     let navigate = useNavigate();
@@ -23,32 +21,37 @@ function ProfilePage() {
         setOpenModal({ openStatus: true, val });
     };
 
-    let hadleUserData = async () => {
+    let handleUserData = async () => {
+        setProgress(30)
         setIsLoading(true);
         try {
+        setProgress(50)
             const responseUser = await axios.get(`http://localhost:8080/api/v1/users/${isLogin.userId}`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });
+            setProgress(70)
             console.log(responseUser.data)
             setUserData(responseUser.data.data)
             const responseAddress = await axios.get(`http://localhost:8080/api/v1/users/${isLogin.userId}/addresses`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });
+            setProgress(90)
             console.log(responseAddress.data);
             if (responseAddress.status === 200) {
                 setAddressData(responseAddress.data.data)
             }
-            setIsLoading(false);
         } catch (error) {
             console.error(error);
+        } finally {
             setIsLoading(false);
+            setProgress(100)
         }
     }
 
     useEffect(() => {
-        hadleUserData();
+        handleUserData();
     }, [])
 
     let handleUpdateAddress = ({ data }) => {
@@ -61,7 +64,6 @@ function ProfilePage() {
 
     return (
         <>
-            {isLoading && <Loading />}
             {openModal.openStatus && <LogoutOperation modelData={openModal} handleModel={setOpenModal} />}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="row-span-1 md:row-span-3">
@@ -151,7 +153,7 @@ function ProfilePage() {
                                         <span className="text-sm text-slate-500 dark:text-slate-400">{priority}</span>
                                         <span className="text-slate-700 dark:text-slate-300 mr-1">{contactNumber}</span>
                                         <Link to="/profile-page/addresses/update-contact"
-                                            state={{contactId : contactId, contactNumber: contactNumber, priority: priority }} >
+                                            state={{ contactId: contactId, contactNumber: contactNumber, priority: priority }} >
                                             <FontAwesomeIcon className="text-blue-600" icon={faPenToSquare} />
                                         </Link>
                                     </div>

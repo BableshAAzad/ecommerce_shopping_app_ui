@@ -1,6 +1,5 @@
 import { Button, Modal } from "flowbite-react"
 import { HiOutlineExclamationCircle } from "react-icons/hi"
-import Loading from "../loader/Loading";
 import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import axios from "axios";
@@ -8,18 +7,20 @@ import { AuthContext } from "../authprovider/AuthProvider";
 
 // eslint-disable-next-line react/prop-types
 function LogoutOperation({ modelData: { val }, handleModel }) {
-    let [isLoading, setIsLoading] = useState(false);
     let [openModal, setOpenModal] = useState(true);
     let navigate = useNavigate();
-    const { login } = useContext(AuthContext);
+    const { login, setProgress, setIsLoading } = useContext(AuthContext);
 
     const logOutCalling = async () => {
         setIsLoading(true);
+        setProgress(40)
         try {
+            setProgress(70)
             const response = await axios.post(`http://localhost:8080/api/v1/${val}`, "", {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });
+            setProgress(90)
             console.log(response.data);
             if (response.status === 200) {
                 if (val === "logoutFromAllDevices") {
@@ -27,21 +28,23 @@ function LogoutOperation({ modelData: { val }, handleModel }) {
                     localStorage.setItem("atExpiredTime", "");
                     localStorage.setItem("rtExpiredTime", "");
                     login(null)
+                    setProgress(100)
+                    setIsLoading(false);
                     navigate("/login-form", { state: response.data })
                 }
                 else if (val === "logoutFromOtherDevices")
                     alert(response.data.message)
             }
-            setIsLoading(false);
         } catch (error) {
             console.error(error);
+        } finally {
+            setProgress(100)
             setIsLoading(false);
         }
     };
 
     return (
         <div>
-            {isLoading ? <Loading /> : ""}
             {/* <Button onClick={() => setOpenModal(true)}>Toggle modal</Button> */}
             <Modal show={openModal} size="md" onClick={() => { setOpenModal(false), handleModel({ openStatus: false, val: "" }) }} popup>
                 <Modal.Header />

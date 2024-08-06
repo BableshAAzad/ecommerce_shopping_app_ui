@@ -1,21 +1,21 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import productPic from "../../images/logo.png";
 import empty_bag from "../../images/empty_bag.png";
 import { Link } from "react-router-dom";
 import "./HomePage.css";
 import Spinner from "../loader/Spinner";
-import Loading from "../loader/Loading";
 import { Button } from "flowbite-react";
 import CategorizedProduct from "./searchproduct/CategorizedProduct";
 import FilterProduct from "./searchproduct/FilterProduct";
 import { HiOutlineFilter } from "react-icons/hi";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CarouselHome from "./carousel/CarouselHome";
+import { AuthContext } from "../authprovider/AuthProvider";
 
 function HomePage() {
+    let { setProgress, setIsLoading } = useContext(AuthContext);
     let [products, setProducts] = useState([]);
-    let [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     let [page, setPage] = useState(0);
     let [totalResults, setTotalResults] = useState(0);
@@ -24,13 +24,17 @@ function HomePage() {
     let [category, setCategory] = useState("");
 
     let getAllProducts = async () => {
+        setProgress(30)
         setIsLoading(true);
+        setProgress(70)
         let response = await axios.get(`http://localhost:8080/api/v1/products?page=${page}&size=10`);
+        setProgress(90)
         response = response.data;
         console.log(response);
         setProducts(response.data.content);
         setTotalResults(response.data.page.totalElements);
         setIsLoading(false);
+        setProgress(100)
     };
 
     useEffect(() => {
@@ -53,16 +57,20 @@ function HomePage() {
             setFilterData({});
             getAllProducts();
         } else {
+            setProgress(30)
             setFilterData(filterData);
+            setProgress(70)
             let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=0&size=10`, filterData, {
                 headers: { "Content-Type": "application/json" },
             });
             response = response.data;
+            setProgress(90)
             console.log(response);
             setPage(0);
             setProducts(response.data.content);
             setTotalResults(response.data.page.totalElements);
             setIsFilterApplied(true);
+            setProgress(100)
         }
     };
 
@@ -78,16 +86,24 @@ function HomePage() {
     };
 
     useEffect(() => {
+        setProgress(30)
         const handleCategoryProducts = async () => {
             setPage(0);
             if (category.trim().length > 0) {
+                setProgress(70)
+                setIsLoading(true)
                 let response = await axios.get(`http://localhost:8080/api/v1/products/search/${category}?page=0&size=10`);
                 response = response.data;
                 console.log(response)
+                setProgress(90)
                 setProducts(response.data.content);
                 setTotalResults(response.data.page.totalElements);
+                setProgress(100)
+                setIsLoading(false)
             } else {
                 setProducts([]);
+                setProgress(100)
+                setIsLoading(false)
             }
         };
 
@@ -114,8 +130,7 @@ function HomePage() {
     };
 
     return (
-        <div>
-            {isLoading && <Loading />}
+        <>
             {/* <h1 className="text-center text-2xl dark:text-white mt-16 pt-1">Welcome To Ecommerce Shopping Application </h1> */}
             <FilterProduct isOpen={isOpen} setIsOpen={setIsOpen} setProducts={setProducts} handleFilterProducts={handleFilterProducts} />
 
@@ -168,7 +183,7 @@ function HomePage() {
                 </section>
             </InfiniteScroll>
             <br />
-        </div>
+        </>
     );
 }
 

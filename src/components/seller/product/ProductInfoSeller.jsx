@@ -1,26 +1,30 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Loading from "../../loader/Loading";
 import productImg from "../../../images/giftbox.png"
 import { Button } from "flowbite-react";
 import { HiArrowRight, HiTrash } from "react-icons/hi";
+import AuthProvider from "../../authprovider/AuthProvider";
 
 function ProductInfoSeller() {
     let { productId } = useParams();
     let [product, setProduct] = useState({});
     let [stocks, setStocks] = useState(0);
-    let [isLoading, setIsLoading] = useState(false);
     let navigate = useNavigate();
+    let {setProgress, setIsLoading} = useContext(AuthProvider);
 
     let getProduct = async () => {
+        setProgress(40)
         setIsLoading(true)
+        setProgress(60)
         let response = await axios.get(`http://localhost:8080/api/v1/products/${productId}`);
+        setProgress(90)
         response = response.data;
         setProduct(response);
         console.log(response);
         setStocks(response.stocks[0].quantity);
         setIsLoading(false);
+        setProgress(100)
     }
 
     useEffect(() => {
@@ -29,7 +33,6 @@ function ProductInfoSeller() {
 
     return (
         <>
-            {isLoading && <Loading />}
             <div className="flex items-center justify-center">
                 <div className="flex flex-col md:flex-row items-center justify-center m-4 border border-green-500 rounded-md w-full md:w-1/2 p-4 cardShadow">
                     <section className="w-full md:w-1/2 text-center">

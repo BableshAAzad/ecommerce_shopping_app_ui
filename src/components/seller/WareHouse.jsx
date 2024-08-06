@@ -1,17 +1,19 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom"
 import "../navbarpage/HomePage.css"
 import wareHouseImg from "../../images/warehouseImg.png"
-import Loading from "../loader/Loading";
+import AuthProvider from "../authprovider/AuthProvider";
 
 function WareHouse() {
     let [wareHouses, setWareHouses] = useState([])
-    let [isLoading, setIsLoading] = useState(false);
+    let { setProgress, setIsLoading } = useContext(AuthProvider);
 
     let getWareHouses = async () => {
-        setIsLoading(true)
+        setIsLoading(true);
+        setProgress(40)
         try {
+            setProgress(70)
             const response = await axios.get("http://localhost:8080/api/v1/wareHouses-with-address",
                 {
                     headers: { "Content-Type": "application/json" },
@@ -22,18 +24,21 @@ function WareHouse() {
                 setWareHouses(response.data)
             }
             console.log(response)
-            setIsLoading(false)
+            setProgress(90)
         } catch (error) {
             console.log(error)
+        } finally {
             setIsLoading(false)
+            setProgress(100)
         }
     }
+
     useEffect(() => {
         getWareHouses();
     }, [])
+    
     return (
         <>
-            {isLoading && <Loading />}
             <h1 className="font-bold text-center text-2xl dark:text-white">Total WareHouses</h1>
             <section className="flex flex-wrap m-2">
                 {wareHouses.map(({ StoreHouseId, Name, TotalCapacityInKg, Address:

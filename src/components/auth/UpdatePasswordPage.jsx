@@ -3,7 +3,6 @@ import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { useContext, useId, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../authprovider/AuthProvider';
-import Loading from "../loader/Loading"
 import PopupWarn from '../popup/PopupWarn';
 import "../auth/Registration.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,7 +16,6 @@ function UpdatePasswordPage() {
         password1: "", termAndCondition: false, secrete: ""
     });
     const [formData, setFormData] = useState({ email: location.state?.email ?? "", password: "" });
-    const [isLoading, setIsLoading] = useState(false);
     const [isWrongFormData, setIsWrongFormData] = useState(false);
     const [popupOpen, setPopupOpen] = useState(false);
     const [popupData, setPopupData] = useState({});
@@ -25,7 +23,7 @@ function UpdatePasswordPage() {
     const [passwordClass, setPasswordClass] = useState("");
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const navigate = useNavigate();
-    const { otpVerify } = useContext(AuthContext);
+    const { otpVerify, setProgress, setIsLoading } = useContext(AuthContext);
     const id = useId();
 
     const updateData = (e) => {
@@ -65,38 +63,41 @@ function UpdatePasswordPage() {
                 setIsSubmitDisabled(true);
             }
         }
-
     };
 
     const submitFormData = async (e) => {
         e.preventDefault();
+        setProgress(30)
         if (!credential.termAndCondition || credential.password !== credential.password1) {
             setIsWrongFormData(false)
             setPopupOpen(false);
             setTimeout(() => {
                 setIsWrongFormData(true)
             }, 0);
+            setProgress(100)
             return;
         }
         try {
             setIsLoading(true);
             console.log(credential)
+            setProgress(70)
             const response = await axios.put(`http://localhost:8080/api/v1/users/update?secrete=` + credential.secrete,
                 formData,
                 {
                     headers: { "Content-Type": "application/json" },
                 });
+            setProgress(90)
             setCredential({ email: "", password: "", password1: "", termAndCondition: false, secrete: "" });
             setFormData({ email: "", password: "" });
             console.log(response)
-            setIsLoading(false);
             if (response.status === 200) {
                 otpVerify(true)
+                setIsLoading(false);
+                setProgress(100)
                 navigate("/user-otp-verified-page", { state: response.data.data })
             }
         } catch (error) {
             otpVerify(false);
-            setIsLoading(false);
             console.log(error)
             console.log(error.response.data);
             let errorData = error.response.data;
@@ -107,6 +108,9 @@ function UpdatePasswordPage() {
                     setPopupOpen(true);
                 }, 0);
             }
+        } finally {
+            setProgress(100)
+            setIsLoading(false);
         }
     };
 
@@ -115,9 +119,7 @@ function UpdatePasswordPage() {
     }
 
     return (
-        <section className=''>
-            {isLoading && <Loading />}
-
+        <>
             {popupOpen && <PopupWarn isOpen={popupOpen}
                 setIsOpen={setPopupOpen} clr="warning" width="w-2/3"
                 head={popupData.message} msg={popupData.rootCause.password || popupData.rootCause} />}
@@ -178,7 +180,7 @@ function UpdatePasswordPage() {
                     <Button type="submit" disabled={isSubmitDisabled}>Reset Password</Button>
                 </form>
             </div>
-        </section>
+        </>
     );
 }
 

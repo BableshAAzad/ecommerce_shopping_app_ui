@@ -3,29 +3,31 @@ import giftbox from "../../images/giftbox.png";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../authprovider/AuthProvider";
-import Loading from "../loader/Loading";
 import empty_bag from "../../images/empty_bag.png"
 
 function OrderComp() {
-    let [isLoading, setIsLoading] = useState(false);
     let [orders, setOrders] = useState([]);
-    let { isLogin } = useContext(AuthContext);
+    let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
 
     let handleOrders = async () => {
+        setProgress(40)
         setIsLoading(true);
         try {
+            setProgress(70)
             const responseOrders = await axios.get(`http://localhost:8080/api/v1/customers/${isLogin.userId}/purchase-orders`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });
+            setProgress(90)
             if (responseOrders.status === 200) {
                 setOrders(responseOrders.data.data)
             }
-            setIsLoading(false);
-            // console.log(orders)
+            console.log(responseOrders)
         } catch (error) {
             console.error(error);
+        } finally {
             setIsLoading(false);
+            setProgress(100)
         }
     }
 
@@ -57,7 +59,6 @@ function OrderComp() {
 
     return (
         <>
-            {isLoading && <Loading />}
             <div className="text-center">
                 <h1 className="font-bold text-2xl dark:text-white m-2">OrderComp page</h1>
 

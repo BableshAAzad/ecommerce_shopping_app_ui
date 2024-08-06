@@ -4,17 +4,18 @@ import { useNavigate } from "react-router-dom";
 import storageImg from "../../../images/storageImg.png";
 import { AuthContext } from "../../authprovider/AuthProvider";
 import "../../navbarpage/HomePage.css";
-import Loading from "../../loader/Loading"
+import searchImg from "../../../images/search.png"
 
 function Storage() {
     let [storages, setStorages] = useState([]);
-    let { isLogin } = useContext(AuthContext);
-    const [isLoading, setIsLoading] = useState(false);
+    let { isLogin, setIsLoading, setProgress } = useContext(AuthContext);
     let navigate = useNavigate();
 
     let getStorages = async () => {
         setIsLoading(true);
+        setProgress(30)
         try {
+            setProgress(70)
             const response = await axios.get("http://localhost:8080/api/v1/storages/sellers/" + isLogin.userId,
                 {
                     headers: { "Content-Type": "application/json" },
@@ -25,10 +26,12 @@ function Storage() {
                 setStorages(response.data)
             }
             console.log(response)
-            setIsLoading(false);
+            setProgress(90)
         } catch (error) {
             console.log(error)
+        } finally {
             setIsLoading(false);
+            setProgress(100)
         }
     }
 
@@ -42,10 +45,9 @@ function Storage() {
 
     return (
         <>
-        {isLoading ? <Loading /> : ""}
             <h1 className="font-bold text-center text-2xl dark:text-white">Total Storages</h1>
             <section className="flex flex-wrap m-2">
-                {storages.map(({ storageId, section, maxAdditionalWeightInKg,
+                {storages.length > 0 ? storages.map(({ storageId, section, maxAdditionalWeightInKg,
                     blockName, availableArea, materialTypes, storeHouseId }) => {
                     return <section key={storageId} className="rounded-md m-2 cardShadow">
                         <img
@@ -94,7 +96,7 @@ function Storage() {
                             Add Products
                         </button>
                     </section>
-                })}
+                }) : <img src={searchImg} alt="No_Storages" />}
             </section>
         </>
     )

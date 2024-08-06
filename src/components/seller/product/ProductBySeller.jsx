@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import Loading from "../../loader/Loading";
 import { Link } from "react-router-dom";
 import giftBox from "../../../images/giftbox.png"
 import axios from "axios";
@@ -7,24 +6,27 @@ import { AuthContext } from "../../authprovider/AuthProvider";
 import "../../navbarpage/HomePage.css"
 import InfiniteScroll from "react-infinite-scroll-component";
 import Spinner from "../../loader/Spinner";
-import empty_bag from "../../../images/empty_bag.png"
+import openBox from "../../../images/open-box.png"
 
 function ProductBySeller() {
   let [products, setProducts] = useState([]);
   let [totalResults, setTotalResults] = useState(0);
   let [page, setPage] = useState(0);
-  let [isLoading, setIsLoading] = useState(false);
-  let { isLogin } = useContext(AuthContext);
+  let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
+
 
   let getAllProducts = async () => {
     setIsLoading(true);
+    setProgress(40)
     try {
+      setProgress(70)
       let response = await axios.get(`http://localhost:8080/api/v1/sellers/${isLogin.userId}/products?page=${page}&size=10`,
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true // Includes cookies with the request
         }
       );
+      setProgress(90)
       response = response.data;
       console.log(response);
       setProducts(response.data.content);
@@ -33,6 +35,7 @@ function ProductBySeller() {
       console.error("Error fetching products:", error);
     } finally {
       setIsLoading(false);
+      setProgress(100)
     }
   };
 
@@ -61,7 +64,6 @@ function ProductBySeller() {
 
   return (
     <>
-      {isLoading && <Loading />}
       <h1 className="font-bold text-center text-2xl dark:text-white">Your Products</h1>
 
       <InfiniteScroll
@@ -94,7 +96,7 @@ function ProductBySeller() {
                 </div>
               </Link>
             );
-          }) : <img src={empty_bag} alt="No_Products" />}
+          }) : <img src={openBox} alt="No_Products" />}
         </section>
       </InfiniteScroll>
     </>

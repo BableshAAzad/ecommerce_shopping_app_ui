@@ -7,47 +7,50 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import Loading from "../loader/Loading";
 
 function ForgotPassword() {
-    let [emailData, setEmailData] = useState({ email: "", password : "Ecommerce@123!" })
+    let [emailData, setEmailData] = useState({ email: "", password: "Ecommerce@123!" })
     let [popupOpen, setPopupOpen] = useState(false);
     let [popupData, setPopupData] = useState("");
-    let { otpVerify } = useContext(AuthContext);
-    const [isLoading, setIsLoading] = useState(false);
+    let { otpVerify, setProgress, setIsLoading } = useContext(AuthContext);
     let navigate = useNavigate();
 
     let updateEmail = ({ target: { name, value } }) => {
-            setEmailData({ ...emailData, [name]: value })
+        setEmailData({ ...emailData, [name]: value })
     }
 
     let submitFormData = async (e) => {
+        setProgress(30)
         setIsLoading(true)
         console.log(emailData)
         e.preventDefault();
         try {
+            setProgress(70)
             const response = await axios.put(`http://localhost:8080/api/v1/users/update/` + emailData.email, "",
                 {
                     headers: { "Content-Type": "application/json" },
                 }
             )
             console.log(response)
+            setProgress(90)
             if (response.status === 200) {
                 otpVerify(true);
                 setIsLoading(false)
+                setProgress(100)
                 navigate("/opt-verification", { state: emailData });
             }
         } catch (error) {
             console.log(error)
             setPopupData(error.response.data.message)
             setPopupOpen(true)
+        } finally {
+            setProgress(100)
             setIsLoading(false)
         }
     }
 
     return (
         <section className='mb-20 mt-10'>
-            {isLoading && <Loading />}
             {popupOpen && <PopupWarn isOpen={popupOpen}
                 setIsOpen={setPopupOpen} clr="warning" width="w-2/3"
                 head={popupData} msg={""} />}

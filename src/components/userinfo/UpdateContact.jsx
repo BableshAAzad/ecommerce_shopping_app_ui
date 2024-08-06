@@ -1,28 +1,28 @@
-import { useId, useState } from 'react'
+import { useContext, useId, useState } from 'react'
 import { Button, Label, Radio, TextInput } from "flowbite-react";
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Loading from '../loader/Loading';
 import PopupWarn from '../popup/PopupWarn';
 import "../auth/Registration.css";
 import { HiOutlinePhone } from 'react-icons/hi';
+import AuthProvider from '../authprovider/AuthProvider';
 
 function UpdateContact() {
     const location = useLocation()
-    const [formdata, setFormdata] = useState({
+    const [formData, setFormData] = useState({
         contactNumber: location.state?.contactNumber ?? "",
         priority: location.state?.priority ?? ""
     });
-    const [isLoading, setIsLoading] = useState(false);
     const [popupOpen, setPopupOpen] = useState(false);
     const [popupData, setPopupData] = useState({});
     const [contactValid, setContactValid] = useState("");
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const navigate = useNavigate();
     const id = useId();
+    let { setProgress, setIsLoading } = useContext(AuthProvider);
 
     const updateData = ({ target: { name, value } }) => {
-        setFormdata({ ...formdata, [name]: value });
+        setFormData({ ...formData, [name]: value });
         if (name === 'contactNumber') {
             if (value === "") {
                 setContactValid("");
@@ -38,26 +38,29 @@ function UpdateContact() {
     }
 
     const submitFormData = async (e) => {
+        setProgress(20)
         setIsLoading(true)
         e.preventDefault();
-        console.log(formdata)
+        console.log(formData)
+        setProgress(70)
         try {
             const response = await axios.put(`http://localhost:8080/api/v1/addresses/contacts/${location.state.contactId}`,
-                formdata,
+                formData,
                 {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true // Includes cookies with the request
                 }
             );
-            setFormdata({ contactNumber: "", priority: "" })
+            setProgress(90)
+            setFormData({ contactNumber: "", priority: "" })
             console.log(response)
             if (response.status === 200) {
+                setProgress(100)
+                setIsLoading(false)
                 alert(response.data.message)
                 navigate("/profile-page")
             }
-            setIsLoading(false)
         } catch (error) {
-            setIsLoading(false)
             console.log(error)
             console.log(error.response.data);
             let errorData = error.response.data;
@@ -68,13 +71,14 @@ function UpdateContact() {
                     setPopupOpen(true);
                 }, 0);
             }
+        } finally {
+            setProgress(100)
+            setIsLoading(false)
         }
     }
 
     return (
-        <section className=''>
-            {isLoading ? <Loading /> : ""}
-
+        <>
             {popupOpen && <PopupWarn isOpen={popupOpen}
                 setIsOpen={setPopupOpen} clr="warning" width="w-[90%]"
                 head={popupData.message} msg={popupData.rootCause} />}
@@ -86,7 +90,7 @@ function UpdateContact() {
                         <div className="mb-2 block">
                             <Label htmlFor={`${id}cn`} value="Your Contact Number" />
                         </div>
-                        <TextInput id={`${id}cn`} type="number" className={`${contactValid}`} value={formdata.contactNumber} onChange={updateData}
+                        <TextInput id={`${id}cn`} type="number" className={`${contactValid}`} value={formData.contactNumber} onChange={updateData}
                             name="contactNumber" placeholder="eg. 7898300817" icon={HiOutlinePhone} autoComplete='true' required />
                     </div>
                     <div>
@@ -108,7 +112,7 @@ function UpdateContact() {
                     </span>
                 </form>
             </div>
-        </section>
+        </>
     )
 }
 

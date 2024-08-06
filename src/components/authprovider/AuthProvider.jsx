@@ -10,6 +10,7 @@ function AuthProvider({ children }) {
     const [isLogin, setIsLogin] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isOtp, setIsOtp] = useState(false);
+    let [progress, setProgress] = useState(0);
     const navigate = useNavigate();
     const refreshTokenCalled = useRef(false); // Ref to track if refresh token function has been called
     const refreshCancelSource = useRef(axios.CancelToken.source());
@@ -86,7 +87,17 @@ function AuthProvider({ children }) {
     }, [isLogin, navigate]);
 
     return (
-        <AuthContext.Provider value={{ isLogin, login, logout, isOtp, otpVerify }}>
+        <AuthContext.Provider value={{
+            isLogin,
+            login,
+            logout,
+            isOtp,
+            otpVerify,
+            progress,
+            setProgress,
+            isLoading,
+            setIsLoading
+        }}>
             {isLoading && < Loading />}
             {children}
         </AuthContext.Provider>

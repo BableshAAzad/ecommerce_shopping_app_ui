@@ -5,7 +5,6 @@ import { useNavigate, useParams } from "react-router-dom"
 import productImg from "../../images/logo.png"
 import { HiShoppingBag, HiShoppingCart, HiBell, HiExclamation } from "react-icons/hi";
 import "./HomePage.css"
-import Loading from "../loader/Loading";
 import { AuthContext } from "../authprovider/AuthProvider";
 import PopupWarn from "../popup/PopupWarn";
 
@@ -14,24 +13,27 @@ function ProductInfo() {
     let [product, setProduct] = useState({});
     let [stocks, setStocks] = useState(0);
     let [orderQuantity, setOrderQuantity] = useState(1);
-    let [isLoading, setIsLoading] = useState(false);
-    let { isLogin } = useContext(AuthContext);
+    let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
     let navigate = useNavigate();
     const [popupOpen, setPopupOpen] = useState(false);
     const [popupData, setPopupData] = useState({});
 
-    let getAllProducts = async () => {
+    let getProduct = async () => {
+        setProgress(30)
         setIsLoading(true)
+        setProgress(70)
         let response = await axios.get(`http://localhost:8080/api/v1/products/${pid}`);
         response = response.data
         setProduct(response)
+        setProgress(90)
         console.log(response)
         setStocks(response.stocks[0].quantity)
         setIsLoading(false)
+        setProgress(100)
     }
 
     useEffect(() => {
-        getAllProducts();
+        getProduct();
     }, [pid]);
 
     let handleOrderQuantity = (action) => {
@@ -42,11 +44,13 @@ function ProductInfo() {
         }
     };
 
+
     let handleCartProduct = async (product) => {
         if (!isLogin) {
             navigate("/login-form");
         }
         setIsLoading(true);
+        setProgress(40)
         // product.preventDefault();
         let tempProduct = {
             "selectedQuantity": orderQuantity,
@@ -60,6 +64,7 @@ function ProductInfo() {
             }
         }
         try {
+            setProgress(70)
             const response = await axios.post(`http://localhost:8080/api/v1/customers/${isLogin.userId}/cart-products`,
                 tempProduct,
                 {
@@ -67,8 +72,8 @@ function ProductInfo() {
                     withCredentials: true // Includes cookies with the request
                 }
             );
+            setProgress(90)
             console.log(response);
-            setIsLoading(false);
             if (response.status === 201) {
                 setTimeout(() => {
                     setPopupData(response.data);
@@ -77,19 +82,18 @@ function ProductInfo() {
             }
         } catch (error) {
             console.log(error);
-            setIsLoading(false);
-
             setTimeout(() => {
                 setPopupData(error.response.data);
                 setPopupOpen(true);
             }, 0);
+        } finally {
+            setProgress(100)
+            setIsLoading(false);
         }
     }
 
     return (
         <>
-            {isLoading && <Loading />}
-
             {popupOpen && <PopupWarn isOpen={popupOpen} width="w-[90%]"
                 setIsOpen={setPopupOpen} clr="green"
                 head={popupData.message} />}
@@ -121,7 +125,7 @@ function ProductInfo() {
                                     handleCartProduct(product);
                                     {
                                         !isLogin ? navigate("/login-form") :
-                                        navigate("/cart/addresses", { state: { product: product, quantity: orderQuantity } })
+                                            navigate("/cart/addresses", { state: { product: product, quantity: orderQuantity } })
                                     }
                                 }}
                                     gradientDuoTone="purpleToPink">

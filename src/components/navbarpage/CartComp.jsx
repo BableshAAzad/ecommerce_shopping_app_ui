@@ -3,13 +3,11 @@ import giftbox from "../../images/giftbox.png";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../authprovider/AuthProvider";
-import Loading from "../loader/Loading";
 import { useNavigate } from "react-router-dom";
 import empty_bag from "../../images/empty_bag.png"
 
 function CartComp() {
-    let [isLoading, setIsLoading] = useState(false);
-    let { isLogin } = useContext(AuthContext);
+    let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
     let [cartProduct, setCartProduct] = useState([])
     let [totalItemAndPrice, setTotalItemAndPrice] = useState({ totalItem: 0, totalPrice: 0 });
     let navigate = useNavigate();
@@ -24,18 +22,21 @@ function CartComp() {
 
     let handleCartProduct = async () => {
         setIsLoading(true);
+        setProgress(30)
         try {
+            setProgress(70)
             const responseCartProducts = await axios.get(`http://localhost:8080/api/v1/customers/${isLogin.userId}/cart-products`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });
+            setProgress(90)
             console.log(responseCartProducts)
             setCartProduct(responseCartProducts.data.data)
-            setIsLoading(false);
-            console.log(cartProduct)
         } catch (error) {
             console.error(error);
+        } finally {
             setIsLoading(false);
+            setProgress(100)
         }
     }
     useEffect(() => {
@@ -111,7 +112,6 @@ function CartComp() {
 
     return (
         <div className="px-1">
-            {isLoading && <Loading />}
             <h1 className="font-bold text-2xl dark:text-white mb-4">CartComp page</h1>
 
             <div className="overflow-x-auto w-full">

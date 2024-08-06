@@ -3,7 +3,6 @@ import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../authprovider/AuthProvider';
-import Loading from '../loader/Loading';
 import PopupWarn from '../popup/PopupWarn';
 import "./Registration.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,8 +15,7 @@ function Registration({ registrationType, pageTitle }) {
         email: "", password: "",
         password1: "", termAndCondition: false
     });
-    const [formdata, setFormdata] = useState({ email: "", password: "" });
-    const [isLoading, setIsLoading] = useState(false);
+    const [formData, setFormData] = useState({ email: "", password: "" });
     const [isWrongFormData, setIsWrongFormData] = useState(false);
     const [popupOpen, setPopupOpen] = useState(false);
     const [popupData, setPopupData] = useState({});
@@ -25,7 +23,7 @@ function Registration({ registrationType, pageTitle }) {
     const [passwordClass, setPasswordClass] = useState("");
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const navigate = useNavigate();
-    const { otpVerify } = useContext(AuthContext);
+    const { otpVerify, setProgress, setIsLoading } = useContext(AuthContext);
 
     const updateData = (e) => {
         const { name, value, type, checked } = e.target;
@@ -34,7 +32,7 @@ function Registration({ registrationType, pageTitle }) {
             [name]: type === 'checkbox' ? checked : value
         }));
         if (name !== 'password1' && name !== 'termAndCondition') {
-            setFormdata((prev) => ({
+            setFormData((prev) => ({
                 ...prev,
                 [name]: value
             }));
@@ -67,6 +65,7 @@ function Registration({ registrationType, pageTitle }) {
     };
 
     const submitFormData = async (e) => {
+        setProgress(30)
         e.preventDefault();
         if (!credential.termAndCondition || credential.password !== credential.password1) {
             setIsWrongFormData(false)
@@ -74,26 +73,29 @@ function Registration({ registrationType, pageTitle }) {
             setTimeout(() => {
                 setIsWrongFormData(true)
             }, 0);
+            setProgress(100)
             return;
         }
         try {
             setIsLoading(true);
+            setProgress(70)
             const response = await axios.post(`http://localhost:8080/api/v1/${registrationType}/register`,
-                formdata,
+                formData,
                 {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true
                 });
+            setProgress(90)
             setCredential({ email: "", password: "", password1: "", termAndCondition: false });
-            setFormdata({ email: "", password: "" });
-            setIsLoading(false);
+            setFormData({ email: "", password: "" });
             if (response.status === 202) {
                 otpVerify(true);
-                navigate("/opt-verification", { state: formdata });
+                setIsLoading(false);
+                setProgress(100)
+                navigate("/opt-verification", { state: formData });
             }
         } catch (error) {
             otpVerify(false);
-            setIsLoading(false);
             console.log(error)
             console.log(error.response.data);
             let errorData = error.response.data;
@@ -104,19 +106,18 @@ function Registration({ registrationType, pageTitle }) {
                     setPopupOpen(true);
                 }, 0);
             }
+        } finally {
+            setProgress(100)
+            setIsLoading(false);
         }
     };
 
     const handleShowPassword = () => {
         setShowPassword(!showPassword)
     }
-
     // const isSubmitDisabled = !credential.termAndCondition || credential.password !== credential.password1;
-
     return (
-        <section className='h-screen'>
-            {isLoading && <Loading />}
-
+        <>
             {popupOpen && <PopupWarn isOpen={popupOpen}
                 setIsOpen={setPopupOpen} clr="warning" width="w-2/3"
                 head={popupData.message} msg={popupData.rootCause.password || popupData.rootCause} />}
@@ -170,7 +171,7 @@ function Registration({ registrationType, pageTitle }) {
                     </span>
                 </form>
             </div>
-        </section>
+        </>
     );
 }
 
