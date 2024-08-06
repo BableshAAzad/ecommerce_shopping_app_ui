@@ -13,7 +13,7 @@ function LogoutAlert() {
     const { login, logout, setProgress, setIsLoading } = useContext(AuthContext);
 
     const previousLocation = location.state?.from || "/";
-    console.log(location.state?.from)
+    // console.log(location.state?.from)
 
     const handleLogout = async () => {
         setIsLoading(true)

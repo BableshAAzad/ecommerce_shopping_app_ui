@@ -24,8 +24,8 @@ function HomePage() {
     let [category, setCategory] = useState("");
 
     let getAllProducts = async () => {
-        setProgress(30)
         setIsLoading(true);
+        setProgress(30)
         setProgress(70)
         let response = await axios.get(`http://localhost:8080/api/v1/products?page=${page}&size=10`);
         setProgress(90)
@@ -33,8 +33,8 @@ function HomePage() {
         console.log(response);
         setProducts(response.data.content);
         setTotalResults(response.data.page.totalElements);
-        setIsLoading(false);
         setProgress(100)
+        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -51,6 +51,7 @@ function HomePage() {
     };
 
     const handleFilterProducts = async (filterData, reset = false) => {
+        setIsLoading(true)
         if (reset) {
             setPage(0);
             setIsFilterApplied(false);
@@ -71,6 +72,7 @@ function HomePage() {
             setTotalResults(response.data.page.totalElements);
             setIsFilterApplied(true);
             setProgress(100)
+            setIsLoading(false)
         }
     };
 

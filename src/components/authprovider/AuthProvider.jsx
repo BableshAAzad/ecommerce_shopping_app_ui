@@ -2,6 +2,7 @@ import { createContext, useState, useEffect, useRef } from "react";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Loading from "../loader/Loading"
+import { ModelAlert } from "../popup/ModelAlert";
 
 export const AuthContext = createContext();
 
@@ -14,6 +15,9 @@ function AuthProvider({ children }) {
     const navigate = useNavigate();
     const refreshTokenCalled = useRef(false); // Ref to track if refresh token function has been called
     const refreshCancelSource = useRef(axios.CancelToken.source());
+    let [openModal, setOpenModal] = useState(false);
+    let [modelMessage, setModelMessage] = useState("")
+    let [previousLocation, setPreviousLocation] = useState("");
 
     const login = (userData) => {
         setIsLogin(userData);
@@ -96,10 +100,19 @@ function AuthProvider({ children }) {
             progress,
             setProgress,
             isLoading,
-            setIsLoading
+            setIsLoading,
+            setModelMessage,
+            setPreviousLocation,
+            setOpenModal
         }}>
-            {isLoading && < Loading />}
-            {children}
+            <>
+                {isLoading && < Loading />}
+                <ModelAlert openModal={openModal}
+                    setOpenModal={setOpenModal}
+                    modelMessage={modelMessage}
+                    previousLocation={previousLocation} />
+                {children}
+            </>
         </AuthContext.Provider>
     );
 }

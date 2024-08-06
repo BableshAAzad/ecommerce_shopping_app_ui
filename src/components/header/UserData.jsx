@@ -61,7 +61,10 @@ function UserData() {
 
                     {!isLogin ?
                         <AppNavLink path="/gift-cards" icon={<FontAwesomeIcon icon={faMoneyBills} />} text="Gift Cards" />
-                        : <button  type="button" className="logoutbtn text-slate-600 dark:text-slate-400 font-bold" onClick={handleLogoutClick} ><FontAwesomeIcon icon={faRightToBracket} />&nbsp; Logout</button>}
+                        : <button type="button" className="logoutbtn text-slate-600 dark:text-slate-400 font-bold" onClick={handleLogoutClick} >
+                            <FontAwesomeIcon icon={faRightToBracket} />
+                            &nbsp; Logout
+                        </button>}
 
                 </Dropdown>
             </div>

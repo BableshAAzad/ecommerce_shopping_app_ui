@@ -1,11 +1,11 @@
 import { useContext, useId, useState } from 'react'
 import { Button, Label, Radio, TextInput } from "flowbite-react";
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import PopupWarn from '../popup/PopupWarn';
 import "../auth/Registration.css";
 import { HiOutlinePhone } from 'react-icons/hi';
-import AuthProvider from '../authprovider/AuthProvider';
+import { AuthContext } from '../authprovider/AuthProvider';
 
 function UpdateContact() {
     const location = useLocation()
@@ -17,9 +17,15 @@ function UpdateContact() {
     const [popupData, setPopupData] = useState({});
     const [contactValid, setContactValid] = useState("");
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
-    const navigate = useNavigate();
     const id = useId();
-    let { setProgress, setIsLoading } = useContext(AuthProvider);
+    let { setProgress,
+        setIsLoading,
+        setPreviousLocation,
+        setModelMessage,
+        setOpenModal } = useContext(AuthContext);
+
+    let previousLocation = location.state?.from || "/";
+    console.log(previousLocation)
 
     const updateData = ({ target: { name, value } }) => {
         setFormData({ ...formData, [name]: value });
@@ -44,7 +50,7 @@ function UpdateContact() {
         console.log(formData)
         setProgress(70)
         try {
-            const response = await axios.put(`http://localhost:8080/api/v1/addresses/contacts/${location.state.contactId}`,
+            const response = await axios.put(`http://localhost:8080/api/v1/addresses/${location.state.addressId}/contacts/${location.state.contactId}`,
                 formData,
                 {
                     headers: { "Content-Type": "application/json" },
@@ -57,8 +63,9 @@ function UpdateContact() {
             if (response.status === 200) {
                 setProgress(100)
                 setIsLoading(false)
-                alert(response.data.message)
-                navigate("/profile-page")
+                // alert(response.data.message)
+                // navigate("/profile-page")
+                handleSuccessResponse(response.data.message)
             }
         } catch (error) {
             console.log(error)
@@ -75,6 +82,12 @@ function UpdateContact() {
             setProgress(100)
             setIsLoading(false)
         }
+    }
+
+    let handleSuccessResponse = (msg) => {
+        setPreviousLocation(previousLocation)
+        setModelMessage(msg)
+        setOpenModal(true)
     }
 
     return (
