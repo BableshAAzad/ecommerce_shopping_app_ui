@@ -1,15 +1,15 @@
 import { Button, Label, Radio, Textarea, TextInput } from "flowbite-react"
-import React, { useEffect, useId, useState } from "react";
+import React, { useContext, useEffect, useId, useState } from "react";
 import axios from "axios";
-import Loading from "../loader/Loading";
 import { addressType } from "./AddressTypes"
 import { useLocation, useNavigate } from "react-router-dom";
+import AuthProvider from "../authprovider/AuthProvider";
 
 function UpdateAddress() {
     let id = useId();
-    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+    let { setProgress, setIsLoading } = useContext(AuthProvider);
 
     useEffect(() => {
         if (!location.state) {
@@ -36,9 +36,11 @@ function UpdateAddress() {
     }
 
     let sendProductData = async (e) => {
+        setProgress(30)
         setIsLoading(true);
         e.preventDefault();
         console.log(addressData);
+        setProgress(70)
         try {
             const response = await axios.put(`http://localhost:8080/api/v1/users/addresses/${location.state.addressId}`,
                 addressData,
@@ -47,20 +49,23 @@ function UpdateAddress() {
                     withCredentials: true // Includes cookies with the request
                 }
             );
+            setProgress(90)
             if (response.status === 200) {
+                setIsLoading(false);
+                setProgress(100)
                 alert(response.data.message)
                 navigate("/profile-page")
             }
             console.log(response);
-            setIsLoading(false);
         } catch (error) {
             console.log(error);
+        } finally {
+            setProgress(100)
             setIsLoading(false);
         }
     }
     return (
         <div>
-            {isLoading ? <Loading /> : ""}
             <h1 className="font-bold text-2xl text-center dark:text-white">Update Address Form</h1>
             <section className="flex items-center justify-center min-h-screen">
                 <form className="flex max-w-md flex-col gap-4 p-4 border border-green-500 rounded-md m-2"

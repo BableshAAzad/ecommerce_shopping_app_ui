@@ -1,6 +1,5 @@
 import { Button, Card, Modal } from "flowbite-react";
 import { useLocation, useNavigate } from "react-router-dom"
-import Loading from "../loader/Loading";
 import { useContext, useState } from "react";
 import PopupWarn from "../popup/PopupWarn";
 import axios from "axios";
@@ -8,11 +7,10 @@ import { AuthContext } from "../authprovider/AuthProvider";
 import { HiOutlineArrowRight, HiOutlineShoppingBag } from "react-icons/hi";
 
 function CartItemDetail() {
-    let [isLoading, setIsLoading] = useState(false);
     let [popupOpen, setPopupOpen] = useState(false);
     let [openModal, setOpenModal] = useState(false);
     let [popupData, setPopupData] = useState("");
-    let { isLogin } = useContext(AuthContext);
+    let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
     let navigate = useNavigate();
 
     let location = useLocation();
@@ -72,8 +70,10 @@ function CartItemDetail() {
     ];
 
     let handleOrder = async (e) => {
+        setProgress(30)
         setIsLoading(true);
         e.preventDefault();
+        setProgress(70)
         try {
             const response = await axios.post(`http://localhost:8080/api/v1/customers/${isLogin.userId}/addresses/${address.addressId}/products/${product.productId || product.inventoryId}/purchase-orders`,
                 {
@@ -87,6 +87,7 @@ function CartItemDetail() {
                     withCredentials: true // Includes cookies with the request
                 }
             );
+            setProgress(90)
             console.log(response);
             setIsLoading(false);
             if (response.status === 201) {
@@ -98,24 +99,21 @@ function CartItemDetail() {
             }
         } catch (error) {
             console.log(error);
-            setIsLoading(false);
-
             setTimeout(() => {
                 setPopupData(error.response.data.message);
                 setPopupOpen(true);
             }, 0);
+        } finally {
+            setProgress(100);
+            setIsLoading(false);
         }
     }
 
     return (
         <>
-            {isLoading && <Loading />}
-
             {popupOpen && <PopupWarn isOpen={popupOpen} width="w-[90%]"
                 setIsOpen={setPopupOpen} clr="warning"
                 head={popupData.message} msg={popupData} />}
-
-
 
             <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
                 <Modal.Header />

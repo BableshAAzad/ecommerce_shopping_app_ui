@@ -63,7 +63,6 @@ function UserData() {
                         <AppNavLink path="/gift-cards" icon={<FontAwesomeIcon icon={faMoneyBills} />} text="Gift Cards" />
                         : <button  type="button" className="logoutbtn text-slate-600 dark:text-slate-400 font-bold" onClick={handleLogoutClick} ><FontAwesomeIcon icon={faRightToBracket} />&nbsp; Logout</button>}
 
-                    {/* <AppNavLink path="/logout" icon={<FontAwesomeIcon icon={faRightToBracket} />} text="Sign out" onClick={()=>handleLogoutClick("hello")} /> */}
                 </Dropdown>
             </div>
         </>

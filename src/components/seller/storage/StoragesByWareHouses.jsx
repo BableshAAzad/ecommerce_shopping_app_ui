@@ -4,32 +4,35 @@ import { useNavigate, useParams } from "react-router-dom";
 import storageImg from "../../../images/storageImg.png";
 import "../../navbarpage/HomePage.css";
 import { AuthContext } from "../../authprovider/AuthProvider";
-import Loading from "../../loader/Loading"
 
 function StoragesByWareHouses() {
     let [storages, setStorages] = useState([]);
     let { wareHouseId } = useParams();
-    let { isLogin } = useContext(AuthContext);
-    const [isLoading, setIsLoading] = useState(false);
+    let { isLogin, setIsLoading, setProgress } = useContext(AuthContext);
     let navigate = useNavigate();
 
     let getStorages = async () => {
+        setProgress(30)
         setIsLoading(true);
         try {
+            setProgress(70)
             const response = await axios.get(`http://localhost:8080/api/v1/wareHouses/${wareHouseId}/storages`,
                 {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true // Includes cookies with the request
                 }
             );
+            setProgress(80)
             if (response.status === 200) {
                 setStorages(response.data)
             }
             console.log(response)
-            setIsLoading(false);
+            setProgress(90)
         } catch (error) {
             console.log(error)
+        } finally {
             setIsLoading(false);
+            setProgress(100)
         }
     }
 
@@ -45,7 +48,6 @@ function StoragesByWareHouses() {
 
     return (
         <>
-            {isLoading ? <Loading /> : ""}
             <h1 className="font-bold text-center text-2xl dark:text-white">Select Storage</h1>
             <section className="flex flex-wrap m-2">
                 {storages.map(({ storageId, section, maxAdditionalWeightInKg,

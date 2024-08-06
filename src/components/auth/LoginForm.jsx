@@ -2,7 +2,6 @@ import { useContext, useState } from 'react'
 import { Button, Checkbox, Label, TextInput } from "flowbite-react";
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import Loading from '../loader/Loading';
 import { AuthContext } from '../authprovider/AuthProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
@@ -11,19 +10,18 @@ import "./Registration.css";
 import { HiUser, HiKey } from 'react-icons/hi';
 
 function LoginForm() {
-    const [formdata, setFormdata] = useState({ username: "", password: "" });
-    const [isLoading, setIsLoading] = useState(false);
+    const [formData, setFormData] = useState({ username: "", password: "" });
     const [showPassword, setShowPassword] = useState(false)
     const [popupOpen, setPopupOpen] = useState(false);
     const [popupData, setPopupData] = useState({});
     const [passwordClass, setPasswordClass] = useState("");
     const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
     const navigate = useNavigate();
-    const { login } = useContext(AuthContext);
+    const { login, setProgress, setIsLoading } = useContext(AuthContext);
 
 
     const updateData = ({ target: { name, value } }) => {
-        setFormdata({ ...formdata, [name]: value });
+        setFormData({ ...formData, [name]: value });
         if (name === 'password') {
             if (value === "") {
                 setPasswordClass("");
@@ -43,19 +41,21 @@ function LoginForm() {
     }
 
     const submitFormData = async (e) => {
+        setProgress(30)
         setIsLoading(true)
         e.preventDefault();
-        console.log(formdata)
+        console.log(formData)
         try {
+            setProgress(70)
             const response = await axios.post("http://localhost:8080/api/v1/login",
-                formdata,
+                formData,
                 {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true // Includes cookies with the request
                 }
             );
-
-            setFormdata({ username: "", password: "" })
+            setProgress(90)
+            setFormData({ username: "", password: "" })
             // console.log(response.data)
             if (response.status === 200) {
                 let userData = response.data.data;
@@ -65,11 +65,11 @@ function LoginForm() {
                 localStorage.setItem("atExpiredTime", new Date(nowDate + (userData.accessExpiration * 1000)).toString());
                 localStorage.setItem("rtExpiredTime", new Date(nowDate + (userData.refreshExpiration * 1000)).toString());
                 login(userData);
+                setIsLoading(false)
+                setProgress(100)
                 navigate("/")
             }
-            setIsLoading(false)
         } catch (error) {
-            setIsLoading(false)
             console.log(error)
             console.log(error.response.data);
             let errorData = error.response.data;
@@ -80,13 +80,14 @@ function LoginForm() {
                     setPopupOpen(true);
                 }, 0);
             }
+        } finally {
+            setProgress(100)
+            setIsLoading(false)
         }
     }
 
     return (
         <>
-            {isLoading ? <Loading /> : ""}
-
             {popupOpen && <PopupWarn isOpen={popupOpen} width="w-[90%]"
                 setIsOpen={setPopupOpen} clr="warning"
                 head={popupData.message} msg={popupData.rootCause.password || popupData.rootCause} />}
@@ -101,7 +102,7 @@ function LoginForm() {
                         <div className="mb-2 block">
                             <Label htmlFor="usernamelogin" value="Your Username" />
                         </div>
-                        <TextInput id="usernamelogin" type="text" value={formdata.username} onChange={updateData}
+                        <TextInput id="usernamelogin" type="text" value={formData.username} onChange={updateData}
                             name="username" placeholder="abcd012" icon={HiUser} autoComplete='true' required />
                     </div>
                     <div>
@@ -114,7 +115,7 @@ function LoginForm() {
                             </button>
                         </div>
                         <TextInput id="passwordlogin" type={!showPassword ? "password" : "text"}
-                            className={passwordClass} value={formdata.password} onChange={updateData}
+                            className={passwordClass} value={formData.password} onChange={updateData}
                             name="password" placeholder='Abc@123xyz' icon={HiKey} autoComplete='true' required />
                     </div>
                     <div className="flex items-center gap-2">

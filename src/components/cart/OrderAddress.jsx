@@ -6,33 +6,35 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMobileRetro } from "@fortawesome/free-solid-svg-icons";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
-import Loading from "../loader/Loading";
 import { HiOutlineArrowRight } from "react-icons/hi";
 
 
 export default function OrderAddress() {
-    let { isLogin } = useContext(AuthContext);
-    let [isLoading, setIsLoading] = useState(false);
+    let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
     let [addressData, setAddressData] = useState([]);
     let navigate = useNavigate();
     let location = useLocation();
     console.log(location.state)
 
     let hadleAddressData = async () => {
+        setProgress(30)
         setIsLoading(true);
         try {
+            setProgress(70)
             const responseAddress = await axios.get(`http://localhost:8080/api/v1/users/${isLogin.userId}/addresses`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });
             // console.log(responseAddress.data);
+            setProgress(90)
             if (responseAddress.status === 200) {
                 setAddressData(responseAddress.data.data)
             }
-            setIsLoading(false);
         } catch (error) {
             console.error(error);
+        } finally {
             setIsLoading(false);
+            setProgress(100)
         }
     }
 
@@ -46,7 +48,6 @@ export default function OrderAddress() {
 
     return (
         <section className="">
-            {isLoading && <Loading />}
             <h1 className="font-bold text-3xl m-2 text-pink-600 text-center">Select a address : </h1>
             <div className="flex items-center text-2xl text-purple-700">
                 <span>Address ({`${isLogin.userRole === "SELLER" ? "max-1" : "max-4"}`}) :</span>

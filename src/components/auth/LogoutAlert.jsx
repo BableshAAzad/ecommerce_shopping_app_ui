@@ -4,29 +4,30 @@ import { useContext, useState } from "react";
 import { HiOutlineLogout } from "react-icons/hi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../authprovider/AuthProvider";
-import Loading from "../loader/Loading";
-import logoutimg from "../../images/logout.png"
+import logoutImg from "../../images/logout.png"
 
 function LogoutAlert() {
     const [openModal, setOpenModal] = useState(true);
     const navigate = useNavigate();
     const location = useLocation();
-    const [isLoding, setIsLoding] = useState(false);
-    const { login, logout } = useContext(AuthContext);
+    const { login, logout, setProgress, setIsLoading } = useContext(AuthContext);
 
     const previousLocation = location.state?.from || "/";
     console.log(location.state?.from)
 
     const handleLogout = async () => {
-        setIsLoding(true)
+        setIsLoading(true)
+        setProgress(40)
         try {
+            setProgress(70)
             const response = await axios.post("http://localhost:8080/api/v1/logout", "",
                 {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true // Includes cookies with the request
                 }
             );
-            // console.log(response.data)
+            console.log(response.data)
+            setProgress(90)
             if (response.status === 200) {
                 let userData = response.data.data;
                 console.log(userData)
@@ -34,22 +35,23 @@ function LogoutAlert() {
                 localStorage.setItem("atExpiredTime", "");
                 localStorage.setItem("rtExpiredTime", "");
                 login(null)
+                setProgress(100)
+                setIsLoading(false)
                 navigate("/login-form")
             }
-            setIsLoding(false)
-
         } catch (error) {
             console.log(error)
             if (error.response.data.status === 401) {
                 console.log(error.response.data)
             }
-            setIsLoding(false)
+        } finally {
+            setIsLoading(false)
+            setProgress(100)
         }
     }
 
     return (
         <>
-            {isLoding ? <Loading /> : ""}
             {/* <Button onClick={() => setOpenModal(true)}>Toggle modal</Button> */}
             <br /><br /><br />
             <Modal show={openModal} size="md" onClose={() => {
@@ -81,7 +83,7 @@ function LogoutAlert() {
                     </div>
                 </Modal.Body>
             </Modal>
-            <img src={logoutimg} alt="logout" className="ml-auto mr-auto" />
+            <img src={logoutImg} alt="logout" className="ml-auto mr-auto" />
         </>
     )
 }

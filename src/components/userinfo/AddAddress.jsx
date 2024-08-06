@@ -2,13 +2,13 @@ import { Button, Label, Radio, Textarea, TextInput } from "flowbite-react"
 import React, { useContext, useId, useState } from "react";
 import { AuthContext } from "../authprovider/AuthProvider";
 import axios from "axios";
-import Loading from "../loader/Loading";
 import { addressType } from "./AddressTypes"
 import { useNavigate } from "react-router-dom";
 
 function AddAddress() {
     let id = useId();
-    let { isLogin } = useContext(AuthContext);
+    let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
+    const navigate = useNavigate();
     let [addressData, setAddressData] = useState({
         streetAddress: "",
         streetAddressAdditional: "",
@@ -18,8 +18,6 @@ function AddAddress() {
         pincode: "",
         addressType: "",
     })
-    const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
 
     let handleaddressData = ({ target: { name, value, type } }) => {
         setAddressData((prevData) => ({
@@ -29,10 +27,12 @@ function AddAddress() {
     }
 
     let sendProductData = async (e) => {
+        setProgress(20)
         setIsLoading(true);
         e.preventDefault();
         console.log(addressData);
         try {
+            setProgress(60)
             const response = await axios.post(`http://localhost:8080/api/v1/users/${isLogin.userId}/addresses`,
                 addressData,
                 {
@@ -40,20 +40,23 @@ function AddAddress() {
                     withCredentials: true // Includes cookies with the request
                 }
             );
+            setProgress(90)
             if (response.status === 201) {
                 alert(response.data.message)
+                setIsLoading(false);
+                setProgress(100)
                 navigate("/profile-page")
             }
             console.log(response);
-            setIsLoading(false);
         } catch (error) {
             console.log(error);
+        } finally {
             setIsLoading(false);
+            setProgress(100)
         }
     }
     return (
         <div>
-            {isLoading ? <Loading /> : ""}
             <h1 className="font-bold text-2xl text-center dark:text-white">Add Address Form</h1>
             <section className="flex items-center justify-center min-h-screen">
                 <form className="flex max-w-md flex-col gap-4 p-4 border border-green-500 rounded-md m-2" onSubmit={sendProductData}>
