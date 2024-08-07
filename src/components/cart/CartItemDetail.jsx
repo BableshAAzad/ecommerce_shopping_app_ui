@@ -14,10 +14,10 @@ function CartItemDetail() {
     let navigate = useNavigate();
 
     let location = useLocation();
+    console.log(location);
     let product = location.state.product || {};
     let address = location.state.address || {};
     let quantity = location.state.quantity || 0;
-    // console.log(product);
     // console.log(address);
     // console.log(`${product.productId || product.inventoryId}`)
 
