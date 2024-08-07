@@ -3,44 +3,46 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Loading from "../loader/Loading"
 import { ModelAlert } from "../popup/ModelAlert";
+import LogoutAlert from "../auth/LogoutAlert";
 
-export const AuthContext = createContext();
+export let AuthContext = createContext();
 
 // eslint-disable-next-line react/prop-types
 function AuthProvider({ children }) {
-    const [isLogin, setIsLogin] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isOtp, setIsOtp] = useState(false);
+    let [isLogin, setIsLogin] = useState(null);
+    let navigate = useNavigate();
+    let refreshCancelSource = useRef(axios.CancelToken.source());
+    let refreshTokenCalled = useRef(false); // Ref to track if refresh token function has been called
+    let [isLoading, setIsLoading] = useState(false);
+    let [isOtp, setIsOtp] = useState(false);
     let [progress, setProgress] = useState(0);
-    const navigate = useNavigate();
-    const refreshTokenCalled = useRef(false); // Ref to track if refresh token function has been called
-    const refreshCancelSource = useRef(axios.CancelToken.source());
     let [openModal, setOpenModal] = useState(false);
     let [modelMessage, setModelMessage] = useState("")
     let [previousLocation, setPreviousLocation] = useState("");
+    let [openLogoutAlertModal, setOpenLogoutAlertModal] = useState(false);
 
-    const login = (userData) => {
+    let login = (userData) => {
         setIsLogin(userData);
         localStorage.setItem("userData", JSON.stringify(userData));
     };
 
-    const logout = () => {
+    let logout = () => {
         setIsLogin(null);
         localStorage.removeItem("userData");
         localStorage.removeItem("atExpiredTime");
         localStorage.removeItem("rtExpiredTime");
     };
 
-    const otpVerify = (otpGen) => {
+    let otpVerify = (otpGen) => {
         setIsOtp(otpGen)
     }
 
-    const handleRefreshToken = async () => {
+    let handleRefreshToken = async () => {
         try {
             setIsLoading(true)
             refreshCancelSource.current.cancel('Cancelling previous refresh request');
             refreshCancelSource.current = axios.CancelToken.source();
-            const response = await axios.post("http://localhost:8080/api/v1/refreshLogin", "", {
+            let response = await axios.post("http://localhost:8080/api/v1/refreshLogin", "", {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
                 cancelToken: refreshCancelSource.current.token,
@@ -103,15 +105,22 @@ function AuthProvider({ children }) {
             setIsLoading,
             setModelMessage,
             setPreviousLocation,
-            setOpenModal
+            setOpenModal,
+            openLogoutAlertModal,
+            setOpenLogoutAlertModal
         }}>
             <>
                 {isLoading && < Loading />}
+
                 <ModelAlert openModal={openModal}
                     setOpenModal={setOpenModal}
                     modelMessage={modelMessage}
                     previousLocation={previousLocation} />
+
                 {children}
+
+                <LogoutAlert openLogoutAlertModal={openLogoutAlertModal}
+                    setOpenLogoutAlertModal={setOpenLogoutAlertModal} />
             </>
         </AuthContext.Provider>
     );

@@ -1,6 +1,5 @@
 import CustomerRegistration from "../auth/CustomerRegistration";
 import LoginForm from "../auth/LoginForm";
-import LogoutAlert from "../auth/LogoutAlert";
 import SellerRegistration from "../auth/SellerRegistration";
 import CustomerComp from "../customer/CustomerComp";
 import ErrorPage from "../errorpage/ErrorPage";
@@ -52,13 +51,6 @@ export const RouteComps = [
         isPrivate: true,
         isVisibleAfterLogin: true,
         role: ["CUSTOMER"]
-    },
-    {
-        element: <LogoutAlert />,
-        path: "logout",
-        isPrivate: true,
-        isVisibleAfterLogin: true,
-        role: ["CUSTOMER", "SELLER"]
     },
     {
         element: <ProfilePage />,
