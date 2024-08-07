@@ -14,6 +14,7 @@ export default function OrderAddress() {
     let [addressData, setAddressData] = useState([]);
     let navigate = useNavigate();
     let location = useLocation();
+    console.log(location.state)
 
     let handleAddressData = async () => {
         setProgress(30)
