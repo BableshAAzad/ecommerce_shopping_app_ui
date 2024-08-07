@@ -14,7 +14,7 @@ function CartItemDetail() {
     let navigate = useNavigate();
 
     let location = useLocation();
-    console.log(location);
+    // console.log(location);
     let product = location.state.product || {};
     let address = location.state.address || {};
     let quantity = location.state.quantity || 0;
@@ -203,7 +203,7 @@ function CartItemDetail() {
                         </Button>
                     </div>
                     <div>
-                        <Button outline gradientDuoTone="pinkToOrange" >
+                        <Button outline gradientDuoTone="pinkToOrange" onClick={()=>navigate("/")} >
                             Cancel
                         </Button>
                     </div>

@@ -1,19 +1,14 @@
 import axios from "axios";
 import { Button, Modal } from "flowbite-react";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { HiOutlineLogout } from "react-icons/hi";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../authprovider/AuthProvider";
-import logoutImg from "../../images/logout.png"
 
-function LogoutAlert() {
-    const [openModal, setOpenModal] = useState(true);
+// eslint-disable-next-line react/prop-types
+function LogoutAlert({openLogoutAlertModal, setOpenLogoutAlertModal}) {
     const navigate = useNavigate();
-    const location = useLocation();
     const { login, logout, setProgress, setIsLoading } = useContext(AuthContext);
-
-    const previousLocation = location.state?.from || "/";
-    // console.log(location.state?.from)
 
     const handleLogout = async () => {
         setIsLoading(true)
@@ -29,8 +24,6 @@ function LogoutAlert() {
             console.log(response.data)
             setProgress(90)
             if (response.status === 200) {
-                let userData = response.data.data;
-                console.log(userData)
                 localStorage.setItem("userData", "")
                 localStorage.setItem("atExpiredTime", "");
                 localStorage.setItem("rtExpiredTime", "");
@@ -52,11 +45,10 @@ function LogoutAlert() {
 
     return (
         <>
-            {/* <Button onClick={() => setOpenModal(true)}>Toggle modal</Button> */}
+            {/* <Button onClick={() => setOpenLogoutAlertModal(true)}>Toggle modal</Button> */}
             <br /><br /><br />
-            <Modal show={openModal} size="md" onClose={() => {
-                setOpenModal(false);
-                navigate(previousLocation);
+            <Modal show={openLogoutAlertModal} size="md" onClose={() => {
+                setOpenLogoutAlertModal(false);
             }} popup>
                 <Modal.Header />
                 <Modal.Body>
@@ -67,15 +59,14 @@ function LogoutAlert() {
                         </h3>
                         <div className="flex justify-center gap-4">
                             <Button color="failure" onClick={() => {
-                                setOpenModal(false);
+                                setOpenLogoutAlertModal(false);
                                 handleLogout();
                                 logout();
                             }}>
                                 {"Logout"}
                             </Button>
                             <Button color="gray" onClick={() => {
-                                setOpenModal(false);
-                                navigate(previousLocation);
+                                setOpenLogoutAlertModal(false);
                             }}>
                                 No, cancel
                             </Button>
@@ -83,7 +74,6 @@ function LogoutAlert() {
                     </div>
                 </Modal.Body>
             </Modal>
-            <img src={logoutImg} alt="logout" className="ml-auto mr-auto" />
         </>
     )
 }

@@ -10,7 +10,7 @@ import { AuthContext } from "../authprovider/AuthProvider.jsx"
 import UpdatePasswordPage from "../auth/UpdatePasswordPage.jsx"
 
 function AllRoutes() {
-    const { isLogin } = useContext(AuthContext);
+    let { isLogin } = useContext(AuthContext);
 
     return (
         <Suspense fallback={<Loading />}>
