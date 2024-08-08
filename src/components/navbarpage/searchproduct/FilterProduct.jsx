@@ -34,11 +34,11 @@ export default function FilterProduct({ isOpen, setIsOpen, handleFilterProducts 
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Filter Data: ", filterData);
-        handleFilterProducts(filterData);
+        handleFilterProducts(filterData, false);
         handleClose();
     };
 
-    const handleReset = () => {
+    const handleReset = () => {filterData
         setFilterData({
             productTitle: "",
             minPrice: "",
@@ -48,6 +48,7 @@ export default function FilterProduct({ isOpen, setIsOpen, handleFilterProducts 
             materialTypes: []
         });
         handleFilterProducts({}, true);
+        handleClose();
     };
 
     return (

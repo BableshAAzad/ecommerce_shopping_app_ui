@@ -17,4 +17,5 @@ export const materialTypesList = [
     "BIODEGRADABLE",
     "SYNTHETIC",
     "ORGANIC",
+    "CLOTH"
 ];

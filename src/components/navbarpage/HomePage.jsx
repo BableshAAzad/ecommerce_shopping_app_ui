@@ -21,7 +21,7 @@ function HomePage() {
     let [totalResults, setTotalResults] = useState(0);
     let [isFilterApplied, setIsFilterApplied] = useState(false);
     let [filterData, setFilterData] = useState({});
-    let [category, setCategory] = useState("");
+    let [isCategoryApplied, setIsCategoryApplied] = useState(false);
 
     let getAllProducts = async () => {
         setIsLoading(true);
@@ -61,7 +61,8 @@ function HomePage() {
             setProgress(30)
             setFilterData(filterData);
             setProgress(70)
-            let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=0&size=10`, filterData, {
+            let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=0&size=10`,
+                filterData, {
                 headers: { "Content-Type": "application/json" },
             });
             response = response.data;
@@ -77,7 +78,8 @@ function HomePage() {
     };
 
     let fetchMoreFilteredProducts = async () => {
-        let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=${page + 1}&size=10`, filterData, {
+        let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=${page + 1}&size=10`,
+            filterData, {
             headers: { "Content-Type": "application/json" },
         });
         response = response.data;
@@ -87,33 +89,39 @@ function HomePage() {
         setTotalResults(response.data.page.totalElements);
     };
 
-    useEffect(() => {
+    const handleCategoryProducts = async (filterData, reset = false) => {
         setProgress(30)
-        const handleCategoryProducts = async () => {
+        setIsLoading(true)
+        if (reset) {
             setPage(0);
-            if (category.trim().length > 0) {
-                setProgress(70)
-                setIsLoading(true)
-                let response = await axios.get(`http://localhost:8080/api/v1/products/search/${category}?page=0&size=10`);
-                response = response.data;
-                console.log(response)
-                setProgress(90)
-                setProducts(response.data.content);
-                setTotalResults(response.data.page.totalElements);
-                setProgress(100)
-                setIsLoading(false)
-            } else {
-                setProducts([]);
-                setProgress(100)
-                setIsLoading(false)
-            }
-        };
-
-        handleCategoryProducts();
-    }, [category]);
+            setIsCategoryApplied(false);
+            setFilterData({});
+            getAllProducts();
+        } else {
+            setProgress(30)
+            setFilterData(filterData);
+            setProgress(70)
+            let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=0&size=10`,
+                filterData, {
+                headers: { "Content-Type": "application/json" },
+            });
+            response = response.data;
+            setProgress(90)
+            console.log(response);
+            setPage(0);
+            setProducts(response.data.content);
+            setTotalResults(response.data.page.totalElements);
+            setIsCategoryApplied(true);
+            setProgress(100)
+            setIsLoading(false)
+        }
+    };
 
     let fetchMoreCategoryProducts = async () => {
-        let response = await axios.get(`http://localhost:8080/api/v1/products/search/${category}?page=${page + 1}&size=10`);
+        let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=${page + 1}&size=10`,
+            filterData, {
+            headers: { "Content-Type": "application/json" },
+        });
         response = response.data;
         console.log(response);
         setPage(page + 1);
@@ -124,7 +132,7 @@ function HomePage() {
     const determineFetchMore = () => {
         if (isFilterApplied) {
             return fetchMoreFilteredProducts;
-        } else if (category.trim().length > 0) {
+        } else if (isCategoryApplied) {
             return fetchMoreCategoryProducts;
         } else {
             return fetchMoreProducts;
@@ -133,12 +141,9 @@ function HomePage() {
 
     return (
         <>
-            {/* <h1 className="text-center text-2xl dark:text-white mt-16 pt-1">Welcome To Ecommerce Shopping Application </h1> */}
-            <FilterProduct isOpen={isOpen} setIsOpen={setIsOpen} setProducts={setProducts} handleFilterProducts={handleFilterProducts} />
+            <FilterProduct isOpen={isOpen} setIsOpen={setIsOpen} handleFilterProducts={handleFilterProducts} />
 
-            <div>
-                <CategorizedProduct setCategory={setCategory} />
-            </div>
+            <CategorizedProduct handleFilterProducts={handleCategoryProducts} setIsCategoryApplied={setIsCategoryApplied} />
 
             <CarouselHome />
             <br />
