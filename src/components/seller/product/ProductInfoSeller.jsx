@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import productImg from "../../../images/giftbox.png"
 import { Button } from "flowbite-react";
 import { HiArrowRight, HiTrash } from "react-icons/hi";
@@ -11,7 +11,8 @@ function ProductInfoSeller() {
     let [product, setProduct] = useState({});
     let [stocks, setStocks] = useState(0);
     let navigate = useNavigate();
-    let {setProgress, setIsLoading} = useContext(AuthContext);
+    let location = useLocation();
+    let { setProgress, setIsLoading } = useContext(AuthContext);
 
     let getProduct = async () => {
         setProgress(40)
@@ -43,7 +44,7 @@ function ProductInfoSeller() {
                         />
                         <div className="flex flex-wrap gap-2 items-center justify-center mb-2">
                             <Button onClick={() => navigate(`/sellers/products/update-product/${productId}`,
-                                { state: { productData: product } })} gradientMonochrome="lime">
+                                { state: { productData: product, from: location.pathname } })} gradientMonochrome="lime">
                                 <HiArrowRight className="mr-2 h-5 w-5" />
                                 Edit Product
                             </Button>

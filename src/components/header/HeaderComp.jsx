@@ -6,7 +6,7 @@ import DarkModeOption from "../darkmode/DarkModeOption";
 import "./HeaderComp.css"
 import "./UserData.css"
 import UserData from './UserData';
-import logo from "../../images/logo.png"
+import shopping_bags from "../../images/shopping-bags.png"
 import { NavLink, useLocation } from 'react-router-dom';
 import MoreOptionNav from './MoreOptionNav';
 import { AuthContext } from '../authprovider/AuthProvider';
@@ -15,7 +15,6 @@ import SearchProductModal from '../navbarpage/searchproduct/SearchProductModal';
 
 function HeaderComp() {
     const { isLogin } = useContext(AuthContext);
-    // const [isSearchVisible, setIsSearchVisible] = useState(false);
     const [openModal, setOpenModal] = useState(false);
     const location = useLocation();
 
@@ -28,7 +27,7 @@ function HeaderComp() {
             <Navbar fluid className='bg-slate-300 dark:bg-gray-800 fixed w-full z-20 top-0 start-0 bg-opacity-70 dark:bg-opacity-60'>
                 <NavLink to='/' className='flex items-center navlogo'>
                     {/* <Navbar.Link active={location.pathname === "/"} as="div"> */}
-                    <img src={logo} alt="EcommerceShoppingApp" width="47" height="40" title="EcommerceShoppingApp" />
+                    <img src={shopping_bags} alt="EcommerceShoppingApp" width="47" height="40" title="EcommerceShoppingApp" />
                     <span className="self-center sitename dark:text-white text-xl font-semibold break-words md:whitespace-normal">Ecommerce Shopping App <NetworkStatus /> </span>
                     {/* </Navbar.Link> */}
                 </NavLink>

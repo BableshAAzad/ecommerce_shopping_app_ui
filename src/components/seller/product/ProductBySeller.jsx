@@ -7,13 +7,16 @@ import "../../navbarpage/HomePage.css"
 import InfiniteScroll from "react-infinite-scroll-component";
 import Spinner from "../../loader/Spinner";
 import openBox from "../../../images/open-box.png"
+import { TextInput } from "flowbite-react";
+import { HiSearch } from "react-icons/hi";
 
 function ProductBySeller() {
   let [products, setProducts] = useState([]);
+  let [filteredProducts, setFilteredProducts] = useState([]);
   let [totalResults, setTotalResults] = useState(0);
   let [page, setPage] = useState(0);
+  let [searchProduct, setSearchProduct] = useState({ storageQuery: "" });
   let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
-
 
   let getAllProducts = async () => {
     setIsLoading(true);
@@ -30,6 +33,7 @@ function ProductBySeller() {
       response = response.data;
       console.log(response);
       setProducts(response.data.content);
+      setFilteredProducts(response.data.content)
       setTotalResults(response.data.page.totalElements);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -54,7 +58,8 @@ function ProductBySeller() {
       );
       response = response.data;
       console.log(response);
-      setProducts(products.concat(response.data.content));
+      setProducts(prevProduct => prevProduct.concat(response.data.content));
+      setFilteredProducts(prevProduct => prevProduct.concat(response.data.content))
       setTotalResults(response.data.page.totalElements);
       setPage(nextPage);
     } catch (error) {
@@ -62,19 +67,51 @@ function ProductBySeller() {
     }
   };
 
+  let handleInputData = ({ target: { name, value } }) => {
+    setSearchProduct({ ...searchProduct, [name]: value });
+    filterData(value);
+  };
+
+  let filterData = (query) => {
+    if (!query.trim()) {
+      setFilteredProducts(products);
+      return;
+    }
+
+    let filtered = products.filter(product =>
+      product.productTitle.toLowerCase().includes(query.toLowerCase()) ||
+      product.description.toLowerCase().includes(query.toLowerCase()) ||
+      product.materialTypes.some(type => type.toLowerCase().includes(query.toLowerCase())) ||
+      (product.restockedAt && new Date(product.restockedAt).toLocaleDateString().includes(query)) ||
+      (product.updatedInventoryAt && new Date(product.updatedInventoryAt).toLocaleDateString().includes(query)) ||
+      (product.price && product.price.toString().includes(query))
+    );
+
+    setFilteredProducts(filtered);
+  };
+
   return (
     <>
-      <h1 className="font-bold text-center text-2xl dark:text-white">Your Products</h1>
-
+      <h1 className="font-bold text-center text-2xl dark:text-white mb-1">Your Products</h1>
+      <div className="lg:w-1/2 sm:w-[70%] ml-auto mr-auto">
+        <TextInput
+          icon={HiSearch}
+          value={searchProduct.storageQuery}
+          name="storageQuery"
+          onChange={handleInputData}
+          className="ml-2 mr-2"
+          placeholder="Search Your Products..."
+        />
+      </div>
       <InfiniteScroll
-        dataLength={products.length}
+        dataLength={filteredProducts.length}
         next={determineFetchMore}
         hasMore={products.length !== totalResults}
         loader={<Spinner />}
         scrollableTarget="row"
       >
         <section className="flex flex-wrap m-1 justify-around">
-          {products.length > 0 ? products.map(({ inventoryId, productTitle, price, productImage, description }) => {
+          {filteredProducts.length > 0 ? filteredProducts.map(({ inventoryId, productTitle, price, productImage, description }) => {
             return (
               <Link to={`/sellers/products/product-info/${inventoryId}`} key={inventoryId} className="rounded-md m-2 w-44 cardShadow product-link" title={productTitle}>
                 <img
@@ -96,7 +133,12 @@ function ProductBySeller() {
                 </div>
               </Link>
             );
-          }) : <img src={openBox} alt="No_Products" />}
+          }) :
+            <div className="max-w-64 mt-5 ml-auto mr-auto">
+              <img src={openBox} alt="No_Products" />
+              <h2 className="text-xl mt-5 text-red-600 dark:text-red-700">There Are No Products...😌</h2>
+            </div>
+          }
         </section>
       </InfiniteScroll>
     </>

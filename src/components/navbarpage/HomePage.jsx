@@ -160,7 +160,10 @@ function HomePage() {
                 <section className="flex flex-wrap m-1 justify-around">
                     {products.length > 0 ?
                         products.map(({ inventoryId, productTitle, price, productImage, description }) => {
-                            return <Link to={`/products/${inventoryId}`} key={inventoryId + productTitle} className="rounded-md m-2 w-44 cardShadow product-link" title={productTitle}>
+                            return <Link to={`/products/${inventoryId}`}
+                                key={inventoryId + productTitle}
+                                className="rounded-md m-2 w-44 cardShadow product-link"
+                                title={productTitle}>
                                 <div>
                                     <img
                                         alt="ProductImage"

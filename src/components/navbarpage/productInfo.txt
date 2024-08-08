@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Button } from "flowbite-react";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import productImg from "../../images/logo.png"
 import { HiShoppingBag, HiShoppingCart, HiBell, HiExclamation } from "react-icons/hi";
 import "./HomePage.css"
@@ -10,6 +10,7 @@ import PopupWarn from "../popup/PopupWarn";
 
 function ProductInfo() {
     let { pid } = useParams()
+    let location = useLocation();
     let [product, setProduct] = useState({});
     let [stocks, setStocks] = useState(0);
     let [orderQuantity, setOrderQuantity] = useState(1);
@@ -17,7 +18,6 @@ function ProductInfo() {
     let navigate = useNavigate();
     const [popupOpen, setPopupOpen] = useState(false);
     const [popupData, setPopupData] = useState({});
-
     let getProduct = async () => {
         setProgress(30)
         setIsLoading(true)
@@ -31,6 +31,8 @@ function ProductInfo() {
         setIsLoading(false)
         setProgress(100)
     }
+
+    console.log(location.state)
 
     useEffect(() => {
         getProduct();

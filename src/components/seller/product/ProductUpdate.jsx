@@ -7,12 +7,18 @@ import axios from "axios";
 
 function UpdateProduct() {
     let id = useId();
-    let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
+    let { isLogin,
+        setProgress,
+        setIsLoading,
+        setPreviousLocation,
+        setModelMessage,
+        setOpenModal } = useContext(AuthContext);
     let { productId } = useParams();
     let [productImage, setProductImage] = useState(null);
-    let [formData, setFormData] = useState(product)
     const location = useLocation();
     let product = location.state.productData || {};
+    let [formData, setFormData] = useState(product)
+    let from = location.state.from || "/"
     // console.log(product)
 
     let handleFormData = ({ target: { name, value, checked, type, files } }) => {
@@ -66,11 +72,14 @@ function UpdateProduct() {
             );
             setProgress(90)
             console.log(response);
-            if (response.status === 201) {
-                alert("Product is updated")
+            if (response.status === 200) {
+                setModelMessage(response.data.message)
+                setPreviousLocation(from)
+                setOpenModal(true)
             }
         } catch (error) {
             console.log(error);
+            alert(error.response.data.message)
         } finally {
             setIsLoading(false);
             setProgress(100)
