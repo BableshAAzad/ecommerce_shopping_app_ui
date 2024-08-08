@@ -1,41 +1,38 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import storageImg from "../../../images/storageImg.png";
-import "../../navbarpage/HomePage.css";
 import { AuthContext } from "../../authprovider/AuthProvider";
+import "../../navbarpage/HomePage.css";
+import searchImg from "../../../images/search.png"
 import InfiniteScroll from "react-infinite-scroll-component";
 import Spinner from "../../loader/Spinner";
 import { TextInput } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
-import searchImg from "../../../images/search.png";
 
-function StoragesByWareHouses() {
+function Storage() {
     let [storages, setStorages] = useState([]);
     let [filteredStorages, setFilteredStorages] = useState([]);
     let [page, setPage] = useState(0);
     let [totalResults, setTotalResults] = useState(0);
-    let [searchStorage, setSearchStorage] = useState({ storageQuery: "" });
-    let { wareHouseId } = useParams();
+    let [searchStorage, setSearchStorage] = useState({ storageQuery: "" })
     let { isLogin, setIsLoading, setProgress } = useContext(AuthContext);
     let navigate = useNavigate();
-    let location = useLocation();
 
     let getStorages = async () => {
         setProgress(30)
         setIsLoading(true);
         setProgress(70)
-        const response = await axios.get(`http://localhost:8080/api/v1/wareHouses/${wareHouseId}/storages?page=0&size=10`,
+        let response = await axios.get(`http://localhost:8080/api/v1/sellers/${isLogin.userId}/storages?page=0&size=10`,
             {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true // Includes cookies with the request
             }
         );
-        setProgress(80)
+        console.log(response)
         setStorages(response.data.data.content)
         setFilteredStorages(response.data.data.content);
-        setTotalResults(response.data.data.page.totalElements)
-        console.log(response)
+        setTotalResults(response.data.data.page.totalElements);
         setProgress(90)
         setIsLoading(false);
         setProgress(100)
@@ -46,47 +43,46 @@ function StoragesByWareHouses() {
     }, [])
 
     let fetchMoreStorages = async () => {
-        const response = await axios.get(`http://localhost:8080/api/v1/wareHouses/${wareHouseId}/storages?page=${page + 1}&size=10`,
+        let response = await axios.get(`http://localhost:8080/api/v1/sellers/${isLogin.userId}/storages?page=${page + 1}&size=10`,
             {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true // Includes cookies with the request
             }
         );
-        setStorages(preStorage => preStorage.concat(response.data.data.content))
-        setFilteredStorages(prevFilteredStorages => prevFilteredStorages.concat(response.data.data.content));
-        setTotalResults(response.data.data.page.totalElements)
-        setPage(page + 1)
+        setStorages(prevStorages => prevStorages.concat(response.data.data.content));
+        setFilteredStorages(prevStorages => prevStorages.concat(response.data.data.content));
+        setTotalResults(response.data.data.page.totalElements);
+        setPage(page + 1);
     }
 
-
-    const handleNavigate = (storageId, sellerId, materialTypes) => {
-        if (sellerId === null || sellerId === isLogin.userId) {
-            navigate(`/sellers/products/add-product/${storageId}`, { state: { storageData: materialTypes, from: location.pathname } });
-        }
-    };
-
+    let handleNavigate = (storageId, materialTypes) => {
+        navigate(`/sellers/products/add-product/${storageId}`,
+            { state: { storageData: materialTypes, from: location.pathname } })
+    }
 
     let handleInputData = ({ target: { name, value } }) => {
-        setSearchStorage({ ...searchStorage, [name]: value });
+        setSearchStorage({ ...searchStorage, [name]: value })
         filterData(value);
-    };
+    }
 
-    let filterData = (query) => {
-        if (!query.trim()) {
-            setFilteredStorages(storages);
-            return;
-        }
-        let filtered = storages.filter(storage =>
-            storage.blockName.toLowerCase().includes(query.toLowerCase()) ||
-            storage.section.toLowerCase().includes(query.toLowerCase()) ||
-            storage.materialTypes.some(type => type.toLowerCase().includes(query.toLowerCase()))
-        );
-        setFilteredStorages(filtered);
-    };
+    // let filterData = (query) => {
+    //     if (!query.trim()) {
+    //         setFilteredStorages(storages);
+    //         return;
+    //     }
+    //     let filtered = storages.filter(storage =>
+    //         storage.blockName.toLowerCase().includes(query.toLowerCase()) ||
+    //         storage.section.toLowerCase().includes(query.toLowerCase()) ||
+    //         storage.materialTypes.some(type => type.toLowerCase().includes(query.toLowerCase()))
+    //     );
+    //     setFilteredStorages(filtered);
+    // };
 
     return (
         <>
-            <h1 className="font-bold mb-1 text-center text-2xl dark:text-slate-400">Select Storage</h1>
+            <h1 className="font-bold text-center text-2xl dark:text-slate-400 mb-1">
+                Your Total Storages : {storages.length}
+            </h1>
             <div className="lg:w-1/2 sm:w-[70%] ml-auto mr-auto">
                 <TextInput
                     icon={HiSearch}
@@ -105,9 +101,9 @@ function StoragesByWareHouses() {
                 scrollableTarget="row"
             >
                 <section className="flex flex-wrap m-2">
-                    {filteredStorages.length > 0 ? filteredStorages.map(({ storageId, section, maxAdditionalWeightInKg,
-                        blockName, availableArea, materialTypes, storeHouseId, sellerId }) => {
-                        return <section key={storageId} className="rounded-md m-2 cardShadow max-w-60">
+                    {storages.length > 0 ? storages.map(({ storageId, section, maxAdditionalWeightInKg,
+                        blockName, availableArea, materialTypes, storeHouseId }) => {
+                        return <section key={storageId} className="rounded-md m-2 max-w-60 cardShadow">
                             <img
                                 className="max-w-sm w-40 m-2 rounded-md"
                                 alt="ProductImage"
@@ -128,8 +124,8 @@ function StoragesByWareHouses() {
                                     </span>
                                 </h5>
                                 <h5 className="text-sm font-bold tracking-tight dark:text-slate-400" >
-                                    Max Additional Weight: <span className="text-green-700 dark:text-green-300">
-                                        {maxAdditionalWeightInKg} Kg
+                                    Max Additional Weight In Kg : <span className="text-green-700 dark:text-green-300">
+                                        {maxAdditionalWeightInKg}
                                     </span>
                                 </h5>
                                 <h5 className="text-sm font-bold tracking-tight dark:text-slate-400" >
@@ -138,7 +134,7 @@ function StoragesByWareHouses() {
                                     </span>
                                 </h5>
                                 <h5 className="text-sm font-bold tracking-tight dark:text-slate-400" >
-                                    Material Types : <span className="text-green-700 font-mono dark:text-green-300 text-wrap">
+                                    Material Types : <span className="text-green-700 font-mono dark:text-green-300">
                                         {materialTypes ? materialTypes.map((ele) => ele + ", ") : "No Material Types"}
                                     </span>
                                 </h5>
@@ -149,24 +145,16 @@ function StoragesByWareHouses() {
                                 </h5>
                             </div>
                             <hr />
-                            <button
-                                type="button"
-                                className={`block w-full text-center ${sellerId === isLogin.userId ? 'bg-green-500' : (sellerId === null ? "bg-purple-500" : "bg-red-500 cursor-not-allowed")}`}
-                                onClick={() => handleNavigate(storageId, sellerId, materialTypes)}
-                                disabled={sellerId !== null && sellerId !== isLogin.userId}
-                            >
-                                {sellerId === isLogin.userId ? "Your Storage Add More Products" : (sellerId === null ? "Add Here" : "Already Booked")}
+                            <button className="text-blue-800 dark:text-blue-300 bg-yellow-400 dark:bg-yellow-800 block w-full text-center"
+                                onClick={() => handleNavigate(storageId, materialTypes)}>
+                                Add Products
                             </button>
                         </section>
-                    }) :
-                        <div className="max-w-64 mt-5 ml-auto mr-auto">
-                            <img src={searchImg} alt="No_Storages" />
-                            <h2 className="text-xl mt-5 text-red-600 dark:text-red-700">There Are No Storages....😌</h2>
-                        </div>
-                    }
+                    }) : <img src={searchImg} alt="No_Storages" />}
                 </section>
             </InfiniteScroll>
         </>
     )
 }
-export default StoragesByWareHouses
+
+export default Storage

@@ -5,7 +5,7 @@ import { faTv, faShirt, faUserTie, faCouch, faBagShopping, faCartFlatbedSuitcase
 // eslint-disable-next-line react/prop-types
 export default function CategorizedProduct({ setCategory }) {
     let productTypes = [
-        { productType: "Electronics", typeIcon: faTv, text_color: "cyan", query: "ELECTRONIC" },
+        { productType: "Electronics", typeIcon: faTv, text_color: "cyan", query: "ELECTRONIC, WOOD" },
         { productType: "Fashion", typeIcon: faUserTie, text_color: "blue", query: "LEATHER" },
         { productType: "Cloths", typeIcon: faShirt, text_color: "pink", query: "PAPER" },
         { productType: "Furniture", typeIcon: faCouch, text_color: "purple", query: "WOOD" },
