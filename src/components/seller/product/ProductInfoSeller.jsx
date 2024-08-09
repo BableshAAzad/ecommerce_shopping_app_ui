@@ -2,8 +2,8 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import productImg from "../../../images/giftbox.png"
-import { Button } from "flowbite-react";
-import { HiArrowRight, HiTrash } from "react-icons/hi";
+import { Badge, Button } from "flowbite-react";
+import { HiArrowRight, HiClock, HiTrash } from "react-icons/hi";
 import { AuthContext } from "../../authprovider/AuthProvider";
 
 function ProductInfoSeller() {
@@ -14,13 +14,15 @@ function ProductInfoSeller() {
     let location = useLocation();
     let { setProgress, setIsLoading } = useContext(AuthContext);
 
+    document.title = "Product Info Seller - Ecommerce Shopping App"
+
     let getProduct = async () => {
         setProgress(40)
         setIsLoading(true)
         setProgress(60)
         let response = await axios.get(`http://localhost:8080/api/v1/products/${productId}`);
         setProgress(90)
-        response = response.data;
+        response = response.data.data;
         setProduct(response);
         console.log(response);
         setStocks(response.stocks[0].quantity);
@@ -55,15 +57,22 @@ function ProductInfoSeller() {
                         </div>
                     </section>
 
-                    <section className="w-full md:w-1/2 m-2">
+                    <section className="w-full md:w-1/2 m-2 overflow-auto">
                         <h5 className="text-xl md:text-2xl font-bold mb-2 tracking-tight text-gray-900 dark:text-white">
                             {product.productTitle}
                         </h5>
-                        <h5 className="text-sm md:text-base font-bold tracking-tight dark:text-white">
-                            Price: <span className="text-green-700 dark:text-green-300">{product.price !== 0.0 ? product.price : "100.20 Rs"}</span>
-                            &nbsp; &nbsp;<span className="text-base font-normal leading-tight text-gray-500 line-through">70% off</span>
-                        </h5>
-                        <br />
+                        <div className="text-lg font-bold tracking-tight dark:text-slate-400 mb-2" >
+                            <span className="text-green-700 dark:text-green-300 mr-2">
+                                &#8377;&nbsp;{product.price !== 0.0 ? (product.discount !== 0.0 ? (product.price - ((product.price * product.discount) / 100)) : product.price) : 0.00 + " Rs"}
+                            </span>
+                            {product.discount === 0.0 ? "" : <span className="font-normal leading-tight text-gray-500 line-through text-md">&#8377;&nbsp;{product.price}</span>}
+                        </div>
+
+                        <div className="w-fit">
+                            <Badge color="pink" icon={HiClock}>
+                                {product.discountType} Offer &nbsp;{product.discount === 0.0 ? "" : <span className="text-pink-500 text-sm">{product.discount}% off</span>}
+                            </Badge>
+                        </div>
 
                         <p className="font-normal text-gray-700 dark:text-gray-400 mb-2">
                             <span className="font-semibold">Description:</span> {product.description ? product.description : "It is a demo product"}

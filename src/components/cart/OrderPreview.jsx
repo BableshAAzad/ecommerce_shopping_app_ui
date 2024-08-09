@@ -6,7 +6,7 @@ import axios from "axios";
 import { AuthContext } from "../authprovider/AuthProvider";
 import { HiOutlineArrowRight, HiOutlineShoppingBag } from "react-icons/hi";
 
-function CartItemDetail() {
+function OrderPreview() {
     let [popupOpen, setPopupOpen] = useState(false);
     let [openModal, setOpenModal] = useState(false);
     let [popupData, setPopupData] = useState("");
@@ -20,6 +20,8 @@ function CartItemDetail() {
     let quantity = location.state.quantity || 0;
     // console.log(address);
     // console.log(`${product.productId || product.inventoryId}`)
+
+    document.title = "Order Preview - Ecommerce Shopping App"
 
     const productEle = [
         {
@@ -213,4 +215,4 @@ function CartItemDetail() {
     )
 }
 
-export default CartItemDetail
+export default OrderPreview

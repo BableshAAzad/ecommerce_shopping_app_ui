@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 function ErrorPage() {
+    document.title = "Not found - Ecommerce Shopping App"
     return (
         <div className="flex flex-col justify-center items-center h-screen text-center">
             <img src={error404img} alt="error" className="w-32 mb-4" />

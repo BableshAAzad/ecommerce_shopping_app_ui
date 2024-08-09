@@ -15,6 +15,8 @@ function ForgotPassword() {
     let { otpVerify, setProgress, setIsLoading } = useContext(AuthContext);
     let navigate = useNavigate();
 
+    document.title = "Forgot Password - Ecommerce Shopping App"
+
     let updateEmail = ({ target: { name, value } }) => {
         setEmailData({ ...emailData, [name]: value })
     }

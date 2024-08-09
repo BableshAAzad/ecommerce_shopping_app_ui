@@ -9,6 +9,8 @@ function OrderComp() {
     let [orders, setOrders] = useState([]);
     let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
 
+    document.title = "Orders - Ecommerce Shopping App"
+
     let handleOrders = async () => {
         setProgress(40)
         setIsLoading(true);
@@ -75,7 +77,7 @@ function OrderComp() {
                         </Table.Head>
 
                         <Table.Body className="divide-y">
-                            {orders.length > 0 ? orders.map(({ orderId, inventoryTitle, invoiceDate, inventoryImage, invoiceLink }) => {
+                            {orders.length > 0 ? orders.map(({ orderId, inventoryTitle, invoiceDate, inventoryImage }) => {
                                 return <Table.Row key={orderId} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                                     <Table.Cell className="px-3 py-1">{orderId}</Table.Cell>
                                     <Table.Cell className="px-1 py-1 whitespace-nowrap font-medium text-gray-900 dark:text-white">

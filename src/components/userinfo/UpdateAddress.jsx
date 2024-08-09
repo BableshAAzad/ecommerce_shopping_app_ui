@@ -15,7 +15,8 @@ function UpdateAddress() {
         setModelMessage,
         setOpenModal } = useContext(AuthContext);
 
-    // console.log(location)
+    document.title = "Update Address - Ecommerce Shopping App"
+
     const previousLocation = location.state?.from || "/";
 
     useEffect(() => {

@@ -23,6 +23,8 @@ function HomePage() {
     let [filterData, setFilterData] = useState({});
     let [isCategoryApplied, setIsCategoryApplied] = useState(false);
 
+    document.title = "Ecommerce Shopping Application"
+
     let getAllProducts = async () => {
         setIsLoading(true);
         setProgress(30)
@@ -164,10 +166,10 @@ function HomePage() {
             >
                 <section className="flex flex-wrap m-1 justify-around">
                     {products.length > 0 ?
-                        products.map(({ inventoryId, productTitle, price, productImage, description }) => {
+                        products.map(({ inventoryId, productTitle, price, productImage, description, discount }) => {
                             return <Link to={`/products/${inventoryId}`}
                                 key={inventoryId + productTitle}
-                                className="rounded-md m-2 w-44 cardShadow product-link"
+                                className="rounded-md m-2 w-44 cardShadow product-link overflow-auto"
                                 title={productTitle}>
                                 <div>
                                     <img
@@ -180,10 +182,13 @@ function HomePage() {
                                     <h5 className="text-xl font-bold tracking-tight text-gray-700 dark:text-slate-300">
                                         {productTitle}
                                     </h5>
-                                    <h5 className="text-sm font-bold tracking-tight dark:text-white" >
-                                        Price : <span className="text-green-700 dark:text-green-300">{price !== 0.0 ? price : 100.20 + " Rs"}</span>
-                                        &nbsp;<span className="text-base font-normal leading-tight text-gray-500 line-through">70% off</span>
-                                    </h5>
+                                    <div className="text-sm font-bold tracking-tight dark:text-slate-400" >
+                                        <span className="text-green-700 dark:text-green-300 mr-2">
+                                            &#8377;&nbsp;{price !== 0.0 ? (discount !== 0.0 ? (price - ((price * discount) / 100)) : price) : 0.00 + " Rs"}
+                                        </span>
+                                        {discount === 0.0 ? "" : <span className="font-normal leading-tight text-gray-500 line-through text-xs">&#8377;&nbsp;{price}</span>}
+                                        &nbsp;{discount === 0.0 ? "" : <span className="text-pink-500 text-xs">{discount}% off</span>}
+                                    </div>
                                     <p className="text-sm text-gray-700 dark:text-gray-400">
                                         {description !== null ? description : "It is a demo product"}
                                     </p>

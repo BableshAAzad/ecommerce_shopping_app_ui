@@ -15,6 +15,7 @@ function UserOtpVerifiedPage() {
   //   email: "aazadbablesh@mail.com",
   //   userRole: "CUSTOMER"
   // };
+  document.title = "Registration successful - Ecommerce Shopping App"
 
   useEffect(() => {
     setTimeout(() => {
@@ -23,8 +24,8 @@ function UserOtpVerifiedPage() {
     }, 180000)
   }, [])
 
-  console.log(formData);
-  console.log(location)
+  // console.log(formData);
+  // console.log(location)
   return (
     <div className="flex justify-center items-center mb-20 mt-20">
       {formData !== null ?

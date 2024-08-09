@@ -18,6 +18,8 @@ function ProductBySeller() {
   let [searchProduct, setSearchProduct] = useState({ storageQuery: "" });
   let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
 
+  document.title = "Your Products - Ecommerce Shopping App"
+
   let getAllProducts = async () => {
     setIsLoading(true);
     setProgress(40)
@@ -113,7 +115,10 @@ function ProductBySeller() {
         <section className="flex flex-wrap m-1 justify-around">
           {filteredProducts.length > 0 ? filteredProducts.map(({ inventoryId, productTitle, price, productImage, description }) => {
             return (
-              <Link to={`/sellers/products/product-info/${inventoryId}`} key={inventoryId} className="rounded-md m-2 w-44 cardShadow product-link" title={productTitle}>
+              <Link to={`/sellers/products/product-info/${inventoryId}`}
+                key={inventoryId}
+                className="rounded-md m-2 w-44 cardShadow product-link"
+                title={productTitle}>
                 <img
                   className="max-w-sm w-40 m-2 product-picture"
                   alt="ProductImage"

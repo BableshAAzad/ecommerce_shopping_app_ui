@@ -7,10 +7,22 @@ import { useNavigate } from "react-router-dom";
 import empty_bag from "../../images/empty_bag.png"
 
 function CartComp() {
-    let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
+    let { isLogin,
+        setProgress,
+        setIsLoading,
+        setPreviousLocation,
+        setModelMessage,
+        setOpenModal } = useContext(AuthContext);
     let [cartProduct, setCartProduct] = useState([])
-    let [totalItemAndPrice, setTotalItemAndPrice] = useState({ totalItem: 0, totalPrice: 0 });
+    let [totalItemAndPrice, setTotalItemAndPrice] = useState({
+        totalItem: 0,
+        totalPrice: 0,
+        totalDiscountPrice: 0,
+        totalPayAblePrice: 0
+    });
     let navigate = useNavigate();
+
+    document.title = "Cart - Ecommerce Shopping App"
 
     let handleOrderQuantity = (action, cartProductId, selectedQuantity, productQuantity) => {
         if (action === "increase" && selectedQuantity < productQuantity) {
@@ -46,74 +58,113 @@ function CartComp() {
     useEffect(() => {
         let totalItem = 0;
         let totalPrice = 0;
+        let totalDiscountPrice = 0;
+        let totalPayAblePrice = 0;
+
         cartProduct.forEach(product => {
             totalItem += product.selectedQuantity;
-            totalPrice += product.selectedQuantity * product.product.productPrice;
+            const productTotalPrice = product.selectedQuantity * product.product.productPrice;
+            totalPrice += productTotalPrice;
+
+            const discountAmount = (product.product.discount / 100) * productTotalPrice;
+            totalDiscountPrice += discountAmount;
+
+            totalPayAblePrice += productTotalPrice - discountAmount;
         });
-        setTotalItemAndPrice({ totalItem, totalPrice });
+
+        setTotalItemAndPrice({
+            totalItem,
+            totalPrice,
+            totalDiscountPrice,
+            totalPayAblePrice
+        });
     }, [cartProduct]);
 
     let handleRemoveCartProduct = async (cartProductId) => {
+        setProgress(30)
         setIsLoading(true);
         try {
+            setProgress(60)
             const responseCartProducts = await axios.delete(`http://localhost:8080/api/v1/customers/${isLogin.userId}/cart-products/${cartProductId}`,
                 {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true,
                 });
+            setProgress(80)
             console.log(responseCartProducts)
-            setCartProduct(cartProduct.filter(product => product.cartProductId !== cartProductId));
-            setIsLoading(false);
-            console.log(cartProduct)
+            setProgress(90)
+            if (responseCartProducts.status === 200) {
+                setCartProduct(cartProduct.filter(product => product.cartProductId !== cartProductId));
+                setPreviousLocation("/cart")
+                setModelMessage(responseCartProducts.data.message)
+                setOpenModal(true)
+            }
         } catch (error) {
             console.error(error);
+        } finally {
             setIsLoading(false);
+            setProgress(100)
         }
     }
 
     let handleRemoveAllCartProduct = async () => {
+        setProgress(30)
         setIsLoading(true);
         try {
+            setProgress(60)
             const responseCartProducts = await axios.delete(`http://localhost:8080/api/v1/customers/${isLogin.userId}/cart-products`,
                 {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true,
                 });
+            setProgress(90)
             console.log(responseCartProducts)
-            setIsLoading(false);
             setCartProduct([])
             alert(responseCartProducts.data.message)
         } catch (error) {
             console.error(error);
+        } finally {
+            setProgress(100)
             setIsLoading(false);
         }
     }
 
     let handleIncreatAndDecreaseCartProduct = async (cartProductId, selectedQuantity) => {
+        setProgress(30)
         setIsLoading(true);
         try {
+            setProgress(60)
             const responseCartProducts = await axios.put(`http://localhost:8080/api/v1/customers/cart-products/${cartProductId}?selectedQuantity=${selectedQuantity}`,
                 "", {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });
+            setProgress(90)
             console.log(responseCartProducts)
             setCartProduct(cartProduct.map(product =>
                 product.cartProductId === cartProductId
                     ? { ...product, selectedQuantity }
                     : product
             ));
-            setIsLoading(false);
         } catch (error) {
             console.error(error);
+        } finally {
             setIsLoading(false);
+            setProgress(100)
         }
+    }
+
+    let handleOrderAll = () => {
+        setPreviousLocation("/cart")
+        setModelMessage("This feature is not activated until")
+        setOpenModal(true)
     }
 
     return (
         <div className="px-1">
-            <h1 className="font-bold text-2xl dark:text-white mb-4">CartComp page</h1>
-
+            <div className="flex justify-center">
+                <h1 className="font-bold text-2xl dark:text-white mb-4">Cart Comp page</h1>
+            </div>
             <div className="overflow-x-auto w-full">
                 <Table className="min-w-full table-auto">
                     <Table.Head>
@@ -132,7 +183,7 @@ function CartComp() {
                     </Table.Head>
 
                     <Table.Body className="divide-y">
-                        {cartProduct.length > 0 ? cartProduct.map(({ cartProductId, selectedQuantity, product }) => {
+                        {cartProduct.map(({ cartProductId, selectedQuantity, product }) => {
                             return <Table.Row key={cartProductId} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                                 <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                                     {product.productTitle}
@@ -172,28 +223,47 @@ function CartComp() {
                                     </Button>
                                 </Table.Cell>
                             </Table.Row>
-                        }) : (<Table.Row className="flex justify-center">
-                            <Table.Cell >
-                                <img src={empty_bag} alt="No_Products" />
-                            </Table.Cell>
-                        </Table.Row>)}
+                        })}
                     </Table.Body>
                 </Table>
             </div>
 
+            {cartProduct.length > 0 ? "" : <div className="max-w-64 mt-5 ml-auto mr-auto">
+                <img src={empty_bag} alt="No_Products" />
+                <h2 className="text-xl mt-5 text-red-600 dark:text-red-700">Your Cart is Empty....😌</h2>
+            </div>}
+
             <footer className={`flex flex-wrap justify-between px-4 py-2 bg-gray-200
                    dark:bg-gray-800 text-gray-800 dark:text-white mt-4 rounded-b-lg`}>
-                <div>Total Items: {totalItemAndPrice.totalItem}</div>
-                <div>Total Price : {totalItemAndPrice.totalPrice} Rs/-</div>
+                <div className="text-sm dark:text-slate-400 text-slate-700">
+                    Total Items:
+                    <span className="text-lime-800 dark:text-lime-400 font-bold ml-1">{totalItemAndPrice.totalItem}</span>
+                </div>
+                <div className="text-sm dark:text-slate-400 text-slate-700">
+                    Total Price :
+                    <span className="text-pink-800 dark:text-pink-500 font-bold ml-1">{totalItemAndPrice.totalPrice} </span>
+                    Rs/-
+                </div>
+                <div className="text-sm dark:text-slate-400 text-slate-700">
+                    Total Discounted price :
+                    <span className="text-yellow-800 dark:text-yellow-400 font-bold ml-1">{totalItemAndPrice.totalDiscountPrice} </span>
+                    Rs/-
+                </div>
+                <div className="text-sm dark:text-slate-400 text-slate-700">
+                    Total Payable Price :
+                    <span className="text-green-800 dark:text-green-400 font-bold ml-1">{totalItemAndPrice.totalPayAblePrice} </span>
+                    Rs/-
+                </div>
+
                 <div className="flex flex-wrap gap-3">
                     <div>
-                        <Button outline gradientDuoTone="greenToBlue" disabled={cartProduct.length === 0 ? true : false}>
+                        <Button outline onClick={handleOrderAll} gradientDuoTone="greenToBlue" disabled={cartProduct.length === 0 ? true : false}>
                             Order All
                         </Button>
                     </div>
                     <div>
                         <Button onClick={handleRemoveAllCartProduct} outline gradientDuoTone="purpleToBlue"
-                         disabled={cartProduct.length === 0 ? true : false}>
+                            disabled={cartProduct.length === 0 ? true : false}>
                             Remove All
                         </Button>
                     </div>

@@ -22,7 +22,8 @@ function AddContact() {
         setOpenModal } = useContext(AuthContext);
     let location = useLocation();
     let previousLocation = location.state?.from || "/";
-    // console.log(previousLocation)
+    
+    document.title = "Add Contact - Ecommerce Shopping App"
 
     let updateData = ({ target: { name, value } }) => {
         setFormData({ ...formData, [name]: value });

@@ -18,6 +18,8 @@ function ProfilePage() {
     let navigate = useNavigate();
     let location = useLocation();
 
+    document.title = "Profile - Ecommerce Shopping App"
+
     const handleLogout = (val) => {
         setOpenModal({ openStatus: true, val });
     };
