@@ -1,11 +1,19 @@
-import { Button, Checkbox, FileInput, Label, Textarea, TextInput } from "flowbite-react";
-import { useContext, useId, useState } from "react";
-import { AuthContext } from "../authprovider/AuthProvider";
-import { materialTypesList } from "./MaterialTypes"
+import { Button, Checkbox, FileInput, HR, Label, Select, Textarea, TextInput } from "flowbite-react";
+import React, { useContext, useId, useState } from "react";
+import { materialTypesList } from "../MaterialTypes";
+import { AuthContext } from "../../authprovider/AuthProvider";
+import { useLocation, useParams } from "react-router-dom";
+import axios from "axios";
+import { discounts } from "../DiscountTypes"
 
 function AddProduct() {
     let id = useId();
-    let { isLogin } = useContext(AuthContext);
+    let { isLogin,
+        setProgress,
+        setIsLoading,
+        setPreviousLocation,
+        setModelMessage,
+        setOpenModal } = useContext(AuthContext);
     let [formData, setFormData] = useState({
         sellerId: isLogin.userId,
         productTitle: "",
@@ -15,12 +23,21 @@ function AddProduct() {
         weightInKg: "",
         price: "",
         description: "",
-        productImage: "",
+        productImage: null,
         materialTypes: [],
+        discountType: "",
+        discount: ""
     })
     let [productQuantity, setProductQuantity] = useState({ quantity: "" });
+    let [productImage, setProductImage] = useState(null);
+    let { storageId } = useParams();
+    const location = useLocation();
+    const previousLocation = location.state?.from || "/";
+    let materials = location.state.storageData || [];
 
-    let handleFormData = ({ target: { name, value, checked, type } }) => {
+    document.title = "Add Product - Ecommerce Shopping App"
+
+    let handleFormData = ({ target: { name, value, checked, files } }) => {
         if (name === "materialTypes") {
             if (checked) {
                 setFormData(prevState => ({
@@ -34,31 +51,68 @@ function AddProduct() {
                 }));
             }
         } else if (name === "quantity") {
-            setProductQuantity({ ...productQuantity, [name]: Number(value) })
+            setProductQuantity({ ...productQuantity, [name]: value })
+        } else if (name === "productImage") {
+            setProductImage(files[0]);
+            setFormData({ ...formData, [name]: URL.createObjectURL(files[0]) });
         } else {
-            if (type === "number")
-                setFormData({ ...formData, [name]: Number(value) });
-            else
-                setFormData({ ...formData, [name]: value });
+            setFormData({ ...formData, [name]: value });
         }
-        // console.log(formData);
+        // console.log(formData)
     }
 
     let sendProductData = async (e) => {
+        setIsLoading(true);
         e.preventDefault();
-        console.log(formData);
-        console.log(productQuantity);
+        setProgress(50)
+        try {
+            if (productImage) {
+                // console.log(productImage);
+                formData = { ...formData, productImage: productImage }
+            }
+            setProgress(70)
+            const response = await axios.post(`http://localhost:8080/api/v1/storages/${storageId}/products?quantity=${productQuantity.quantity}`,
+                formData,
+                {
+                    headers: { "Content-Type": "multipart/form-data" },
+                    withCredentials: true // Includes cookies with the request
+                }
+            );
+            setProgress(90)
+            console.log(response);
+            if (response.status === 201) {
+                setPreviousLocation(previousLocation)
+                setModelMessage(response.data.message)
+                setOpenModal(true)
+            }
+        } catch (error) {
+            console.log(error);
+            if (error.response && error.response.data.rootCause) {
+                let errMessages = error.response.data.rootCause;
+
+                let errorMessage = Object.keys(errMessages)
+                    .map(key => `${key} => ${errMessages[key]}`)
+                    .join("\n");
+
+                alert(errorMessage);
+            } else {
+                alert("An unknown error occurred.");
+            }
+        } finally {
+            setIsLoading(false);
+            setProgress(100)
+        }
     }
 
 
     return (
         <>
             <h1 className="font-bold text-2xl text-center dark:text-white">Add Product Form</h1>
-            <section className="flex items-center justify-center min-h-screen">
+            <section className="flex items-center justify-center">
                 <form className="flex max-w-md flex-col gap-4 p-4 border border-green-500 rounded-md m-2" onSubmit={sendProductData}>
                     <div>
                         <div className="mb-2 block">
-                            <Label htmlFor={`${id}sid`} value="Your Seller Id" />
+                            <Label htmlFor={`${id}sid`} color="success" value="Your Seller Id" />
                         </div>
                         <TextInput id={`${id}sid`} type="text" value={isLogin.userId} shadow disabled />
                     </div>
@@ -125,27 +179,60 @@ function AddProduct() {
                         <div className="mb-2 block">
                             <Label htmlFor={`${id}pimg`} value="Product Image" />
                         </div>
-                        <FileInput id={`${id}pimg`} name="productImage" value={formData.productImage} onChange={handleFormData} helperText="A product image is only jpeg, jpg, png format are allowed" />
+                        <FileInput id={`${id}pimg`} name="productImage" onChange={handleFormData} helperText="A product image is only jpeg, jpg, png format are allowed and size less than 2mb" required />
+
+                        {productImage && <img src={formData.productImage} alt="product_Image" className="max-w-40 max-h-48 ml-auto mr-auto mt-2 rounded-lg" />}
                     </div>
 
                     <div className="mb-2 block">
                         <h3 className="text-purple-700 dark:text-purple-500">Material Types</h3>
                         <div className="grid grid-cols-2 gap-2 mt-2">
-                            {materialTypesList.map((type, index) => {
-                                return <div key={index}>
-                                    < Checkbox
-                                        id={`${id}${type}`}
-                                        name="materialTypes"
-                                        value={type}
-                                        onChange={handleFormData}
-                                        label={type}
-                                        className="mr-2"
-                                    />
-                                    <Label htmlFor={`${id}${type}`}>{type}</Label>
-                                </div>
-                            })}
+                            { materialTypesList.map((type, index) => (
+                                <React.Fragment key={index}>
+                                    {materials.includes(type) && (
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox
+                                                id={`${id}${type}`}
+                                                name="materialTypes"
+                                                value={type}
+                                                onChange={handleFormData}
+                                                label={type}
+                                                className="mr-2"
+                                            />
+                                            <Label htmlFor={`${id}${type}`}>{type}</Label>
+                                        </div>
+                                    )}
+                                </React.Fragment>
+                            ))}
                         </div>
                     </div>
+
+                    <HR.Text text="Discount" className="mt-0 mb-0 bg-pink-600 dark:bg-pink-600" />
+                    <section className="grid grid-cols-2 gap-4">
+                        <div>
+                            <div className="mb-2 block">
+                                <Label htmlFor={`${id}pdist`} value="Discount Type" />
+                            </div>
+                            <Select id={`${id}pdist`} name="discountType" onChange={handleFormData}>
+                                {discounts.map((val, index) => {
+                                    return <option key={index} value={val}>{val}</option>
+                                })}
+                            </Select>
+                        </div>
+
+                        <div>
+                            <div className="mb-2 block">
+                                <Label htmlFor={`${id}pdisv`} value="Discount in %" />
+                            </div>
+                            <TextInput id={`${id}pdisv`}
+                                name="discount"
+                                value={formData.discount}
+                                type="number"
+                                placeholder="eg. 25"
+                                onChange={handleFormData}
+                                required shadow />
+                        </div>
+                    </section>
 
                     <div className="flex flex-wrap gap-2 items-center justify-center mb-2">
                         <Button type="submit" gradientDuoTone="purpleToBlue">

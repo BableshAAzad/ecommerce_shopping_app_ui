@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function NetworkStatus() {
     const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -17,13 +19,13 @@ function NetworkStatus() {
     }, []);
 
     return (
-        <div>
+        <>
             {isOnline ? (
-                <p style={{ color: 'green' }}>You are online</p>
+                <FontAwesomeIcon icon={faGlobe} style={{ color: 'green', width: "0.7rem" }} />
             ) : (
-                <p style={{ color: 'red' }}>You are offline</p>
+                <FontAwesomeIcon icon={faGlobe} style={{ color: 'red', width: "0.7rem" }} />
             )}
-        </div>
+        </>
     );
 }
 

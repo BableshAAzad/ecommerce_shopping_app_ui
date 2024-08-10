@@ -4,22 +4,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartShopping, faChevronDown, faCoins, faCreditCard, faGift, faHeart, faMoneyBills, faUser, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
 import "./UserData.css"
 import AppNavLink from './AppNavLink';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { AuthContext } from '../authprovider/AuthProvider';
 
 function UserData() {
-    const navigate = useNavigate();
     const location = useLocation();
-    const { isLogin } = useContext(AuthContext);
+    const { isLogin, setOpenLogoutAlertModal } = useContext(AuthContext);
 
     let loginText = (<><FontAwesomeIcon icon={faUser} />&nbsp;Login&nbsp;<FontAwesomeIcon icon={faChevronDown} /></>);
     let username = ""
     if (isLogin) {
         username = <><FontAwesomeIcon icon={faUser} />&nbsp; {isLogin.username}&nbsp;<FontAwesomeIcon icon={faChevronDown} /> </>
     }
-    const handleLogoutClick = (e) => {
-        console.log(e)
-        navigate("/logout", { state: { from: location.pathname } });
+    const handleLogoutClick = () => {
+        setOpenLogoutAlertModal(true)
     };
 
     return (
@@ -61,9 +59,13 @@ function UserData() {
 
                     {!isLogin ?
                         <AppNavLink path="/gift-cards" icon={<FontAwesomeIcon icon={faMoneyBills} />} text="Gift Cards" />
-                        : <button  type="button" className="logoutbtn text-slate-600 dark:text-slate-400 font-bold" onClick={handleLogoutClick} ><FontAwesomeIcon icon={faRightToBracket} />&nbsp; Logout</button>}
+                        : <button type="button"
+                            className="logoutbtn text-slate-600 dark:text-slate-400 font-bold"
+                            onClick={handleLogoutClick} >
+                            <FontAwesomeIcon icon={faRightToBracket} />
+                            &nbsp; Logout
+                        </button>}
 
-                    {/* <AppNavLink path="/logout" icon={<FontAwesomeIcon icon={faRightToBracket} />} text="Sign out" onClick={()=>handleLogoutClick("hello")} /> */}
                 </Dropdown>
             </div>
         </>

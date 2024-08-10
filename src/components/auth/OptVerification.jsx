@@ -2,7 +2,6 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { Button, Modal } from "flowbite-react";
 import OtpInput from 'react-otp-input';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import Loading from '../loader/Loading';
 import axios from 'axios';
 import { AuthContext } from '../authprovider/AuthProvider';
 import PopupWarn from '../popup/PopupWarn';
@@ -12,17 +11,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 function OptVerification() {
     const [openModal, setOpenModal] = useState(true);
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-    const [isLoding, setIsLoding] = useState(false);
     const [popupOpen, setPopupOpen] = useState(false);
     const [isOtpExpired, setIsOtpExpired] = useState(false);
     const [errorOtpData, setErrorOtpData] = useState({});
     const [time, setTime] = useState(5 * 60); // 5 minutes in seconds
     const location = useLocation();
     const navigate = useNavigate()
-    const { otpVerify } = useContext(AuthContext);
+    const { otpVerify, setProgress, setIsLoading } = useContext(AuthContext);
     const timerRef = useRef(null);
 
-    var formData = location.state;
+    document.title = "OTP Verification - Ecommerce Shopping App"
+
+    let formData = location.state;
     // console.log(formData)
 
     // useEffect(() => {
@@ -62,7 +62,8 @@ function OptVerification() {
     // ^-------------------------------------------------------------------------------------------------------
     const submitOtp = async () => {
         try {
-            setIsLoding(true)
+            setIsLoading(true)
+            setProgress(70)
             console.log({ email: formData.email, opt: otp.join('') })
             const response = await axios.post("http://localhost:8080/api/v1/users/otpVerification",
                 { email: formData.email, otp: otp.join('') },
@@ -70,13 +71,14 @@ function OptVerification() {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true // Includes cookies with the request
                 });
-
+            setProgress(90)
             setOtp(["", "", "", "", "", ""])
-            setIsLoding(false)
             console.log("try block")
 
             console.log(response)
             if (response.status === 201) {
+                setIsLoading(false)
+                setProgress(100)
                 otpVerify(true)
                 navigate("/user-otp-verified-page", { state: response.data })
             }
@@ -84,28 +86,76 @@ function OptVerification() {
             console.log("catch block")
             otpVerify(true)
             console.log(error)
-            setIsLoding(false)
             let errorData = error.response.data;
             if (errorData.status === 400 || errorData.status === 403) {
                 setErrorOtpData(errorData)
                 setIsOtpExpired(true)
             }
+        } finally {
+            setProgress(100)
+            setIsLoading(false)
+        }
+    }
+
+    let handlePasswordReset = async () => {
+        setProgress(30)
+        try {
+            setIsLoading(true)
+            setProgress(70)
+            console.log({ email: formData.email, opt: otp.join('') })
+            const response = await axios.post("http://localhost:8080/api/v1/users/otpVerification",
+                { email: formData.email, otp: otp.join('') },
+                {
+                    headers: { "Content-Type": "application/json" },
+                });
+            setProgress(90)
+            setOtp(["", "", "", "", "", ""])
+            console.log(response)
+            if (response.status === 200) {
+                otpVerify(true)
+                setIsLoading(false)
+                setProgress(100)
+                navigate("/update-password-page", { state: response.data.data })
+            }
+        } catch (error) {
+            console.log("catch block")
+            otpVerify(true)
+            console.log(error)
+            let errorData = error.response.data;
+            if (errorData.status === 400 || errorData.status === 403) {
+                setErrorOtpData(errorData)
+                setIsOtpExpired(true)
+            }
+        } finally {
+            setIsLoading(false)
+            setProgress(100)
+        }
+    }
+
+    let handleSubmit = () => {
+        if (formData.password !== "Ecommerce@123!") {
+            setOpenModal(false)
+            submitOtp()
+        } else {
+            handlePasswordReset()
         }
     }
 
     // ^-------------------------------------------------------------------------------------------------------
     const resentOtp = async () => {
         try {
-            setIsLoding(true)
+            setProgress(30)
+            setIsLoading(true)
             console.log({ email: formData.email, opt: otp.join('') })
+            setProgress(70)
             const response = await axios.post("http://localhost:8080/api/v1/users/resendOtp",
                 formData,
                 {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true // Includes cookies with the request
                 });
-
-            setIsLoding(false)
+            setProgress(90)
+            setIsLoading(false)
             console.log(response)
             if (response.status === 202) {
                 setPopupOpen(true)
@@ -113,21 +163,21 @@ function OptVerification() {
             }
         } catch (error) {
             otpVerify(true)
-            setIsLoding(false)
             console.log(error)
             let errorData = error.response.data;
             if (errorData.status === 400 || errorData.status === 403) {
                 setErrorOtpData(errorData)
                 setIsOtpExpired(true)
             }
+        } finally {
+            setProgress(100)
+            setIsLoading(false)
         }
     }
     // ^-------------------------------------------------------------------------------------------------------
 
     return (
         <>
-            {isLoding ? <Loading /> : ""}
-
             {isOtpExpired && <PopupWarn isOpen={isOtpExpired}
                 setIsOpen={setIsOtpExpired} clr="warning" width="w-2/3"
                 head={errorOtpData.message} msg={errorOtpData.rootCause} />}
@@ -142,6 +192,9 @@ function OptVerification() {
                         {popupOpen && <PopupWarn isOpen={popupOpen}
                             setIsOpen={setPopupOpen} clr="success" width="w-full"
                             head={`Otp re-sended`} msg={"Check Otp on your mail id"} />}
+                        <PopupWarn isOpen={isOtpExpired}
+                            setIsOpen={setIsOtpExpired} clr="warning" width="w-full"
+                            head={errorOtpData.message} msg={errorOtpData.rootCause} />
 
                         <h2 className="text-3xl font-medium text-gray-900 dark:text-white">Email verification</h2>
                         <div className="countdown-timer text-green-600 dark:text-green-300">
@@ -171,9 +224,8 @@ function OptVerification() {
                         </section>
                         <div className="flex justify-center gap-4 m-3">
                             <Button color="success" onClick={() => {
-                                setOpenModal(false),
-                                    submitOtp()
-                            }}>
+                                handleSubmit()
+                            }} disabled={formatTime(time) == `0:00` ? true : false}>
                                 {"Verify Email"}
                             </Button>
                             <Button color="blue" onClick={() => {
@@ -186,8 +238,8 @@ function OptVerification() {
                 </Modal.Body>
             </Modal>
 
-            {isLoding ? "" : <div className="text-center h-screen">
-                <h1 className="font-bold text-2xl mb-10 text-red-600">☹...Registration Failed...☹</h1>
+            {!openModal && <div className="text-center h-screen">
+                <h1 className="font-bold text-2xl mb-10 text-red-600">☹...Operation Failed...☹</h1>
                 <br />
                 <Link to="/seller-registration" className="bg-purple-600 w-fit ml-auto mr-auto text-white rounded p-3">
                     Seller Registration Page

@@ -1,36 +1,49 @@
 import axios from "axios";
-import { Button } from "flowbite-react";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
+import { Badge, Button } from "flowbite-react";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom"
 import productImg from "../../images/logo.png"
-import { HiShoppingBag, HiShoppingCart } from "react-icons/hi";
+import { HiShoppingBag, HiShoppingCart, HiBell, HiExclamation, HiClock, HiCheck } from "react-icons/hi";
 import "./HomePage.css"
-import Loading from "../loader/Loading";
+import { AuthContext } from "../authprovider/AuthProvider";
+import PopupWarn from "../popup/PopupWarn";
 
 function ProductInfo() {
+    let { isLogin,
+        setProgress,
+        isLoading,
+        setIsLoading,
+        setPreviousLocation,
+        setModelMessage,
+        setOpenModal } = useContext(AuthContext);
     let { pid } = useParams()
-    let [products, setProducts] = useState({});
-    let [categories, setCategories] = useState([])
+    let [product, setProduct] = useState({});
     let [stocks, setStocks] = useState(0);
     let [orderQuantity, setOrderQuantity] = useState(1);
-    let [isLoading, setIsLoading] = useState(false);
+    let navigate = useNavigate();
+    const [popupOpen, setPopupOpen] = useState(false);
+    const [popupData, setPopupData] = useState({});
+    const [responseSuccessButton, setResponseSuccessButton] = useState(false);
 
-    let getAllProducts = async () => {
+    let getProduct = async () => {
+        setProgress(30)
         setIsLoading(true)
+        setProgress(70)
         let response = await axios.get(`http://localhost:8080/api/v1/products/${pid}`);
-        response = response.data
-        setProducts(response)
-        console.log(response)
-        setCategories(response.materialTypes)
+        response = response.data.data
+        setProduct(response)
+        setProgress(90)
+        // console.log(response)
         setStocks(response.stocks[0].quantity)
         setIsLoading(false)
+        setProgress(100)
     }
 
-    useEffect(() => {
-        getAllProducts();
-    }, [pid]);
+    document.title = "Product Info - Ecommerce Shopping App"
 
-    let materialTypes = categories.map((ele) => ele + ", ");
+    useEffect(() => {
+        getProduct();
+    }, [pid]);
 
     let handleOrderQuantity = (action) => {
         if (action === "increase" && orderQuantity < stocks) {
@@ -40,53 +53,174 @@ function ProductInfo() {
         }
     };
 
+
+    let handleCartProduct = async (product) => {
+        if (!isLogin) {
+            navigate("/login-form");
+        }
+        setIsLoading(true);
+        setProgress(40)
+        // product.preventDefault();
+        let tempProduct = {
+            "selectedQuantity": orderQuantity,
+            "product": {
+                "productId": product.inventoryId,
+                "productTitle": product.productTitle,
+                "productDescription": product.description,
+                "productPrice": product.price,
+                "productQuantity": product.stocks[0].quantity,
+                "availabilityStatus": "YES"
+            }
+        }
+        try {
+            setProgress(70)
+            const response = await axios.post(`http://localhost:8080/api/v1/customers/${isLogin.userId}/cart-products`,
+                tempProduct,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true // Includes cookies with the request
+                }
+            );
+            setProgress(90)
+            console.log(response);
+            if (response.status === 201) {
+                setTimeout(() => {
+                    setPopupData(response.data);
+                    setPopupOpen(true);
+                    setResponseSuccessButton(true)
+                }, 0);
+            }
+        } catch (error) {
+            console.log(error);
+            setTimeout(() => {
+                setPopupData(error.response.data);
+                setPopupOpen(true);
+            }, 0);
+        } finally {
+            setProgress(100)
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        if (responseSuccessButton) {
+            const timer = setTimeout(() => {
+                setResponseSuccessButton(false);
+            }, 60000);
+            return () => clearTimeout(timer);
+        }
+    }, [responseSuccessButton, setResponseSuccessButton]);
+
+    let handleAddToWishList = () => {
+        setPreviousLocation("/")
+        setModelMessage("This feature is not activated until")
+        setOpenModal(true)
+    }
+
+
+    const renderAddToWishlistButton = () => (
+        <Button onClick={handleAddToWishList} gradientDuoTone="purpleToBlue">
+            <HiBell className="mr-2 h-5 w-5" />
+            Add to Wishlist
+        </Button>
+    );
+
+    const renderProcessingButton = () => (
+        <Button isProcessing gradientDuoTone="greenToBlue">
+            Processing!
+        </Button>
+    );
+
+    const renderAddToCartButton = () => (
+        <Button
+            onClick={() => handleCartProduct(product)}
+            gradientDuoTone="purpleToBlue"
+            disabled={isLogin && isLogin.userRole === "SELLER"}
+        >
+            {responseSuccessButton ? (
+                <>
+                    <HiCheck className="mr-2 h-5 w-5" />
+                    Added in Cart
+                </>
+            ) : (
+                <>
+                    <HiShoppingCart className="mr-2 h-5 w-5" />
+                    Add To Cart
+                </>
+            )}
+        </Button>
+    );
+
+    const renderOutOfStockButton = () => (
+        <Button gradientMonochrome="failure">
+            <HiExclamation className="mr-2 h-5 w-5" />
+            Out Of Stocks
+        </Button>
+    );
+
+    const renderBuyNowButton = () => (
+        <Button
+            onClick={() => {
+                handleCartProduct(product);
+                !isLogin
+                    ? navigate("/login-form")
+                    : navigate("/cart/addresses", {
+                        state: { product: product, quantity: orderQuantity },
+                    });
+            }}
+            gradientDuoTone="purpleToPink"
+            disabled={isLogin && isLogin.userRole === "SELLER"}
+        >
+            <HiShoppingBag className="mr-2 h-5 w-5" />
+            Buy Now
+        </Button>
+    );
+
     return (
         <>
-            {isLoading ? <Loading /> : <div className="flex items-center justify-center">
+            {popupOpen && <PopupWarn isOpen={popupOpen} width="w-[90%]"
+                setIsOpen={setPopupOpen} clr="green"
+                head={popupData.message} />}
+
+            <div className="flex items-center justify-center">
                 <div className="flex flex-col md:flex-row items-center justify-center m-4 border border-green-500 rounded-md w-full md:w-1/2 p-4 cardShadow">
                     <section className="w-full md:w-1/2 text-center">
-                        {products.productImage ? (
-                            <img
-                                className="w-full max-w-sm mx-auto m-2 object-cover"
-                                alt="ProductImage"
-                                src={products.productImage}
-                            />
-                        ) : (
-                            <img
-                                className="w-full max-w-sm mx-auto m-2 object-cover"
-                                alt="ProductImage"
-                                src={productImg}
-                            />
-                        )}
-
+                        <img
+                            className="w-full max-w-sm mx-auto m-2 object-cover"
+                            alt="ProductImage"
+                            src={product.productImage ? product.productImage : productImg}
+                        />
                         <div className="flex flex-wrap gap-2 items-center justify-center mb-2">
-                            <Button gradientDuoTone="purpleToBlue">
-                                <HiShoppingCart className="mr-2 h-5 w-5" />
-                                Add To Cart
-                            </Button>
-                            <Button gradientDuoTone="purpleToPink">
-                                <HiShoppingBag className="mr-2 h-5 w-5" />
-                                Buy Now
-                            </Button>
+                            {stocks === 0 ? renderAddToWishlistButton() : isLoading ? renderProcessingButton() : renderAddToCartButton()}
+                            {stocks === 0 ? renderOutOfStockButton() : renderBuyNowButton()}
                         </div>
                     </section>
 
-                    <section className="w-full md:w-1/2 m-2">
+                    <section className="w-full md:w-1/2 m-2 overflow-auto">
                         <h5 className="text-xl md:text-2xl font-bold mb-2 tracking-tight text-gray-900 dark:text-white">
-                            {products.productTitle}
+                            {product.productTitle}
                         </h5>
-                        <h5 className="text-sm md:text-base font-bold tracking-tight dark:text-white">
-                            Price: <span className="text-green-700 dark:text-green-300">{products.price !== 0.0 ? products.price : "100.20 Rs"}</span>
-                            &nbsp; &nbsp;<span className="text-base font-normal leading-tight text-gray-500 line-through">70% off</span>
-                        </h5>
-                        <br />
+
+                        <div className="text-lg font-bold tracking-tight dark:text-slate-400 mb-2" >
+                            <span className="text-green-700 dark:text-green-300 mr-2">
+                                &#8377;&nbsp;{product.price !== 0.0 ? (product.discount !== 0.0 ? (product.price - ((product.price * product.discount) / 100)) : product.price) : 0.00 + " Rs"}
+                            </span>
+                            {product.discount === 0.0 ? "" : <span className="font-normal leading-tight text-gray-500 line-through text-md">&#8377;&nbsp;{product.price}</span>}
+                        </div>
+
+                        <div className="w-fit">
+                            <Badge color="pink" icon={HiClock}>
+                                {product.discountType} Offer &nbsp;{product.discount === 0.0 ? "" : <span className="text-pink-500 text-sm">{product.discount}% off</span>}
+                            </Badge>
+                        </div>
 
                         <p className="font-normal text-gray-700 dark:text-gray-400 mb-2">
-                            <span className="font-semibold">Description:</span> {products.description ? products.description : "It is a demo product"}
+                            <span className="font-semibold">Description:</span> {product.description ? product.description : "It is a demo product"}
                         </p>
 
                         <p className="font-normal text-gray-700 dark:text-gray-400 mb-2">
-                            <span className="font-semibold">Categories:</span> {materialTypes}
+                            <span className="font-semibold">Categories: </span>
+                            {product.materialTypes ? product.materialTypes.map((ele) => ele + ", ") : "No Material Types"}
                         </p>
 
                         <section className="flex items-center mb-2">
@@ -94,13 +228,17 @@ function ProductInfo() {
                                 <span className="font-semibold">Order Quantity:</span>
                             </p>
                             <Button.Group>
-                                <Button outline pill size="xs" onClick={() => handleOrderQuantity("decrease")}>
+                                <Button outline pill size="xs"
+                                    onClick={() => handleOrderQuantity("decrease")}
+                                    disabled={isLogin && isLogin.userRole === "SELLER" ? true : false} >
                                     -
                                 </Button>
                                 <Button outline pill size="xs" disabled>
                                     {orderQuantity}
                                 </Button>
-                                <Button outline pill size="xs" onClick={() => handleOrderQuantity("increase")}>
+                                <Button outline pill size="xs"
+                                    onClick={() => handleOrderQuantity("increase")}
+                                    disabled={isLogin && isLogin.userRole === "SELLER" ? true : false} >
                                     +
                                 </Button>
                             </Button.Group>
@@ -111,19 +249,19 @@ function ProductInfo() {
                         </p>
 
                         <p className="font-normal text-gray-700 dark:text-gray-400 mb-2">
-                            <span className="font-semibold">Manufacture Date:</span> {products.restockedAt}
+                            <span className="font-semibold">Manufacture Date:</span> {product.restockedAt}
                         </p>
 
                         <p className="font-normal text-gray-700 dark:text-gray-400 mb-2">
-                            <span className="font-semibold">Size - <br /> Height:</span> {products.heightInMeters} Meters
+                            <span className="font-semibold">Size - <br /> Height:</span> {product.heightInMeters} Meters
                             <br />
-                            Length: {products.lengthInMeters} Meters
+                            Length: {product.lengthInMeters} Meters
                             <br />
-                            Weight: {products.weightInKg} kg
+                            Weight: {product.weightInKg} kg
                         </p>
                     </section>
                 </div>
-            </div>}
+            </div>
         </>
     )
 }
