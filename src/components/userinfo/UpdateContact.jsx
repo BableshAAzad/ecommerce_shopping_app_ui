@@ -25,7 +25,9 @@ function UpdateContact() {
         setOpenModal } = useContext(AuthContext);
 
     let previousLocation = location.state?.from || "/";
-    console.log(previousLocation)
+
+    document.title = "Update Contact Number - Ecommerce Shopping App"
+
 
     const updateData = ({ target: { name, value } }) => {
         setFormData({ ...formData, [name]: value });

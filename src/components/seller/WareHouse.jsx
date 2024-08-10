@@ -18,6 +18,8 @@ function WareHouse() {
     let { setProgress, setIsLoading } = useContext(AuthContext);
     let [searchCity, setSearchCity] = useState({ searchWarehouse: "" })
 
+    document.title = "Warehouses - Ecommerce Shopping App"
+
     let getWareHouses = async () => {
         setIsLoading(true);
         setProgress(40)

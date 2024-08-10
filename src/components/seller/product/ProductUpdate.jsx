@@ -1,9 +1,10 @@
-import { Button, Checkbox, FileInput, Label, Textarea, TextInput } from "flowbite-react";
+import { Button, Checkbox, FileInput, HR, Label, Select, Textarea, TextInput } from "flowbite-react";
 import React, { useContext, useId, useState } from "react";
 import { materialTypesList } from "../MaterialTypes";
 import { AuthContext } from "../../authprovider/AuthProvider";
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
+import { discounts } from "../DiscountTypes"
 
 function UpdateProduct() {
     let id = useId();
@@ -17,9 +18,27 @@ function UpdateProduct() {
     let [productImage, setProductImage] = useState(null);
     const location = useLocation();
     let product = location.state.productData || {};
-    let [formData, setFormData] = useState(product)
+    let [formData, setFormData] = useState({
+        sellerId: product.sellerId || 0,
+        productTitle: product.productTitle || "",
+        lengthInMeters: product.lengthInMeters || 0,
+        breadthInMeters: product.breadthInMeters || 0,
+        heightInMeters: product.heightInMeters || 0,
+        weightInKg: product.weightInKg || 0,
+        price: product.price || 0,
+        description: product.description || "",
+        materialTypes: product.materialTypes || [],
+        discountType: product.discountType || "",
+        discount: product.discount || 0,
+        productImage: product.productImage || null,
+        inventoryId: product.inventoryId || "",
+        restockedAt: product.restockedAt,
+        updatedInventoryAt: product.updatedInventoryAt
+    })
+    let [productQuantity, setProductQuantity] = useState({ quantity: product.stocks[0].quantity || 0 });
     let from = location.state.from || "/"
-    // console.log(product)
+
+    document.title = "Update Product - Ecommerce Shopping App"
 
     let handleFormData = ({ target: { name, value, checked, type, files } }) => {
         if (name === "materialTypes") {
@@ -34,6 +53,8 @@ function UpdateProduct() {
                     materialTypes: prevState.materialTypes.filter(type => type !== value)
                 }));
             }
+        } else if (name === "quantity") {
+            setProductQuantity({ ...productQuantity, [name]: value })
         } else if (name === "productImage") {
             setProductImage(files[0])
             setFormData({ ...formData, [name]: URL.createObjectURL(files[0]) });
@@ -47,6 +68,7 @@ function UpdateProduct() {
     }
 
     let sendProductData = async (e) => {
+        console.log(formData)
         setProgress(40)
         setIsLoading(true);
         e.preventDefault();
@@ -63,7 +85,7 @@ function UpdateProduct() {
         }
         setProgress(70)
         try {
-            const response = await axios.put(`http://localhost:8080/api/v1/sellers/products/${productId}`,
+            const response = await axios.put(`http://localhost:8080/api/v1/sellers/products/${productId}/stocks?quantity=${productQuantity.quantity}`,
                 multipartFormData,
                 {
                     headers: { "Content-Type": "multipart/form-data" },
@@ -85,7 +107,6 @@ function UpdateProduct() {
             setProgress(100)
         }
     }
-
 
     return (
         <>
@@ -150,10 +171,16 @@ function UpdateProduct() {
 
                         <div>
                             <div className="mb-2 block">
-                                <Label htmlFor={`${id}proId`} color="success" value="Product Id" />
+                                <Label htmlFor={`${id}pquantityu`} value="Quantity" />
                             </div>
-                            <TextInput id={`${id}proId`} name="productId" value={product.inventoryId}
-                                type="number" shadow disabled />
+                            <TextInput id={`${id}pquantityu`}
+                                name="quantity"
+                                value={productQuantity.quantity}
+                                type="number"
+                                placeholder="eg. 2"
+                                onChange={handleFormData}
+                                required
+                                shadow />
                         </div>
                     </section>
 
@@ -170,8 +197,8 @@ function UpdateProduct() {
                         <div className="mb-2 block">
                             <Label htmlFor={`${id}pimg`} value="Product Image" />
                         </div>
-                        <FileInput id={`${id}pimg`} name="productImage" value="" onChange={handleFormData}
-                            helperText="A product image is only jpeg, jpg, png format are allowed" />
+                        <FileInput id={`${id}pimg`} name="productImage" onChange={handleFormData}
+                            helperText="A product image is only jpeg, jpg, png format are allowed and size less than 2mb" />
                         {formData.productImage !== null && formData.productImage !== "" ?
                             <img src={formData.productImage} alt="product_Image" className="max-w-40 max-h-48 ml-auto mr-auto mt-2 rounded-lg" /> : ""}
                     </div>
@@ -181,7 +208,7 @@ function UpdateProduct() {
                         <div className="grid grid-cols-2 gap-2 mt-2">
                             {materialTypesList.map((type, index) => (
                                 <React.Fragment key={index}>
-                                    {product.materialTypes.includes(type) && (
+                                    {product.materialTypes && product.materialTypes.includes(type) && (
                                         <div className="flex items-center space-x-2">
                                             <Checkbox
                                                 id={`${id}${type}`}
@@ -198,6 +225,33 @@ function UpdateProduct() {
                             ))}
                         </div>
                     </div>
+
+                    <HR.Text text="Discount" className="mt-0 mb-0 bg-pink-600 dark:bg-pink-600" />
+                    <section className="grid grid-cols-2 gap-4">
+                        <div>
+                            <div className="mb-2 block">
+                                <Label htmlFor={`${id}pdistu`} value="Discount Type" />
+                            </div>
+                            <Select id={`${id}pdistu`} name="discountType" onChange={handleFormData}>
+                                {discounts.map((val, index) => {
+                                    return <option key={index} value={val}>{val}</option>
+                                })}
+                            </Select>
+                        </div>
+
+                        <div>
+                            <div className="mb-2 block">
+                                <Label htmlFor={`${id}pdisvu`} value="Discount in %" />
+                            </div>
+                            <TextInput id={`${id}pdisvu`}
+                                name="discount"
+                                value={formData.discount}
+                                type="number"
+                                placeholder="eg. 25"
+                                onChange={handleFormData}
+                                required shadow />
+                        </div>
+                    </section>
 
                     <div className="flex flex-wrap gap-2 items-center justify-center mb-2">
                         <Button type="submit" gradientDuoTone="purpleToBlue">

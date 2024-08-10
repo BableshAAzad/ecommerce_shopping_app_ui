@@ -25,7 +25,6 @@ function AddAddress() {
     })
     const location = useLocation();
     const previousLocation = location.state?.from || "/";
-    // console.log(previousLocation)
 
     let handleAddressData = ({ target: { name, value, type } }) => {
         setAddressData((prevData) => ({

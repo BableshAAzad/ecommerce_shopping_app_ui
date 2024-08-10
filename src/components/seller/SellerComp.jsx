@@ -7,6 +7,7 @@ import storage from "../../images/storageImg.png"
 
 function SellerComp() {
     let navigate = useNavigate()
+    document.title = "Warehouse options - Ecommerce Shopping App"
 
     let comps = [
         { url: "/sellers/wareHouses", title: "WareHouses", image: warehouse, btnColor: "purpleToBlue" },

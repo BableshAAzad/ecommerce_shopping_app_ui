@@ -20,6 +20,8 @@ function OptVerification() {
     const { otpVerify, setProgress, setIsLoading } = useContext(AuthContext);
     const timerRef = useRef(null);
 
+    document.title = "OTP Verification - Ecommerce Shopping App"
+
     let formData = location.state;
     // console.log(formData)
 

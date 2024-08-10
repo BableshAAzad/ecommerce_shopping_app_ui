@@ -1,9 +1,10 @@
-import { Button, Checkbox, FileInput, Label, Textarea, TextInput } from "flowbite-react";
+import { Button, Checkbox, FileInput, HR, Label, Select, Textarea, TextInput } from "flowbite-react";
 import React, { useContext, useId, useState } from "react";
 import { materialTypesList } from "../MaterialTypes";
 import { AuthContext } from "../../authprovider/AuthProvider";
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
+import { discounts } from "../DiscountTypes"
 
 function AddProduct() {
     let id = useId();
@@ -24,15 +25,17 @@ function AddProduct() {
         description: "",
         productImage: null,
         materialTypes: [],
+        discountType: "",
+        discount: ""
     })
     let [productQuantity, setProductQuantity] = useState({ quantity: "" });
     let [productImage, setProductImage] = useState(null);
     let { storageId } = useParams();
     const location = useLocation();
     const previousLocation = location.state?.from || "/";
-
     let materials = location.state.storageData || [];
-    // console.log(materials)
+
+    document.title = "Add Product - Ecommerce Shopping App"
 
     let handleFormData = ({ target: { name, value, checked, files } }) => {
         if (name === "materialTypes") {
@@ -55,7 +58,7 @@ function AddProduct() {
         } else {
             setFormData({ ...formData, [name]: value });
         }
-        // console.log(formData.productImage)
+        // console.log(formData)
     }
 
     let sendProductData = async (e) => {
@@ -78,14 +81,23 @@ function AddProduct() {
             setProgress(90)
             console.log(response);
             if (response.status === 201) {
-                // alert(response.data.message)
                 setPreviousLocation(previousLocation)
                 setModelMessage(response.data.message)
                 setOpenModal(true)
             }
         } catch (error) {
             console.log(error);
-            alert(error.response.data.message)
+            if (error.response && error.response.data.rootCause) {
+                let errMessages = error.response.data.rootCause;
+
+                let errorMessage = Object.keys(errMessages)
+                    .map(key => `${key} => ${errMessages[key]}`)
+                    .join("\n");
+
+                alert(errorMessage);
+            } else {
+                alert("An unknown error occurred.");
+            }
         } finally {
             setIsLoading(false);
             setProgress(100)
@@ -167,7 +179,7 @@ function AddProduct() {
                         <div className="mb-2 block">
                             <Label htmlFor={`${id}pimg`} value="Product Image" />
                         </div>
-                        <FileInput id={`${id}pimg`} name="productImage" onChange={handleFormData} helperText="A product image is only jpeg, jpg, png format are allowed" required />
+                        <FileInput id={`${id}pimg`} name="productImage" onChange={handleFormData} helperText="A product image is only jpeg, jpg, png format are allowed and size less than 2mb" required />
 
                         {productImage && <img src={formData.productImage} alt="product_Image" className="max-w-40 max-h-48 ml-auto mr-auto mt-2 rounded-lg" />}
                     </div>
@@ -175,7 +187,7 @@ function AddProduct() {
                     <div className="mb-2 block">
                         <h3 className="text-purple-700 dark:text-purple-500">Material Types</h3>
                         <div className="grid grid-cols-2 gap-2 mt-2">
-                            {materialTypesList.map((type, index) => (
+                            { materialTypesList.map((type, index) => (
                                 <React.Fragment key={index}>
                                     {materials.includes(type) && (
                                         <div className="flex items-center space-x-2">
@@ -194,6 +206,33 @@ function AddProduct() {
                             ))}
                         </div>
                     </div>
+
+                    <HR.Text text="Discount" className="mt-0 mb-0 bg-pink-600 dark:bg-pink-600" />
+                    <section className="grid grid-cols-2 gap-4">
+                        <div>
+                            <div className="mb-2 block">
+                                <Label htmlFor={`${id}pdist`} value="Discount Type" />
+                            </div>
+                            <Select id={`${id}pdist`} name="discountType" onChange={handleFormData}>
+                                {discounts.map((val, index) => {
+                                    return <option key={index} value={val}>{val}</option>
+                                })}
+                            </Select>
+                        </div>
+
+                        <div>
+                            <div className="mb-2 block">
+                                <Label htmlFor={`${id}pdisv`} value="Discount in %" />
+                            </div>
+                            <TextInput id={`${id}pdisv`}
+                                name="discount"
+                                value={formData.discount}
+                                type="number"
+                                placeholder="eg. 25"
+                                onChange={handleFormData}
+                                required shadow />
+                        </div>
+                    </section>
 
                     <div className="flex flex-wrap gap-2 items-center justify-center mb-2">
                         <Button type="submit" gradientDuoTone="purpleToBlue">

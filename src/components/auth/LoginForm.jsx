@@ -19,6 +19,7 @@ function LoginForm() {
     const navigate = useNavigate();
     const { login, setProgress, setIsLoading } = useContext(AuthContext);
 
+    document.title = "Login - Ecommerce Shopping App"
 
     const updateData = ({ target: { name, value } }) => {
         setFormData({ ...formData, [name]: value });

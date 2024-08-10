@@ -26,6 +26,8 @@ function UpdatePasswordPage() {
     const { otpVerify, setProgress, setIsLoading } = useContext(AuthContext);
     const id = useId();
 
+    document.title = "Update Profile - Ecommerce Shopping App"
+
     const updateData = (e) => {
         const { name, value, type, checked } = e.target;
         setCredential((prev) => ({

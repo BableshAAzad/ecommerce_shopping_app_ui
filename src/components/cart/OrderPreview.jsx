@@ -6,7 +6,7 @@ import axios from "axios";
 import { AuthContext } from "../authprovider/AuthProvider";
 import { HiOutlineArrowRight, HiOutlineShoppingBag } from "react-icons/hi";
 
-function CartItemDetail() {
+function OrderPreview() {
     let [popupOpen, setPopupOpen] = useState(false);
     let [openModal, setOpenModal] = useState(false);
     let [popupData, setPopupData] = useState("");
@@ -18,8 +18,10 @@ function CartItemDetail() {
     let product = location.state.product || {};
     let address = location.state.address || {};
     let quantity = location.state.quantity || 0;
-    // console.log(address);
+    console.log(product);
     // console.log(`${product.productId || product.inventoryId}`)
+
+    document.title = "Order Preview - Ecommerce Shopping App"
 
     const productEle = [
         {
@@ -49,7 +51,7 @@ function CartItemDetail() {
     const PriceEle = [
         {
             title: "Product Price:",
-            value: product.price || product.productPrice
+            value: (product.price || product.productPrice).toFixed(2) + " Rs/-"
         },
         {
             title: "Quantity:",
@@ -57,15 +59,19 @@ function CartItemDetail() {
         },
         {
             title: "Discount:",
-            value: 0.0
+            value: product.discount + "%"
         },
         {
             title: "GST:",
             value: 0.00
         },
         {
+            title: "Total Discount Price:",
+            value: (quantity * (product.price || product.productPrice) * (product.discount / 100)).toFixed(2) + " Rs/-"
+        },
+        {
             title: "Total Price:",
-            value: quantity * product.price || (quantity * product.productPrice)
+            value: (quantity * (product.price || product.productPrice)).toFixed(2) + " Rs/-"
         },
     ];
 
@@ -78,9 +84,10 @@ function CartItemDetail() {
             const response = await axios.post(`http://localhost:8080/api/v1/customers/${isLogin.userId}/addresses/${address.addressId}/products/${product.productId || product.inventoryId}/purchase-orders`,
                 {
                     totalQuantity: quantity,
-                    totalPrice: (quantity * product.price) || (quantity * product.productPrice),
-                    discountPrice: 0.0,
-                    totalPayableAmount: (quantity * product.price) || (quantity * product.productPrice)
+                    totalPrice: (quantity * (product.price || product.productPrice)).toFixed(2),
+                    discount: product.discount,
+                    discountPrice: (quantity * (product.price || product.productPrice) * (product.discount / 100)).toFixed(2),
+                    totalPayableAmount: ((quantity * (product.price || product.productPrice)) - (quantity * (product.price || product.productPrice) * (product.discount / 100))).toFixed(2)
                 },
                 {
                     headers: { "Content-Type": "application/json" },
@@ -192,7 +199,7 @@ function CartItemDetail() {
                         <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
                             Total Payable Amount :
                         </span>
-                        <span className="font-bold dark:text-white text-lg">{quantity * product.price || quantity * product.productPrice} Rs/-</span>
+                        <span className="font-bold dark:text-white text-lg">{((quantity * (product.price || product.productPrice)) - (quantity * (product.price || product.productPrice) * (product.discount / 100))).toFixed(2)} Rs/-</span>
                     </li>
 
                 </ul>
@@ -203,7 +210,7 @@ function CartItemDetail() {
                         </Button>
                     </div>
                     <div>
-                        <Button outline gradientDuoTone="pinkToOrange" onClick={()=>navigate("/")} >
+                        <Button outline gradientDuoTone="pinkToOrange" onClick={() => navigate("/")} >
                             Cancel
                         </Button>
                     </div>
@@ -213,4 +220,4 @@ function CartItemDetail() {
     )
 }
 
-export default CartItemDetail
+export default OrderPreview

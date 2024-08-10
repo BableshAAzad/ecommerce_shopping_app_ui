@@ -1,5 +1,6 @@
 
 function SuperCoinZone() {
+    document.title = "Super Coin Zone - Ecommerce Shopping App"
     return (
         <div className="h-screen">
             <br /><br />

@@ -25,6 +25,8 @@ function UpdateUser() {
     const navigate = useNavigate();
     const { otpVerify, login, setProgress, setIsLoading } = useContext(AuthContext);
 
+    document.title = "Update Profile - Ecommerce Shopping App"
+
     const updateData = (e) => {
         const { name, value, type, checked } = e.target;
         setCredential((prev) => ({

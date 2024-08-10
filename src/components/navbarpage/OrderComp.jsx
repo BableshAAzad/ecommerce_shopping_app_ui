@@ -9,6 +9,8 @@ function OrderComp() {
     let [orders, setOrders] = useState([]);
     let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
 
+    document.title = "Orders - Ecommerce Shopping App"
+
     let handleOrders = async () => {
         setProgress(40)
         setIsLoading(true);
@@ -75,7 +77,7 @@ function OrderComp() {
                         </Table.Head>
 
                         <Table.Body className="divide-y">
-                            {orders.length > 0 ? orders.map(({ orderId, inventoryTitle, invoiceDate, inventoryImage, invoiceLink }) => {
+                            {orders.map(({ orderId, inventoryTitle, invoiceDate, inventoryImage }) => {
                                 return <Table.Row key={orderId} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                                     <Table.Cell className="px-3 py-1">{orderId}</Table.Cell>
                                     <Table.Cell className="px-1 py-1 whitespace-nowrap font-medium text-gray-900 dark:text-white">
@@ -91,14 +93,14 @@ function OrderComp() {
                                         </Button>
                                     </Table.Cell>
                                 </Table.Row>
-                            }) : (<Table.Row >
-                                <Table.Cell >
-                                    <img src={empty_bag} alt="No_Products" />
-                                </Table.Cell>
-                            </Table.Row>)}
+                            })}
                         </Table.Body>
                     </Table>
                 </div>
+                {orders.length > 0 ? "" : <div className="max-w-64 mt-5 ml-auto mr-auto">
+                    <img src={empty_bag} alt="No_Products" />
+                    <h2 className="text-xl mt-5 text-red-600 dark:text-red-700">Your Cart is Empty....😌</h2>
+                </div>}
             </div>
             <br />
             <br />
