@@ -34,8 +34,8 @@ function UpdateProduct() {
         inventoryId: product.inventoryId || "",
         restockedAt: product.restockedAt,
         updatedInventoryAt: product.updatedInventoryAt
-
     })
+    let [productQuantity, setProductQuantity] = useState({ quantity: product.stocks[0].quantity || 0 });
     let from = location.state.from || "/"
 
     document.title = "Update Product - Ecommerce Shopping App"
@@ -53,6 +53,8 @@ function UpdateProduct() {
                     materialTypes: prevState.materialTypes.filter(type => type !== value)
                 }));
             }
+        } else if (name === "quantity") {
+            setProductQuantity({ ...productQuantity, [name]: value })
         } else if (name === "productImage") {
             setProductImage(files[0])
             setFormData({ ...formData, [name]: URL.createObjectURL(files[0]) });
@@ -66,6 +68,7 @@ function UpdateProduct() {
     }
 
     let sendProductData = async (e) => {
+        console.log(formData)
         setProgress(40)
         setIsLoading(true);
         e.preventDefault();
@@ -82,7 +85,7 @@ function UpdateProduct() {
         }
         setProgress(70)
         try {
-            const response = await axios.put(`http://localhost:8080/api/v1/sellers/products/${productId}`,
+            const response = await axios.put(`http://localhost:8080/api/v1/sellers/products/${productId}/stocks?quantity=${productQuantity.quantity}`,
                 multipartFormData,
                 {
                     headers: { "Content-Type": "multipart/form-data" },
@@ -168,10 +171,16 @@ function UpdateProduct() {
 
                         <div>
                             <div className="mb-2 block">
-                                <Label htmlFor={`${id}proId`} color="success" value="Product Id" />
+                                <Label htmlFor={`${id}pquantityu`} value="Quantity" />
                             </div>
-                            <TextInput id={`${id}proId`} name="productId" value={product.inventoryId}
-                                type="number" shadow disabled />
+                            <TextInput id={`${id}pquantityu`}
+                                name="quantity"
+                                value={productQuantity.quantity}
+                                type="number"
+                                placeholder="eg. 2"
+                                onChange={handleFormData}
+                                required
+                                shadow />
                         </div>
                     </section>
 

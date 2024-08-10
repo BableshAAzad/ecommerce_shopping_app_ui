@@ -117,65 +117,6 @@ function ProductInfo() {
         setOpenModal(true)
     }
 
-
-    const renderAddToWishlistButton = () => (
-        <Button onClick={handleAddToWishList} gradientDuoTone="purpleToBlue">
-            <HiBell className="mr-2 h-5 w-5" />
-            Add to Wishlist
-        </Button>
-    );
-
-    const renderProcessingButton = () => (
-        <Button isProcessing gradientDuoTone="greenToBlue">
-            Processing!
-        </Button>
-    );
-
-    const renderAddToCartButton = () => (
-        <Button
-            onClick={() => handleCartProduct(product)}
-            gradientDuoTone="purpleToBlue"
-            disabled={isLogin && isLogin.userRole === "SELLER"}
-        >
-            {responseSuccessButton ? (
-                <>
-                    <HiCheck className="mr-2 h-5 w-5" />
-                    Added in Cart
-                </>
-            ) : (
-                <>
-                    <HiShoppingCart className="mr-2 h-5 w-5" />
-                    Add To Cart
-                </>
-            )}
-        </Button>
-    );
-
-    const renderOutOfStockButton = () => (
-        <Button gradientMonochrome="failure">
-            <HiExclamation className="mr-2 h-5 w-5" />
-            Out Of Stocks
-        </Button>
-    );
-
-    const renderBuyNowButton = () => (
-        <Button
-            onClick={() => {
-                handleCartProduct(product);
-                !isLogin
-                    ? navigate("/login-form")
-                    : navigate("/cart/addresses", {
-                        state: { product: product, quantity: orderQuantity },
-                    });
-            }}
-            gradientDuoTone="purpleToPink"
-            disabled={isLogin && isLogin.userRole === "SELLER"}
-        >
-            <HiShoppingBag className="mr-2 h-5 w-5" />
-            Buy Now
-        </Button>
-    );
-
     return (
         <>
             {popupOpen && <PopupWarn isOpen={popupOpen} width="w-[90%]"
@@ -191,8 +132,41 @@ function ProductInfo() {
                             src={product.productImage ? product.productImage : productImg}
                         />
                         <div className="flex flex-wrap gap-2 items-center justify-center mb-2">
-                            {stocks === 0 ? renderAddToWishlistButton() : isLoading ? renderProcessingButton() : renderAddToCartButton()}
-                            {stocks === 0 ? renderOutOfStockButton() : renderBuyNowButton()}
+                            {stocks === 0 ? <Button onClick={() => handleAddToWishList} gradientDuoTone="purpleToBlue">
+                                <HiBell className="mr-2 h-5 w-5" />
+                                Add to Wishlist
+                            </Button>
+                                :
+                                isLoading ?
+                                    <Button isProcessing gradientDuoTone="greenToBlue">
+                                        Processing!
+                                    </Button> : <Button onClick={() => handleCartProduct(product)} gradientDuoTone="purpleToBlue"
+                                        disabled={isLogin && isLogin.userRole === "SELLER" ? true : false}>
+                                        {responseSuccessButton ?
+                                            <HiCheck className="mr-2 h-5 w-5" /> :
+                                            <HiShoppingCart className="mr-2 h-5 w-5" />}
+
+                                        {responseSuccessButton ? "Added in Cart" : "Add To Cart"}
+                                    </Button>
+                            }
+                            {stocks === 0 ? <Button gradientMonochrome="failure">
+                                <HiExclamation className="mr-2 h-5 w-5" />
+                                Out Of Stocks
+                            </Button>
+                                :
+                                <Button onClick={() => {
+                                    handleCartProduct(product);
+                                    {
+                                        !isLogin ? navigate("/login-form") :
+                                            navigate("/cart/addresses",
+                                                { state: { product: product, quantity: orderQuantity } })
+                                    }
+                                }}
+                                    gradientDuoTone="purpleToPink"
+                                    disabled={isLogin && isLogin.userRole === "SELLER" ? true : false} >
+                                    <HiShoppingBag className="mr-2 h-5 w-5" />
+                                    Buy Now
+                                </Button>}
                         </div>
                     </section>
 

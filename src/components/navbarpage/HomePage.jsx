@@ -190,7 +190,7 @@ function HomePage() {
                                         &nbsp;{discount === 0.0 ? "" : <span className="text-pink-500 text-xs">{discount}% off</span>}
                                     </div>
                                     <p className="text-sm text-gray-700 dark:text-gray-400">
-                                        {description !== null ? description : "It is a demo product"}
+                                        {description !== null ? description : "N/A"}
                                     </p>
                                 </div>
                             </Link>

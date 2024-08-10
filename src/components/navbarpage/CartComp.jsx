@@ -119,8 +119,12 @@ function CartComp() {
                 });
             setProgress(90)
             console.log(responseCartProducts)
-            setCartProduct([])
-            alert(responseCartProducts.data.message)
+            if (responseCartProducts.status === 200) {
+                setCartProduct([])
+                setPreviousLocation("/cart")
+                setModelMessage(responseCartProducts.data.message)
+                setOpenModal(true)
+            }
         } catch (error) {
             console.error(error);
         } finally {
@@ -170,6 +174,7 @@ function CartComp() {
                     <Table.Head>
                         <Table.HeadCell>Product Title</Table.HeadCell>
                         <Table.HeadCell>Price</Table.HeadCell>
+                        <Table.HeadCell>Discount</Table.HeadCell>
                         <Table.HeadCell>Quantity</Table.HeadCell>
                         <Table.HeadCell>Available Stock</Table.HeadCell>
                         <Table.HeadCell>Description</Table.HeadCell>
@@ -189,7 +194,7 @@ function CartComp() {
                                     {product.productTitle}
                                 </Table.Cell>
                                 <Table.Cell>{product.productPrice}</Table.Cell>
-
+                                <Table.Cell>{product.discount}%</Table.Cell>
                                 <Table.Cell>
                                     <Button.Group>
                                         <Button outline pill size="xs"
@@ -233,23 +238,23 @@ function CartComp() {
                 <h2 className="text-xl mt-5 text-red-600 dark:text-red-700">Your Cart is Empty....😌</h2>
             </div>}
 
-            <footer className={`flex flex-wrap justify-between px-4 py-2 bg-gray-200
+            <footer className={`flex flex-wrap justify-between px-4 py-2 bg-gray-300
                    dark:bg-gray-800 text-gray-800 dark:text-white mt-4 rounded-b-lg`}>
-                <div className="text-sm dark:text-slate-400 text-slate-700">
+                <div className="text-sm dark:text-slate-400 text-slate-700 bg-slate-50 dark:bg-slate-900 p-1 rounded-lg m-1">
                     Total Items:
                     <span className="text-lime-800 dark:text-lime-400 font-bold ml-1">{totalItemAndPrice.totalItem}</span>
                 </div>
-                <div className="text-sm dark:text-slate-400 text-slate-700">
+                <div className="text-sm dark:text-slate-400 text-slate-700 bg-slate-50 dark:bg-slate-900 p-1 rounded-lg m-1">
                     Total Price :
                     <span className="text-pink-800 dark:text-pink-500 font-bold ml-1">{totalItemAndPrice.totalPrice} </span>
                     Rs/-
                 </div>
-                <div className="text-sm dark:text-slate-400 text-slate-700">
+                <div className="text-sm dark:text-slate-400 text-slate-700 bg-slate-50 dark:bg-slate-900 p-1 rounded-lg m-1">
                     Total Discounted price :
                     <span className="text-yellow-800 dark:text-yellow-400 font-bold ml-1">{totalItemAndPrice.totalDiscountPrice} </span>
                     Rs/-
                 </div>
-                <div className="text-sm dark:text-slate-400 text-slate-700">
+                <div className="text-sm dark:text-slate-400 text-slate-700 bg-slate-50 dark:bg-slate-900 p-1 rounded-lg m-1">
                     Total Payable Price :
                     <span className="text-green-800 dark:text-green-400 font-bold ml-1">{totalItemAndPrice.totalPayAblePrice} </span>
                     Rs/-

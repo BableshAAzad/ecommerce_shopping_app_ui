@@ -59,13 +59,13 @@ export default function CategorizedProduct({ handleFilterProducts, setIsCategory
     return (
         <>
             <div className="p-2 filter-product-main">
-                <div className="mb-1 border-b border-gray-200 dark:border-gray-700">
+                <div className="mb-1 pb-1 border-b border-gray-200 dark:border-gray-700">
                     <ul className="flex flex-wrap justify-around -mb-px text-sm font-medium text-center" >
 
                         {productTypes.map(({ productType, typeIcon, text_color, query }, index) => {
                             return <li key={index} className="me-2">
                                 <button className={`inline-block p-1 text-sm
-        rounded-t-lg hover:text-gray-600 hover:border-gray-300
+        rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:bg-slate-950 bg-slate-200
          dark:hover:text-gray-300 text-${text_color}-600`}
                                     type="button" onClick={() => handleCategoryClick(query)}>
                                     <FontAwesomeIcon icon={typeIcon} className="pr-2 lg:size-5 sm:size-4" />
