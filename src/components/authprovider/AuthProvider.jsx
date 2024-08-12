@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Loading from "../loader/Loading"
 import { ModelAlert } from "../popup/ModelAlert";
 import LogoutAlert from "../auth/LogoutAlert";
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 export let AuthContext = createContext();
 
@@ -42,7 +43,7 @@ function AuthProvider({ children }) {
             setIsLoading(true)
             refreshCancelSource.current.cancel('Cancelling previous refresh request');
             refreshCancelSource.current = axios.CancelToken.source();
-            let response = await axios.post("http://localhost:8080/api/v1/refreshLogin", "", {
+            let response = await axios.post(`${BASE_URL}refreshLogin`, "", {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
                 cancelToken: refreshCancelSource.current.token,
@@ -55,7 +56,6 @@ function AuthProvider({ children }) {
                 console.log("RT regenerated successfully done");
                 refreshTokenCalled.current = false; // Reset the ref after successful refresh
             }
-            setIsLoading(false)
         } catch (error) {
             console.error(error);
             if (error.response && error.response.status === 401) {
@@ -63,6 +63,7 @@ function AuthProvider({ children }) {
                 navigate("/login-form");
             }
             refreshTokenCalled.current = false; // Reset the ref in case of error
+        }finally{
             setIsLoading(false)
         }
     };

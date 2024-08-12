@@ -9,6 +9,7 @@ import { HiSearch } from "react-icons/hi";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Spinner from "../loader/Spinner";
 import warehouse_empty from "../../images/warehouse_empty.png"
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function WareHouse() {
     let [wareHouses, setWareHouses] = useState([])
@@ -21,37 +22,46 @@ function WareHouse() {
     document.title = "Warehouses - Ecommerce Shopping App"
 
     let getWareHouses = async () => {
-        setIsLoading(true);
-        setProgress(40)
-        setProgress(70)
-        const response = await axios.get("http://localhost:8080/api/v1/wareHouses-with-address?page=0&size=10",
-            {
-                headers: { "Content-Type": "application/json" },
-                withCredentials: true // Includes cookies with the request
-            }
-        );
-        setProgress(90)
-        setWareHouses(response.data.data.content)
-        setInitialWareHouses(response.data.data.content)
-        setTotalResults(response.data.data.page.totalElements)
-        console.log(response)
-        setIsLoading(false)
-        setProgress(100)
+        try {
+            setIsLoading(true);
+            setProgress(40)
+            setProgress(70)
+            const response = await axios.get(`${BASE_URL}wareHouses-with-address?page=0&size=10`,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true // Includes cookies with the request
+                }
+            );
+            setProgress(90)
+            setWareHouses(response.data.data.content)
+            setInitialWareHouses(response.data.data.content)
+            setTotalResults(response.data.data.page.totalElements)
+            // console.log(response)
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setIsLoading(false)
+            setProgress(100)
+        }
     }
     useEffect(() => {
         getWareHouses();
     }, [])
 
     let fetchMoreWareHouses = async () => {
-        const response = await axios.get(`http://localhost:8080/api/v1/wareHouses-with-address?page=${page + 1}&size=10`,
-            {
-                headers: { "Content-Type": "application/json" },
-                withCredentials: true // Includes cookies with the request
-            }
-        );
-        wareHouses(prevWareHouse => prevWareHouse.concat(response.data.data.content))
-        setTotalResults(response.data.data.page.totalElements);
-        setPage(page + 1);
+        try {
+            const response = await axios.get(`${BASE_URL}wareHouses-with-address?page=${page + 1}&size=10`,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true // Includes cookies with the request
+                }
+            );
+            wareHouses(prevWareHouse => prevWareHouse.concat(response.data.data.content))
+            setTotalResults(response.data.data.page.totalElements);
+            setPage(page + 1);
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     let fetchWareHousesByCity = async () => {
@@ -62,7 +72,7 @@ function WareHouse() {
         }
         try {
             setIsLoading(true);
-            const response = await axios.get(`http://localhost:8080/api/v1/addresses/${searchCity.searchWarehouse}/wareHouses?page=0&size=10`, {
+            const response = await axios.get(`${BASE_URL}addresses/${searchCity.searchWarehouse}/wareHouses?page=0&size=10`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true // Includes cookies with the request
             });

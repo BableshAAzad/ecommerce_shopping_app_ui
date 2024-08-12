@@ -9,6 +9,7 @@ import Spinner from "../../loader/Spinner";
 import { TextInput } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
 import searchImg from "../../../images/search.png";
+import { BASE_URL } from "../../../appconstants/EcommerceUrl"
 
 function StoragesByWareHouses() {
     let [storages, setStorages] = useState([]);
@@ -22,23 +23,28 @@ function StoragesByWareHouses() {
     let location = useLocation();
 
     let getStorages = async () => {
-        setProgress(30)
-        setIsLoading(true);
-        setProgress(70)
-        const response = await axios.get(`http://localhost:8080/api/v1/wareHouses/${wareHouseId}/storages?page=0&size=10`,
-            {
-                headers: { "Content-Type": "application/json" },
-                withCredentials: true // Includes cookies with the request
-            }
-        );
-        setProgress(80)
-        setStorages(response.data.data.content)
-        setFilteredStorages(response.data.data.content);
-        setTotalResults(response.data.data.page.totalElements)
-        console.log(response)
-        setProgress(90)
-        setIsLoading(false);
-        setProgress(100)
+        try {
+            setProgress(30)
+            setIsLoading(true);
+            setProgress(70)
+            const response = await axios.get(`${BASE_URL}wareHouses/${wareHouseId}/storages?page=0&size=10`,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true // Includes cookies with the request
+                }
+            );
+            setProgress(80)
+            setStorages(response.data.data.content)
+            setFilteredStorages(response.data.data.content);
+            setTotalResults(response.data.data.page.totalElements)
+            console.log(response)
+            setProgress(90)
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setIsLoading(false);
+            setProgress(100)
+        }
     }
 
     useEffect(() => {
@@ -46,16 +52,20 @@ function StoragesByWareHouses() {
     }, [])
 
     let fetchMoreStorages = async () => {
-        const response = await axios.get(`http://localhost:8080/api/v1/wareHouses/${wareHouseId}/storages?page=${page + 1}&size=10`,
-            {
-                headers: { "Content-Type": "application/json" },
-                withCredentials: true // Includes cookies with the request
-            }
-        );
-        setStorages(preStorage => preStorage.concat(response.data.data.content))
-        setFilteredStorages(prevFilteredStorages => prevFilteredStorages.concat(response.data.data.content));
-        setTotalResults(response.data.data.page.totalElements)
-        setPage(page + 1)
+        try {
+            const response = await axios.get(`${BASE_URL}wareHouses/${wareHouseId}/storages?page=${page + 1}&size=10`,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true // Includes cookies with the request
+                }
+            );
+            setStorages(preStorage => preStorage.concat(response.data.data.content))
+            setFilteredStorages(prevFilteredStorages => prevFilteredStorages.concat(response.data.data.content));
+            setTotalResults(response.data.data.page.totalElements)
+            setPage(page + 1)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
 

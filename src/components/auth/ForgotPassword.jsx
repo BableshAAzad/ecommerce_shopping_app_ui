@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function ForgotPassword() {
     let [emailData, setEmailData] = useState({ email: "", password: "Ecommerce@123!" })
@@ -28,7 +29,7 @@ function ForgotPassword() {
         e.preventDefault();
         try {
             setProgress(70)
-            const response = await axios.put(`http://localhost:8080/api/v1/users/update/` + emailData.email, "",
+            const response = await axios.put(`${BASE_URL}users/update/` + emailData.email, "",
                 {
                     headers: { "Content-Type": "application/json" },
                 }

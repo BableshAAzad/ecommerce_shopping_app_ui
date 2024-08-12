@@ -14,3 +14,30 @@
     transform: scale(1.1);
     transition: transform 0.2s ease-in-out;
 }
+
+/* @media only screen and (max-width: 1016px) {
+    .responsive-margin-1016 {
+        margin-top: 1.5rem;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .responsive-margin-768 {
+        margin-top: 0.2rem;
+    }
+} */
+@media only screen and (max-width: 409px) {
+    .responsive-margin-409 {
+        margin-top: 2.5rem;
+    }
+
+    .responsive-margin {
+        margin: 0.1rem;
+    }
+}
+
+@media only screen and (max-width: 337px) {
+    .responsive-margin-337 {
+        margin-top: 3rem;
+    }
+}

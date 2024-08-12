@@ -7,6 +7,7 @@ import { HiShoppingBag, HiShoppingCart, HiBell, HiExclamation, HiClock, HiCheck 
 import "./HomePage.css"
 import { AuthContext } from "../authprovider/AuthProvider";
 import PopupWarn from "../popup/PopupWarn";
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function ProductInfo() {
     let { isLogin,
@@ -26,17 +27,22 @@ function ProductInfo() {
     const [responseSuccessButton, setResponseSuccessButton] = useState(false);
 
     let getProduct = async () => {
-        setProgress(30)
-        setIsLoading(true)
-        setProgress(70)
-        let response = await axios.get(`http://localhost:8080/api/v1/products/${pid}`);
-        response = response.data.data
-        setProduct(response)
-        setProgress(90)
-        // console.log(response)
-        setStocks(response.stocks[0].quantity)
-        setIsLoading(false)
-        setProgress(100)
+        try {
+            setProgress(30)
+            setIsLoading(true)
+            setProgress(70)
+            let response = await axios.get(`${BASE_URL}products/${pid}`);
+            response = response.data.data
+            setProduct(response)
+            setProgress(90)
+            // console.log(response)
+            setStocks(response.stocks[0].quantity)
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setIsLoading(false)
+            setProgress(100)
+        }
     }
 
     document.title = "Product Info - Ecommerce Shopping App"
@@ -74,7 +80,7 @@ function ProductInfo() {
         }
         try {
             setProgress(70)
-            const response = await axios.post(`http://localhost:8080/api/v1/customers/${isLogin.userId}/cart-products`,
+            const response = await axios.post(`${BASE_URL}customers/${isLogin.userId}/cart-products`,
                 tempProduct,
                 {
                     headers: { "Content-Type": "application/json" },

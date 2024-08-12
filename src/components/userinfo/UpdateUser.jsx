@@ -8,6 +8,7 @@ import "../auth/Registration.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { HiMail, HiLockClosed } from 'react-icons/hi';
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function UpdateUser() {
     const location = useLocation();
@@ -77,7 +78,7 @@ function UpdateUser() {
         try {
             setProgress(70)
             setIsLoading(true);
-            const response = await axios.put(`http://localhost:8080/api/v1/users/${location.state.userId}`,
+            const response = await axios.put(`${BASE_URL}users/${location.state.userId}`,
                 formData,
                 {
                     headers: { "Content-Type": "application/json" },

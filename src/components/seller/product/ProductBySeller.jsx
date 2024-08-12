@@ -9,6 +9,7 @@ import Spinner from "../../loader/Spinner";
 import openBox from "../../../images/open-box.png"
 import { TextInput } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
+import { BASE_URL } from "../../../appconstants/EcommerceUrl"
 
 function ProductBySeller() {
   let [products, setProducts] = useState([]);
@@ -25,7 +26,7 @@ function ProductBySeller() {
     setProgress(40)
     try {
       setProgress(70)
-      let response = await axios.get(`http://localhost:8080/api/v1/sellers/${isLogin.userId}/products?page=${page}&size=10`,
+      let response = await axios.get(`${BASE_URL}sellers/${isLogin.userId}/products?page=${page}&size=10`,
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true // Includes cookies with the request
@@ -52,7 +53,7 @@ function ProductBySeller() {
   let determineFetchMore = async () => {
     let nextPage = page + 1;
     try {
-      let response = await axios.get(`http://localhost:8080/api/v1/sellers/${isLogin.userId}/products?page=${nextPage}&size=10`,
+      let response = await axios.get(`${BASE_URL}sellers/${isLogin.userId}/products?page=${nextPage}&size=10`,
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true // Includes cookies with the request

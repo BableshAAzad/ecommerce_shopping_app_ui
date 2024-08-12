@@ -12,6 +12,7 @@ import { HiOutlineFilter } from "react-icons/hi";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CarouselHome from "./carousel/CarouselHome";
 import { AuthContext } from "../authprovider/AuthProvider";
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function HomePage() {
     let { setProgress, setIsLoading } = useContext(AuthContext);
@@ -22,6 +23,7 @@ function HomePage() {
     let [isFilterApplied, setIsFilterApplied] = useState(false);
     let [filterData, setFilterData] = useState({});
     let [isCategoryApplied, setIsCategoryApplied] = useState(false);
+    const [responsiveClass, setResponsiveClass] = useState('');
 
     document.title = "Ecommerce Shopping Application"
 
@@ -29,14 +31,19 @@ function HomePage() {
         setIsLoading(true);
         setProgress(30)
         setProgress(70)
-        let response = await axios.get(`http://localhost:8080/api/v1/products?page=${page}&size=10`);
-        setProgress(90)
-        response = response.data;
-        console.log(response);
-        setProducts(response.data.content);
-        setTotalResults(response.data.page.totalElements);
-        setProgress(100)
-        setIsLoading(false);
+        try {
+            let response = await axios.get(`${BASE_URL}products?page=${page}&size=10`);
+            setProgress(90)
+            response = response.data;
+            console.log(response);
+            setProducts(response.data.content);
+            setTotalResults(response.data.page.totalElements);
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setProgress(100)
+            setIsLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -44,12 +51,16 @@ function HomePage() {
     }, []);
 
     let fetchMoreProducts = async () => {
-        let response = await axios.get(`http://localhost:8080/api/v1/products?page=${page + 1}&size=10`);
-        response = response.data;
-        console.log(response);
-        setPage(page + 1);
-        setProducts(products.concat(response.data.content));
-        setTotalResults(response.data.page.totalElements);
+        try {
+            let response = await axios.get(`${BASE_URL}products?page=${page + 1}&size=10`);
+            response = response.data;
+            console.log(response);
+            setPage(page + 1);
+            setProducts([...products, ...response.data.content]);
+            setTotalResults(response.data.page.totalElements);
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     const handleFilterProducts = async (filterData, reset = false) => {
@@ -60,35 +71,44 @@ function HomePage() {
             setFilterData({});
             getAllProducts();
         } else {
-            setProgress(30)
-            setFilterData(filterData);
-            setProgress(70)
-            let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=0&size=10`,
-                filterData, {
-                headers: { "Content-Type": "application/json" },
-            });
-            response = response.data;
-            setProgress(90)
-            console.log(response);
-            setPage(0);
-            setProducts(response.data.content);
-            setTotalResults(response.data.page.totalElements);
-            setIsFilterApplied(true);
-            setProgress(100)
-            setIsLoading(false)
+            try {
+                setProgress(30)
+                setFilterData(filterData);
+                setProgress(70)
+                let response = await axios.post(`${BASE_URL}products/filter?page=0&size=10`,
+                    filterData, {
+                    headers: { "Content-Type": "application/json" },
+                });
+                response = response.data;
+                setProgress(90)
+                console.log(response);
+                setPage(0);
+                setProducts(response.data.content);
+                setTotalResults(response.data.page.totalElements);
+                setIsFilterApplied(true);
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setProgress(100)
+                setIsLoading(false)
+            }
         }
     };
 
     let fetchMoreFilteredProducts = async () => {
-        let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=${page + 1}&size=10`,
-            filterData, {
-            headers: { "Content-Type": "application/json" },
-        });
-        response = response.data;
-        console.log(response);
-        setPage(page + 1);
-        setProducts(products.concat(response.data.content));
-        setTotalResults(response.data.page.totalElements);
+        try {
+            let response = await axios.post(`${BASE_URL}products/filter?page=${page + 1}&size=10`,
+                filterData, {
+                headers: { "Content-Type": "application/json" },
+            });
+            response = response.data;
+            // console.log(response);
+            setPage(page + 1);
+            setProducts(products.concat(response.data.content));
+            setTotalResults(response.data.page.totalElements);
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     const handleCategoryProducts = async (filterData, reset = false) => {
@@ -100,35 +120,44 @@ function HomePage() {
             setFilterData({});
             getAllProducts();
         } else {
-            setProgress(30)
-            setFilterData(filterData);
-            setProgress(70)
-            let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=0&size=10`,
-                filterData, {
-                headers: { "Content-Type": "application/json" },
-            });
-            response = response.data;
-            setProgress(90)
-            console.log(response);
-            setPage(0);
-            setProducts(response.data.content);
-            setTotalResults(response.data.page.totalElements);
-            setIsCategoryApplied(true);
-            setProgress(100)
-            setIsLoading(false)
+            try {
+                setProgress(30)
+                setFilterData(filterData);
+                setProgress(70)
+                let response = await axios.post(`${BASE_URL}products/filter?page=0&size=10`,
+                    filterData, {
+                    headers: { "Content-Type": "application/json" },
+                });
+                response = response.data;
+                setProgress(90)
+                console.log(response);
+                setPage(0);
+                setProducts(response.data.content);
+                setTotalResults(response.data.page.totalElements);
+                setIsCategoryApplied(true);
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setProgress(100)
+                setIsLoading(false)
+            }
         }
     };
 
     let fetchMoreCategoryProducts = async () => {
-        let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=${page + 1}&size=10`,
-            filterData, {
-            headers: { "Content-Type": "application/json" },
-        });
-        response = response.data;
-        console.log(response);
-        setPage(page + 1);
-        setProducts(products.concat(response.data.content));
-        setTotalResults(response.data.page.totalElements);
+        try {
+            let response = await axios.post(`${BASE_URL}products/filter?page=${page + 1}&size=10`,
+                filterData, {
+                headers: { "Content-Type": "application/json" },
+            });
+            response = response.data;
+            console.log(response);
+            setPage(page + 1);
+            setProducts(products.concat(response.data.content));
+            setTotalResults(response.data.page.totalElements);
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     const determineFetchMore = () => {
@@ -141,8 +170,27 @@ function HomePage() {
         }
     };
 
+    useEffect(() => {
+        const updateResponsiveClass = () => {
+            if (window.innerWidth < 337) {
+                setResponsiveClass('responsive-margin-337');
+            } else if (window.innerWidth < 409) {
+                setResponsiveClass('responsive-margin-409');
+            } else {
+                setResponsiveClass('');
+            }
+        };
+
+        updateResponsiveClass();
+
+        window.addEventListener('resize', updateResponsiveClass);
+
+        // Cleanup event listener on unmount
+        return () => window.removeEventListener('resize', updateResponsiveClass);
+    }, []);
+
     return (
-        <>
+        <div className={`sm:mt-[1px] md:mt-[23px] lg:mt-[1px] ${responsiveClass}`}>
             <FilterProduct isOpen={isOpen} setIsOpen={setIsOpen} handleFilterProducts={handleFilterProducts} />
 
             <CategorizedProduct handleFilterProducts={handleCategoryProducts} setIsCategoryApplied={setIsCategoryApplied} />
@@ -198,7 +246,7 @@ function HomePage() {
                 </section>
             </InfiniteScroll>
             <br />
-        </>
+        </div>
     );
 }
 

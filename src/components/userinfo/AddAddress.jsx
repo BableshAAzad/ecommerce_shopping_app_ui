@@ -4,6 +4,7 @@ import { AuthContext } from "../authprovider/AuthProvider";
 import axios from "axios";
 import { addressType } from "./AddressTypes"
 import { useLocation } from "react-router-dom";
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function AddAddress() {
     let id = useId();
@@ -13,7 +14,6 @@ function AddAddress() {
         setPreviousLocation,
         setModelMessage,
         setOpenModal } = useContext(AuthContext);
-
     let [addressData, setAddressData] = useState({
         streetAddress: "",
         streetAddressAdditional: "",
@@ -40,7 +40,7 @@ function AddAddress() {
         console.log(addressData);
         try {
             setProgress(60)
-            const response = await axios.post(`http://localhost:8080/api/v1/users/${isLogin.userId}/addresses`,
+            const response = await axios.post(`${BASE_URL} users/${isLogin.userId}/addresses`,
                 addressData,
                 {
                     headers: { "Content-Type": "application/json" },

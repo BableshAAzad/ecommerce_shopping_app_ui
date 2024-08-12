@@ -53,7 +53,6 @@ function HeaderComp() {
                             setOpenModal={setOpenModal}
                         />
                     </div>
-
                 </div>
                 <Navbar.Collapse className="md:order-2">
                     <UserData />
@@ -74,7 +73,9 @@ function HeaderComp() {
                     </NavLink>
 
                     <div className='navbtn mt-auto mb-auto dark:text-slate-400 hover:dark:text-slate-100'>
-                        <DarkModeOption />
+                        <Navbar.Link className='ml-[-12px]' as="div">
+                            <DarkModeOption />
+                        </Navbar.Link>
                     </div>
 
                     <MoreOptionNav />

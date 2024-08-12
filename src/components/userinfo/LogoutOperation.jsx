@@ -4,19 +4,25 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../authprovider/AuthProvider";
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 // eslint-disable-next-line react/prop-types
 function LogoutOperation({ modelData: { val }, handleModel }) {
-    let [openModal, setOpenModal] = useState(true);
+    let [openModalLogout, setOpenModalLogout] = useState(true);
     let navigate = useNavigate();
-    const { login, setProgress, setIsLoading } = useContext(AuthContext);
+    const { login,
+        setProgress,
+        setIsLoading,
+        setPreviousLocation,
+        setModelMessage,
+        setOpenModal } = useContext(AuthContext);
 
     const logOutCalling = async () => {
         setIsLoading(true);
         setProgress(40)
         try {
             setProgress(70)
-            const response = await axios.post(`http://localhost:8080/api/v1/${val}`, "", {
+            const response = await axios.post(`${BASE_URL}${val}`, "", {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });
@@ -32,8 +38,12 @@ function LogoutOperation({ modelData: { val }, handleModel }) {
                     setIsLoading(false);
                     navigate("/login-form", { state: response.data })
                 }
-                else if (val === "logoutFromOtherDevices")
-                    alert(response.data.message)
+                else if (val === "logoutFromOtherDevices") {
+                    // alert(response.data.message)
+                    setPreviousLocation("/profile-page")
+                    setModelMessage(response.data.message)
+                    setOpenModal(true)
+                }
             }
         } catch (error) {
             console.error(error);
@@ -45,8 +55,8 @@ function LogoutOperation({ modelData: { val }, handleModel }) {
 
     return (
         <div>
-            {/* <Button onClick={() => setOpenModal(true)}>Toggle modal</Button> */}
-            <Modal show={openModal} size="md" onClick={() => { setOpenModal(false), handleModel({ openStatus: false, val: "" }) }} popup>
+            {/* <Button onClick={() => setOpenModalLogout(true)}>Toggle modal</Button> */}
+            <Modal show={openModalLogout} size="md" onClick={() => { setOpenModalLogout(false), handleModel({ openStatus: false, val: "" }) }} popup>
                 <Modal.Header />
                 <Modal.Body>
                     <div className="text-center">
@@ -55,10 +65,10 @@ function LogoutOperation({ modelData: { val }, handleModel }) {
                             Are you sure want to {val}?
                         </h3>
                         <div className="flex justify-center gap-4">
-                            <Button color="failure" onClick={() => { setOpenModal(false), logOutCalling(), handleModel({ openStatus: false, val: "" }) }}>
+                            <Button color="failure" onClick={() => { setOpenModalLogout(false), logOutCalling(), handleModel({ openStatus: false, val: "" }) }}>
                                 {"Yes, I'm sure"}
                             </Button>
-                            <Button color="gray" onClick={() => { setOpenModal(false), handleModel({ openStatus: false, val: "" }) }}>
+                            <Button color="gray" onClick={() => { setOpenModalLogout(false), handleModel({ openStatus: false, val: "" }) }}>
                                 No, cancel
                             </Button>
                         </div>

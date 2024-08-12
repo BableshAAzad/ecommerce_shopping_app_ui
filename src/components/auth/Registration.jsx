@@ -8,6 +8,7 @@ import "./Registration.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { HiMail, HiLockClosed } from 'react-icons/hi';
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 // eslint-disable-next-line react/prop-types
 function Registration({ registrationType, pageTitle }) {
@@ -79,7 +80,7 @@ function Registration({ registrationType, pageTitle }) {
         try {
             setIsLoading(true);
             setProgress(70)
-            const response = await axios.post(`http://localhost:8080/api/v1/${registrationType}/register`,
+            const response = await axios.post(`${BASE_URL}${registrationType}/register`,
                 formData,
                 {
                     headers: { "Content-Type": "application/json" },

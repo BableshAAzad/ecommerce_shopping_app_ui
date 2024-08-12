@@ -5,6 +5,7 @@ import productImg from "../../../images/giftbox.png"
 import { Badge, Button } from "flowbite-react";
 import { HiArrowRight, HiClock, HiTrash } from "react-icons/hi";
 import { AuthContext } from "../../authprovider/AuthProvider";
+import { BASE_URL } from "../../../appconstants/EcommerceUrl"
 
 function ProductInfoSeller() {
     let { productId } = useParams();
@@ -17,17 +18,22 @@ function ProductInfoSeller() {
     document.title = "Product Info Seller - Ecommerce Shopping App"
 
     let getProduct = async () => {
-        setProgress(40)
-        setIsLoading(true)
-        setProgress(60)
-        let response = await axios.get(`http://localhost:8080/api/v1/products/${productId}`);
-        setProgress(90)
-        response = response.data.data;
-        setProduct(response);
-        console.log(response);
-        setStocks(response.stocks[0].quantity);
-        setIsLoading(false);
-        setProgress(100)
+        try {
+            setProgress(40)
+            setIsLoading(true)
+            setProgress(60)
+            let response = await axios.get(`${BASE_URL}products/${productId}`);
+            setProgress(90)
+            response = response.data.data;
+            setProduct(response);
+            console.log(response);
+            setStocks(response.stocks[0].quantity);
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setIsLoading(false);
+            setProgress(100)
+        }
     }
 
     useEffect(() => {

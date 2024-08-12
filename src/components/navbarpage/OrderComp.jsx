@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../authprovider/AuthProvider";
 import empty_bag from "../../images/empty_bag.png"
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function OrderComp() {
     let [orders, setOrders] = useState([]);
@@ -16,7 +17,7 @@ function OrderComp() {
         setIsLoading(true);
         try {
             setProgress(70)
-            const responseOrders = await axios.get(`http://localhost:8080/api/v1/customers/${isLogin.userId}/purchase-orders`, {
+            const responseOrders = await axios.get(`${BASE_URL}customers/${isLogin.userId}/purchase-orders`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });
@@ -24,7 +25,7 @@ function OrderComp() {
             if (responseOrders.status === 200) {
                 setOrders(responseOrders.data.data)
             }
-            console.log(responseOrders)
+            // console.log(responseOrders)
         } catch (error) {
             console.error(error);
         } finally {
@@ -40,7 +41,7 @@ function OrderComp() {
     let downloadInvoice = async (orderId) => {
         setIsLoading(true);
         try {
-            const response = await axios.get(`http://localhost:8080/api/v1/customers/purchase-orders/${orderId}`, {
+            const response = await axios.get(`${BASE_URL}customers/purchase-orders/${orderId}`, {
                 headers: { "Content-Type": "application/json" },
                 responseType: 'blob', // This is important for handling binary data
                 withCredentials: true,
@@ -49,15 +50,12 @@ function OrderComp() {
             // Create a URL for the PDF and open it in a new tab
             const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
             window.open(url, '_blank');
-
-            setIsLoading(false);
         } catch (error) {
             console.error(error);
+        } finally {
             setIsLoading(false);
         }
     };
-
-
 
     return (
         <>

@@ -4,9 +4,10 @@ import { useContext } from "react";
 import { HiOutlineLogout } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../authprovider/AuthProvider";
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 // eslint-disable-next-line react/prop-types
-function LogoutAlert({openLogoutAlertModal, setOpenLogoutAlertModal}) {
+function LogoutAlert({ openLogoutAlertModal, setOpenLogoutAlertModal }) {
     const navigate = useNavigate();
     const { login, logout, setProgress, setIsLoading } = useContext(AuthContext);
 
@@ -15,7 +16,7 @@ function LogoutAlert({openLogoutAlertModal, setOpenLogoutAlertModal}) {
         setProgress(40)
         try {
             setProgress(70)
-            const response = await axios.post("http://localhost:8080/api/v1/logout", "",
+            const response = await axios.post(`${BASE_URL}logout`, "",
                 {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true // Includes cookies with the request
