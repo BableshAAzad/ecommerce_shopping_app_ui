@@ -46,7 +46,7 @@ function LoginForm() {
         setProgress(30)
         setIsLoading(true)
         e.preventDefault();
-        console.log(formData)
+        // console.log(formData)
         try {
             setProgress(70)
             const response = await axios.post(`${BASE_URL}login`,

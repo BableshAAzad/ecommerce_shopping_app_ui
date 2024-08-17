@@ -65,7 +65,7 @@ function Registration({ registrationType, pageTitle }) {
         }
     };
 
-    console.log(`${BASE_URL}${registrationType}/register`)
+    // console.log(`${BASE_URL}${registrationType}/register`)
     const submitFormData = async (e) => {
         setProgress(30)
         e.preventDefault();
@@ -81,7 +81,7 @@ function Registration({ registrationType, pageTitle }) {
         try {
             setIsLoading(true);
             setProgress(70)
-            console.log(formData)
+            // console.log(formData)
             const response = await axios.post(`${BASE_URL}${registrationType}/register`,
                 formData,
                 {
