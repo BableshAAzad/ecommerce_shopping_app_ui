@@ -198,7 +198,7 @@ function HomePage() {
             <CarouselHome />
             <br />
             <section className="flex justify-start gap-4">
-                <Button onClick={() => setIsOpen(true)} outline gradientDuoTone="cyanToBlue">
+                <Button className="ml-1" onClick={() => setIsOpen(true)} outline gradientDuoTone="cyanToBlue">
                     <HiOutlineFilter className="size-6 pr-2" />
                     Filter Products
                 </Button>
