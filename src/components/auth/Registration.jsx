@@ -65,6 +65,7 @@ function Registration({ registrationType, pageTitle }) {
         }
     };
 
+    console.log(`${BASE_URL}${registrationType}/register`)
     const submitFormData = async (e) => {
         setProgress(30)
         e.preventDefault();
@@ -80,6 +81,7 @@ function Registration({ registrationType, pageTitle }) {
         try {
             setIsLoading(true);
             setProgress(70)
+            console.log(formData)
             const response = await axios.post(`${BASE_URL}${registrationType}/register`,
                 formData,
                 {
@@ -121,7 +123,7 @@ function Registration({ registrationType, pageTitle }) {
         <>
             {popupOpen && <PopupWarn isOpen={popupOpen}
                 setIsOpen={setPopupOpen} clr="warning" width="w-2/3"
-                head={popupData.message} msg={popupData.rootCause.password || popupData.rootCause} />}
+                head={popupData.message} msg={popupData.rootCause || popupData.rootCause.password} />}
 
             {isWrongFormData && <PopupWarn isOpen={isWrongFormData}
                 setIsOpen={setIsWrongFormData} clr="warning" width="w-2/3"
