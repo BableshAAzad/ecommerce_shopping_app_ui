@@ -23,7 +23,6 @@ function HomePage() {
     let [isFilterApplied, setIsFilterApplied] = useState(false);
     let [filterData, setFilterData] = useState({});
     let [isCategoryApplied, setIsCategoryApplied] = useState(false);
-    const [responsiveClass, setResponsiveClass] = useState('');
 
     document.title = "Ecommerce Shopping Application"
 
@@ -170,27 +169,8 @@ function HomePage() {
         }
     };
 
-    useEffect(() => {
-        const updateResponsiveClass = () => {
-            if (window.innerWidth < 337) {
-                setResponsiveClass('responsive-margin-337');
-            } else if (window.innerWidth < 409) {
-                setResponsiveClass('responsive-margin-409');
-            } else {
-                setResponsiveClass('');
-            }
-        };
-
-        updateResponsiveClass();
-
-        window.addEventListener('resize', updateResponsiveClass);
-
-        // Cleanup event listener on unmount
-        return () => window.removeEventListener('resize', updateResponsiveClass);
-    }, []);
-
     return (
-        <div className={`sm:mt-[1px] md:mt-[23px] lg:mt-[1px] ${responsiveClass}`}>
+        <>
             <FilterProduct isOpen={isOpen} setIsOpen={setIsOpen} handleFilterProducts={handleFilterProducts} />
 
             <CategorizedProduct handleFilterProducts={handleCategoryProducts} setIsCategoryApplied={setIsCategoryApplied} />
@@ -246,7 +226,7 @@ function HomePage() {
                 </section>
             </InfiniteScroll>
             <br />
-        </div>
+        </>
     );
 }
 
