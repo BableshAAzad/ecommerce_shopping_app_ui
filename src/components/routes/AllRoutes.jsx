@@ -1,13 +1,16 @@
-import { Suspense, useContext } from "react"
+import React, { Suspense, useContext } from "react"
 import { Route, Routes } from "react-router-dom"
 import App from "../../app/App"
-import OptVerification from "../auth/OptVerification"
-import UserOtpVerifiedPage from "../auth/UserOtpVerifiedPage"
 import Loading from "../loader/Loading"
 import { RouteComps } from "./AllComponents.jsx"
 import ProtectOtpRoute from "../authprovider/ProtectOtpRoute.jsx"
 import { AuthContext } from "../authprovider/AuthProvider.jsx"
-import UpdatePasswordPage from "../auth/UpdatePasswordPage.jsx"
+const UpdatePasswordPage = React.lazy(() => import("../auth/UpdatePasswordPage.jsx"));
+const OptVerification = React.lazy(() => import("../auth/OptVerification"));
+const UserOtpVerifiedPage = React.lazy(() => import("../auth/UserOtpVerifiedPage"));
+
+
+
 
 function AllRoutes() {
     let { isLogin } = useContext(AuthContext);
@@ -29,7 +32,7 @@ function AllRoutes() {
                     <Route path="update-password-page" element={<ProtectOtpRoute>
                         <UpdatePasswordPage />
                     </ProtectOtpRoute>} />
-                    
+
 
                     {RouteComps.map(({ element, path, isPrivate, isVisibleAfterLogin, role }, index) => {
                         if (isLogin) {
