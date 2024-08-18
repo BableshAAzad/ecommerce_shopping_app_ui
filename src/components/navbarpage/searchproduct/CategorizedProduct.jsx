@@ -1,4 +1,5 @@
 import "./CategorizedProduct.css"
+import "../HomePage.css"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTv, faShirt, faUserTie, faCouch, faBagShopping, faCartFlatbedSuitcase } from "@fortawesome/free-solid-svg-icons";
 
@@ -64,7 +65,7 @@ export default function CategorizedProduct({ handleFilterProducts, setIsCategory
 
                         {productTypes.map(({ productType, typeIcon, text_color, query }, index) => {
                             return <li key={index} className="me-2">
-                                <button className={`inline-block p-1 text-sm
+                                <button className={`inline-block p-1 text-sm m-1 ${window.innerWidth < 409 ? 'responsive-margin' : ''}
         rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:bg-slate-950 bg-slate-200
          dark:hover:text-gray-300 text-${text_color}-600`}
                                     type="button" onClick={() => handleCategoryClick(query)}>

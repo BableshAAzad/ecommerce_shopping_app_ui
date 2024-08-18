@@ -8,6 +8,7 @@ import "./Registration.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { HiMail, HiLockClosed } from 'react-icons/hi';
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 // eslint-disable-next-line react/prop-types
 function Registration({ registrationType, pageTitle }) {
@@ -64,6 +65,7 @@ function Registration({ registrationType, pageTitle }) {
         }
     };
 
+    // console.log(`${BASE_URL}${registrationType}/register`)
     const submitFormData = async (e) => {
         setProgress(30)
         e.preventDefault();
@@ -79,7 +81,8 @@ function Registration({ registrationType, pageTitle }) {
         try {
             setIsLoading(true);
             setProgress(70)
-            const response = await axios.post(`http://localhost:8080/api/v1/${registrationType}/register`,
+            // console.log(formData)
+            const response = await axios.post(`${BASE_URL}${registrationType}/register`,
                 formData,
                 {
                     headers: { "Content-Type": "application/json" },
@@ -97,12 +100,11 @@ function Registration({ registrationType, pageTitle }) {
         } catch (error) {
             otpVerify(false);
             console.log(error)
-            console.log(error.response.data);
-            let errorData = error.response.data;
-            if (errorData.status === 404 || errorData.status === 400) {
+            // console.log(error.response.rootCause);
+            if (error.response.status === 404 || error.response.status === 400) {
                 setPopupOpen(false);
                 setTimeout(() => {
-                    setPopupData(errorData);
+                    setPopupData(error.response.data);
                     setPopupOpen(true);
                 }, 0);
             }
@@ -119,11 +121,11 @@ function Registration({ registrationType, pageTitle }) {
     return (
         <>
             {popupOpen && <PopupWarn isOpen={popupOpen}
-                setIsOpen={setPopupOpen} clr="warning" width="w-2/3"
+                setIsOpen={setPopupOpen} clr="warning" width="w-[90%]"
                 head={popupData.message} msg={popupData.rootCause.password || popupData.rootCause} />}
 
             {isWrongFormData && <PopupWarn isOpen={isWrongFormData}
-                setIsOpen={setIsWrongFormData} clr="warning" width="w-2/3"
+                setIsOpen={setIsWrongFormData} clr="warning" width="w-[90%]"
                 head={`Invalid data`} msg={`Please fill proper data`} />}
 
             <h1 className='dark:text-white text-center text-2xl font-bold mt-4'>{pageTitle} Registration Page</h1>

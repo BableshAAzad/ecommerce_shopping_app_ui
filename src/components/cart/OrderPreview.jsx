@@ -5,6 +5,7 @@ import PopupWarn from "../popup/PopupWarn";
 import axios from "axios";
 import { AuthContext } from "../authprovider/AuthProvider";
 import { HiOutlineArrowRight, HiOutlineShoppingBag } from "react-icons/hi";
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function OrderPreview() {
     let [popupOpen, setPopupOpen] = useState(false);
@@ -81,7 +82,7 @@ function OrderPreview() {
         e.preventDefault();
         setProgress(70)
         try {
-            const response = await axios.post(`http://localhost:8080/api/v1/customers/${isLogin.userId}/addresses/${address.addressId}/products/${product.productId || product.inventoryId}/purchase-orders`,
+            const response = await axios.post(`${BASE_URL}customers/${isLogin.userId}/addresses/${address.addressId}/products/${product.productId || product.inventoryId}/purchase-orders`,
                 {
                     totalQuantity: quantity,
                     totalPrice: (quantity * (product.price || product.productPrice)).toFixed(2),

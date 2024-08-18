@@ -12,6 +12,7 @@ import { HiOutlineFilter } from "react-icons/hi";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CarouselHome from "./carousel/CarouselHome";
 import { AuthContext } from "../authprovider/AuthProvider";
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function HomePage() {
     let { setProgress, setIsLoading } = useContext(AuthContext);
@@ -29,14 +30,19 @@ function HomePage() {
         setIsLoading(true);
         setProgress(30)
         setProgress(70)
-        let response = await axios.get(`http://localhost:8080/api/v1/products?page=${page}&size=10`);
-        setProgress(90)
-        response = response.data;
-        console.log(response);
-        setProducts(response.data.content);
-        setTotalResults(response.data.page.totalElements);
-        setProgress(100)
-        setIsLoading(false);
+        try {
+            let response = await axios.get(`${BASE_URL}products?page=${page}&size=10`);
+            setProgress(90)
+            response = response.data;
+            console.log(response);
+            setProducts(response.data.content);
+            setTotalResults(response.data.page.totalElements);
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setProgress(100)
+            setIsLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -44,12 +50,16 @@ function HomePage() {
     }, []);
 
     let fetchMoreProducts = async () => {
-        let response = await axios.get(`http://localhost:8080/api/v1/products?page=${page + 1}&size=10`);
-        response = response.data;
-        console.log(response);
-        setPage(page + 1);
-        setProducts(products.concat(response.data.content));
-        setTotalResults(response.data.page.totalElements);
+        try {
+            let response = await axios.get(`${BASE_URL}products?page=${page + 1}&size=10`);
+            response = response.data;
+            console.log(response);
+            setPage(page + 1);
+            setProducts([...products, ...response.data.content]);
+            setTotalResults(response.data.page.totalElements);
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     const handleFilterProducts = async (filterData, reset = false) => {
@@ -60,35 +70,44 @@ function HomePage() {
             setFilterData({});
             getAllProducts();
         } else {
-            setProgress(30)
-            setFilterData(filterData);
-            setProgress(70)
-            let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=0&size=10`,
-                filterData, {
-                headers: { "Content-Type": "application/json" },
-            });
-            response = response.data;
-            setProgress(90)
-            console.log(response);
-            setPage(0);
-            setProducts(response.data.content);
-            setTotalResults(response.data.page.totalElements);
-            setIsFilterApplied(true);
-            setProgress(100)
-            setIsLoading(false)
+            try {
+                setProgress(30)
+                setFilterData(filterData);
+                setProgress(70)
+                let response = await axios.post(`${BASE_URL}products/filter?page=0&size=10`,
+                    filterData, {
+                    headers: { "Content-Type": "application/json" },
+                });
+                response = response.data;
+                setProgress(90)
+                console.log(response);
+                setPage(0);
+                setProducts(response.data.content);
+                setTotalResults(response.data.page.totalElements);
+                setIsFilterApplied(true);
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setProgress(100)
+                setIsLoading(false)
+            }
         }
     };
 
     let fetchMoreFilteredProducts = async () => {
-        let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=${page + 1}&size=10`,
-            filterData, {
-            headers: { "Content-Type": "application/json" },
-        });
-        response = response.data;
-        console.log(response);
-        setPage(page + 1);
-        setProducts(products.concat(response.data.content));
-        setTotalResults(response.data.page.totalElements);
+        try {
+            let response = await axios.post(`${BASE_URL}products/filter?page=${page + 1}&size=10`,
+                filterData, {
+                headers: { "Content-Type": "application/json" },
+            });
+            response = response.data;
+            // console.log(response);
+            setPage(page + 1);
+            setProducts(products.concat(response.data.content));
+            setTotalResults(response.data.page.totalElements);
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     const handleCategoryProducts = async (filterData, reset = false) => {
@@ -100,35 +119,44 @@ function HomePage() {
             setFilterData({});
             getAllProducts();
         } else {
-            setProgress(30)
-            setFilterData(filterData);
-            setProgress(70)
-            let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=0&size=10`,
-                filterData, {
-                headers: { "Content-Type": "application/json" },
-            });
-            response = response.data;
-            setProgress(90)
-            console.log(response);
-            setPage(0);
-            setProducts(response.data.content);
-            setTotalResults(response.data.page.totalElements);
-            setIsCategoryApplied(true);
-            setProgress(100)
-            setIsLoading(false)
+            try {
+                setProgress(30)
+                setFilterData(filterData);
+                setProgress(70)
+                let response = await axios.post(`${BASE_URL}products/filter?page=0&size=10`,
+                    filterData, {
+                    headers: { "Content-Type": "application/json" },
+                });
+                response = response.data;
+                setProgress(90)
+                console.log(response);
+                setPage(0);
+                setProducts(response.data.content);
+                setTotalResults(response.data.page.totalElements);
+                setIsCategoryApplied(true);
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setProgress(100)
+                setIsLoading(false)
+            }
         }
     };
 
     let fetchMoreCategoryProducts = async () => {
-        let response = await axios.post(`http://localhost:8080/api/v1/products/filter?page=${page + 1}&size=10`,
-            filterData, {
-            headers: { "Content-Type": "application/json" },
-        });
-        response = response.data;
-        console.log(response);
-        setPage(page + 1);
-        setProducts(products.concat(response.data.content));
-        setTotalResults(response.data.page.totalElements);
+        try {
+            let response = await axios.post(`${BASE_URL}products/filter?page=${page + 1}&size=10`,
+                filterData, {
+                headers: { "Content-Type": "application/json" },
+            });
+            response = response.data;
+            console.log(response);
+            setPage(page + 1);
+            setProducts(products.concat(response.data.content));
+            setTotalResults(response.data.page.totalElements);
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     const determineFetchMore = () => {
@@ -150,7 +178,7 @@ function HomePage() {
             <CarouselHome />
             <br />
             <section className="flex justify-start gap-4">
-                <Button onClick={() => setIsOpen(true)} outline gradientDuoTone="cyanToBlue">
+                <Button className="ml-1" onClick={() => setIsOpen(true)} outline gradientDuoTone="cyanToBlue">
                     <HiOutlineFilter className="size-6 pr-2" />
                     Filter Products
                 </Button>

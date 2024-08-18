@@ -6,6 +6,7 @@ import PopupWarn from '../popup/PopupWarn';
 import "../auth/Registration.css";
 import { HiOutlinePhone } from 'react-icons/hi';
 import { AuthContext } from '../authprovider/AuthProvider';
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function AddContact() {
     let [formData, setFormData] = useState({ contactNumber: "", priority: "" });
@@ -22,7 +23,7 @@ function AddContact() {
         setOpenModal } = useContext(AuthContext);
     let location = useLocation();
     let previousLocation = location.state?.from || "/";
-    
+
     document.title = "Add Contact - Ecommerce Shopping App"
 
     let updateData = ({ target: { name, value } }) => {
@@ -45,10 +46,10 @@ function AddContact() {
         setProgress(30)
         setIsLoading(true)
         e.preventDefault();
-        console.log(formData)
+        // console.log(formData)
         setProgress(70)
         try {
-            let response = await axios.post(`http://localhost:8080/api/v1/addresses/${addressId}/contacts`,
+            let response = await axios.post(`${BASE_URL}addresses/${addressId}/contacts`,
                 formData,
                 {
                     headers: { "Content-Type": "application/json" },
@@ -57,7 +58,7 @@ function AddContact() {
             );
             setProgress(90)
             setFormData({ contactNumber: "", priority: "" })
-            console.log(response.data)
+            // console.log(response.data)
             if (response.status === 201) {
                 // alert(response.data.message)
                 setIsLoading(false)

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { HiSearch, HiX } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { Spinner } from "flowbite-react";
+import { BASE_URL } from "../../../appconstants/EcommerceUrl"
 
 // eslint-disable-next-line react/prop-types
 function SearchProductModal({ openModal, setOpenModal }) {
@@ -14,7 +15,7 @@ function SearchProductModal({ openModal, setOpenModal }) {
     const fetchSearchResults = async (query) => {
         setIsLoading(true);
         try {
-            const response = await axios.get(`http://localhost:8080/api/v1/products/search/${query}?page=0&size=10`);
+            const response = await axios.get(`${BASE_URL}products/search/${query}?page=0&size=10`);
             if (response.status === 200) {
                 return response.data.data;
             }

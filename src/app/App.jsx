@@ -17,7 +17,7 @@ function App() {
         progress={progress}
         height={3}
       />
-      <div className="pt-16 md:pt-24"></div>
+      <div className="pt-16"></div>
       <Outlet />
       <FooterComp />
     </div>

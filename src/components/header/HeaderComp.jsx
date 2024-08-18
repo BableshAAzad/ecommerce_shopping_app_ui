@@ -24,7 +24,7 @@ function HeaderComp() {
 
     return (
         <>
-            <Navbar fluid className='bg-slate-300 dark:bg-gray-800 fixed w-full z-20 top-0 start-0 bg-opacity-70 dark:bg-opacity-60'>
+            <Navbar fluid className='bg-slate-300 dark:bg-gray-800 fixed w-full z-20 top-0 start-0 bg-opacity-75 dark:bg-opacity-70'>
                 <NavLink to='/' className='flex items-center navlogo'>
                     {/* <Navbar.Link active={location.pathname === "/"} as="div"> */}
                     <img src={shopping_bags} alt="EcommerceShoppingApp" width="47" height="40" title="EcommerceShoppingApp" />
@@ -53,7 +53,6 @@ function HeaderComp() {
                             setOpenModal={setOpenModal}
                         />
                     </div>
-
                 </div>
                 <Navbar.Collapse className="md:order-2">
                     <UserData />
@@ -74,7 +73,9 @@ function HeaderComp() {
                     </NavLink>
 
                     <div className='navbtn mt-auto mb-auto dark:text-slate-400 hover:dark:text-slate-100'>
-                        <DarkModeOption />
+                        <Navbar.Link className='ml-[-12px]' as="div">
+                            <DarkModeOption />
+                        </Navbar.Link>
                     </div>
 
                     <MoreOptionNav />

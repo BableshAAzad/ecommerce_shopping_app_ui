@@ -5,6 +5,7 @@ import { AuthContext } from "../../authprovider/AuthProvider";
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import { discounts } from "../DiscountTypes"
+import { BASE_URL } from "../../../appconstants/EcommerceUrl"
 
 function UpdateProduct() {
     let id = useId();
@@ -85,7 +86,7 @@ function UpdateProduct() {
         }
         setProgress(70)
         try {
-            const response = await axios.put(`http://localhost:8080/api/v1/sellers/products/${productId}/stocks?quantity=${productQuantity.quantity}`,
+            const response = await axios.put(`${BASE_URL}sellers/products/${productId}/stocks?quantity=${productQuantity.quantity}`,
                 multipartFormData,
                 {
                     headers: { "Content-Type": "multipart/form-data" },
@@ -93,7 +94,7 @@ function UpdateProduct() {
                 }
             );
             setProgress(90)
-            console.log(response);
+            // console.log(response);
             if (response.status === 200) {
                 setModelMessage(response.data.message)
                 setPreviousLocation(from)

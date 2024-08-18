@@ -5,6 +5,7 @@ import { AuthContext } from "../../authprovider/AuthProvider";
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import { discounts } from "../DiscountTypes"
+import { BASE_URL } from "../../../appconstants/EcommerceUrl"
 
 function AddProduct() {
     let id = useId();
@@ -71,7 +72,7 @@ function AddProduct() {
                 formData = { ...formData, productImage: productImage }
             }
             setProgress(70)
-            const response = await axios.post(`http://localhost:8080/api/v1/storages/${storageId}/products?quantity=${productQuantity.quantity}`,
+            const response = await axios.post(`${BASE_URL}storages/${storageId}/products?quantity=${productQuantity.quantity}`,
                 formData,
                 {
                     headers: { "Content-Type": "multipart/form-data" },
@@ -187,7 +188,7 @@ function AddProduct() {
                     <div className="mb-2 block">
                         <h3 className="text-purple-700 dark:text-purple-500">Material Types</h3>
                         <div className="grid grid-cols-2 gap-2 mt-2">
-                            { materialTypesList.map((type, index) => (
+                            {materialTypesList.map((type, index) => (
                                 <React.Fragment key={index}>
                                     {materials.includes(type) && (
                                         <div className="flex items-center space-x-2">

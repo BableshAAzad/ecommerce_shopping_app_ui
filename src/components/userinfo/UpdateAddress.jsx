@@ -4,6 +4,7 @@ import axios from "axios";
 import { addressType } from "./AddressTypes"
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../authprovider/AuthProvider";
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function UpdateAddress() {
     let id = useId();
@@ -50,7 +51,7 @@ function UpdateAddress() {
         console.log(addressData);
         setProgress(70)
         try {
-            const response = await axios.put(`http://localhost:8080/api/v1/users/addresses/${location.state.data.addressId}`,
+            const response = await axios.put(`${BASE_URL}users/addresses/${location.state.data.addressId}`,
                 addressData,
                 {
                     headers: { "Content-Type": "application/json" },
@@ -65,7 +66,7 @@ function UpdateAddress() {
                 // navigate("/profile-page")
                 handleSuccessResponse(response.data.message)
             }
-            console.log(response);
+            // console.log(response);
         } catch (error) {
             console.log(error);
         } finally {

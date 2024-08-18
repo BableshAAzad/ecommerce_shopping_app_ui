@@ -9,6 +9,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Spinner from "../../loader/Spinner";
 import { TextInput } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
+import { BASE_URL } from "../../../appconstants/EcommerceUrl"
 
 function Storage() {
     let [storages, setStorages] = useState([]);
@@ -20,22 +21,27 @@ function Storage() {
     let navigate = useNavigate();
 
     let getStorages = async () => {
-        setProgress(30);
-        setIsLoading(true);
-        setProgress(70);
-        let response = await axios.get(`http://localhost:8080/api/v1/sellers/${isLogin.userId}/storages?page=0&size=10`,
-            {
-                headers: { "Content-Type": "application/json" },
-                withCredentials: true // Includes cookies with the request
-            }
-        );
-        setProgress(90);
-        console.log(response);
-        setStorages(response.data.data.content);
-        setFilteredStorages(response.data.data.content);
-        setTotalResults(response.data.data.page.totalElements);
-        setIsLoading(false);
-        setProgress(100);
+        try {
+            setProgress(30);
+            setIsLoading(true);
+            setProgress(70);
+            let response = await axios.get(`${BASE_URL}sellers/${isLogin.userId}/storages?page=0&size=10`,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true // Includes cookies with the request
+                }
+            );
+            setProgress(90);
+            console.log(response);
+            setStorages(response.data.data.content);
+            setFilteredStorages(response.data.data.content);
+            setTotalResults(response.data.data.page.totalElements);
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setIsLoading(false);
+            setProgress(100);
+        }
     };
 
     useEffect(() => {
@@ -43,16 +49,20 @@ function Storage() {
     }, []);
 
     let fetchMoreStorages = async () => {
-        let response = await axios.get(`http://localhost:8080/api/v1/sellers/${isLogin.userId}/storages?page=${page + 1}&size=10`,
-            {
-                headers: { "Content-Type": "application/json" },
-                withCredentials: true // Includes cookies with the request
-            }
-        );
-        setStorages(prevStorages => prevStorages.concat(response.data.data.content));
-        setFilteredStorages(prevFilteredStorages => prevFilteredStorages.concat(response.data.data.content));
-        setTotalResults(response.data.data.page.totalElements);
-        setPage(page + 1);
+        try {
+            let response = await axios.get(`${BASE_URL}sellers/${isLogin.userId}/storages?page=${page + 1}&size=10`,
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true // Includes cookies with the request
+                }
+            );
+            setStorages(prevStorages => prevStorages.concat(response.data.data.content));
+            setFilteredStorages(prevFilteredStorages => prevFilteredStorages.concat(response.data.data.content));
+            setTotalResults(response.data.data.page.totalElements);
+            setPage(page + 1);
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     let handleNavigate = (storageId, materialTypes) => {

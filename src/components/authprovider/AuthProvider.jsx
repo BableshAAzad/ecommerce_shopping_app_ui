@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import Loading from "../loader/Loading"
 import { ModelAlert } from "../popup/ModelAlert";
 import LogoutAlert from "../auth/LogoutAlert";
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
+import "../navbarpage/HomePage.css"
 
 export let AuthContext = createContext();
 
@@ -20,6 +22,7 @@ function AuthProvider({ children }) {
     let [modelMessage, setModelMessage] = useState("")
     let [previousLocation, setPreviousLocation] = useState("");
     let [openLogoutAlertModal, setOpenLogoutAlertModal] = useState(false);
+    const [responsiveClass, setResponsiveClass] = useState('');
 
     let login = (userData) => {
         setIsLogin(userData);
@@ -42,7 +45,7 @@ function AuthProvider({ children }) {
             setIsLoading(true)
             refreshCancelSource.current.cancel('Cancelling previous refresh request');
             refreshCancelSource.current = axios.CancelToken.source();
-            let response = await axios.post("http://localhost:8080/api/v1/refreshLogin", "", {
+            let response = await axios.post(`${BASE_URL}refreshLogin`, "", {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
                 cancelToken: refreshCancelSource.current.token,
@@ -55,7 +58,6 @@ function AuthProvider({ children }) {
                 console.log("RT regenerated successfully done");
                 refreshTokenCalled.current = false; // Reset the ref after successful refresh
             }
-            setIsLoading(false)
         } catch (error) {
             console.error(error);
             if (error.response && error.response.status === 401) {
@@ -63,6 +65,7 @@ function AuthProvider({ children }) {
                 navigate("/login-form");
             }
             refreshTokenCalled.current = false; // Reset the ref in case of error
+        } finally {
             setIsLoading(false)
         }
     };
@@ -92,6 +95,25 @@ function AuthProvider({ children }) {
         }
     }, [isLogin, navigate]);
 
+    useEffect(() => {
+        const updateResponsiveClass = () => {
+            if (window.innerWidth < 337) {
+                setResponsiveClass('responsive-margin-337');
+            } else if (window.innerWidth < 409) {
+                setResponsiveClass('responsive-margin-409');
+            } else {
+                setResponsiveClass('');
+            }
+        };
+
+        updateResponsiveClass();
+
+        window.addEventListener('resize', updateResponsiveClass);
+
+        // Cleanup event listener on unmount
+        return () => window.removeEventListener('resize', updateResponsiveClass);
+    }, []);
+
     return (
         <AuthContext.Provider value={{
             isLogin,
@@ -109,7 +131,7 @@ function AuthProvider({ children }) {
             openLogoutAlertModal,
             setOpenLogoutAlertModal
         }}>
-            <>
+            <div className={`sm:pt-[1px] md:pt-[23px] lg:pt-[1px] ${responsiveClass} dark:bg-slate-900`}>
                 {isLoading && < Loading />}
 
                 <ModelAlert openModal={openModal}
@@ -121,7 +143,7 @@ function AuthProvider({ children }) {
 
                 <LogoutAlert openLogoutAlertModal={openLogoutAlertModal}
                     setOpenLogoutAlertModal={setOpenLogoutAlertModal} />
-            </>
+            </div>
         </AuthContext.Provider>
     );
 }

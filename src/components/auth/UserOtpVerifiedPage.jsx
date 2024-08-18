@@ -9,12 +9,12 @@ function UserOtpVerifiedPage() {
   const location = useLocation();
   const { otpVerify } = useContext(AuthContext);
   let formData = location.state.data || location.state
-  // || {
-  //   userId: 101,
-  //   username: "aazadbablesh",
-  //   email: "aazadbablesh@mail.com",
-  //   userRole: "CUSTOMER"
-  // };
+    || {
+    userId: 777,
+    username: "aazadbablesh",
+    email: "aazadbablesh@mail.com",
+    userRole: "CUSTOMER"
+  };
   document.title = "Registration successful - Ecommerce Shopping App"
 
   useEffect(() => {
@@ -24,8 +24,6 @@ function UserOtpVerifiedPage() {
     }, 180000)
   }, [])
 
-  // console.log(formData);
-  // console.log(location)
   return (
     <div className="flex justify-center items-center mb-20 mt-20">
       {formData !== null ?

@@ -9,6 +9,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { faMobileRetro } from "@fortawesome/free-solid-svg-icons";
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function ProfilePage() {
     let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
@@ -29,19 +30,19 @@ function ProfilePage() {
         setIsLoading(true);
         try {
             setProgress(50)
-            const responseUser = await axios.get(`http://localhost:8080/api/v1/users/${isLogin.userId}`, {
+            const responseUser = await axios.get(`${BASE_URL}users/${isLogin.userId}`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });
             setProgress(70)
-            console.log(responseUser.data)
+            // console.log(responseUser.data)
             setUserData(responseUser.data.data)
-            const responseAddress = await axios.get(`http://localhost:8080/api/v1/users/${isLogin.userId}/addresses`, {
+            const responseAddress = await axios.get(`${BASE_URL}users/${isLogin.userId}/addresses`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });
             setProgress(90)
-            console.log(responseAddress.data);
+            // console.log(responseAddress.data);
             if (responseAddress.status === 200) {
                 setAddressData(responseAddress.data.data)
             }
@@ -164,7 +165,7 @@ function ProfilePage() {
                                         <span className="text-slate-700 dark:text-slate-300 mr-1">{contactNumber}</span>
                                         <Link to="/profile-page/addresses/update-contact"
                                             state={{
-                                                addressId : addressId,
+                                                addressId: addressId,
                                                 contactId: contactId,
                                                 contactNumber: contactNumber,
                                                 priority: priority,

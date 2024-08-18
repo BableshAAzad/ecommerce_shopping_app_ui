@@ -29,6 +29,7 @@ import UpdateContact from "../userinfo/UpdateContact";
 import OrderAddress from "../cart/OrderAddress";
 import OrderPreview from "../cart/OrderPreview";
 import ForgotPassword from "../auth/ForgotPassword";
+import CustomerCare from "../header/moreoption/CustomerCare";
 
 export const RouteComps = [
     {
@@ -240,6 +241,13 @@ export const RouteComps = [
     {
         element: <ProductInfo />,
         path: "products/:pid",
+        isPrivate: false,
+        isVisibleAfterLogin: true,
+        role: []
+    },
+    {
+        element: <CustomerCare />,
+        path: "customer-care",
         isPrivate: false,
         isVisibleAfterLogin: true,
         role: []

@@ -8,6 +8,7 @@ import "../auth/Registration.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { HiMail, HiLockClosed } from 'react-icons/hi';
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function UpdatePasswordPage() {
     const location = useLocation();
@@ -83,7 +84,7 @@ function UpdatePasswordPage() {
             setIsLoading(true);
             console.log(credential)
             setProgress(70)
-            const response = await axios.put(`http://localhost:8080/api/v1/users/update?secrete=` + credential.secrete,
+            const response = await axios.put(`${BASE_URL}users/update?secrete=` + credential.secrete,
                 formData,
                 {
                     headers: { "Content-Type": "application/json" },

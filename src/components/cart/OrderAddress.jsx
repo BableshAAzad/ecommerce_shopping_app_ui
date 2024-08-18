@@ -8,6 +8,7 @@ import { faMobileRetro } from "@fortawesome/free-solid-svg-icons";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { HiOutlineArrowRight } from "react-icons/hi";
 import map from "../../images/map.png"
+import {BASE_URL} from "../../appconstants/EcommerceUrl"
 
 export default function OrderAddress() {
     let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
@@ -22,7 +23,7 @@ export default function OrderAddress() {
         setIsLoading(true);
         try {
             setProgress(70)
-            const responseAddress = await axios.get(`http://localhost:8080/api/v1/users/${isLogin.userId}/addresses`, {
+            const responseAddress = await axios.get(`${BASE_URL}users/${isLogin.userId}/addresses`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });

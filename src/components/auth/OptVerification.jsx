@@ -7,6 +7,7 @@ import { AuthContext } from '../authprovider/AuthProvider';
 import PopupWarn from '../popup/PopupWarn';
 import { faArrowRight, faClock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function OptVerification() {
     const [openModal, setOpenModal] = useState(true);
@@ -65,7 +66,7 @@ function OptVerification() {
             setIsLoading(true)
             setProgress(70)
             console.log({ email: formData.email, opt: otp.join('') })
-            const response = await axios.post("http://localhost:8080/api/v1/users/otpVerification",
+            const response = await axios.post(`${BASE_URL}users/otpVerification`,
                 { email: formData.email, otp: otp.join('') },
                 {
                     headers: { "Content-Type": "application/json" },
@@ -103,7 +104,7 @@ function OptVerification() {
             setIsLoading(true)
             setProgress(70)
             console.log({ email: formData.email, opt: otp.join('') })
-            const response = await axios.post("http://localhost:8080/api/v1/users/otpVerification",
+            const response = await axios.post(`${BASE_URL}users/otpVerification`,
                 { email: formData.email, otp: otp.join('') },
                 {
                     headers: { "Content-Type": "application/json" },
@@ -148,7 +149,7 @@ function OptVerification() {
             setIsLoading(true)
             console.log({ email: formData.email, opt: otp.join('') })
             setProgress(70)
-            const response = await axios.post("http://localhost:8080/api/v1/users/resendOtp",
+            const response = await axios.post(`${BASE_URL}users/resendOtp`,
                 formData,
                 {
                     headers: { "Content-Type": "application/json" },

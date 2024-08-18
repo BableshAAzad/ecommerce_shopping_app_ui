@@ -6,6 +6,7 @@ import PopupWarn from '../popup/PopupWarn';
 import "../auth/Registration.css";
 import { HiOutlinePhone } from 'react-icons/hi';
 import { AuthContext } from '../authprovider/AuthProvider';
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function UpdateContact() {
     const location = useLocation()
@@ -52,7 +53,7 @@ function UpdateContact() {
         console.log(formData)
         setProgress(70)
         try {
-            const response = await axios.put(`http://localhost:8080/api/v1/addresses/${location.state.addressId}/contacts/${location.state.contactId}`,
+            const response = await axios.put(`${BASE_URL}addresses/${location.state.addressId}/contacts/${location.state.contactId}`,
                 formData,
                 {
                     headers: { "Content-Type": "application/json" },
@@ -61,7 +62,7 @@ function UpdateContact() {
             );
             setProgress(90)
             setFormData({ contactNumber: "", priority: "" })
-            console.log(response)
+            // console.log(response)
             if (response.status === 200) {
                 setProgress(100)
                 setIsLoading(false)
@@ -71,7 +72,7 @@ function UpdateContact() {
             }
         } catch (error) {
             console.log(error)
-            console.log(error.response.data);
+            // console.log(error.response.data);
             let errorData = error.response.data;
             if (errorData.status === 401 || errorData.status === 400 || errorData.status === 404) {
                 setPopupOpen(false);

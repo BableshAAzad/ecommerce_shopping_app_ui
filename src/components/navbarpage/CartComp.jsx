@@ -5,6 +5,7 @@ import axios from "axios";
 import { AuthContext } from "../authprovider/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import empty_bag from "../../images/empty_bag.png"
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function CartComp() {
     let { isLogin,
@@ -37,7 +38,7 @@ function CartComp() {
         setProgress(30)
         try {
             setProgress(70)
-            const responseCartProducts = await axios.get(`http://localhost:8080/api/v1/customers/${isLogin.userId}/cart-products`, {
+            const responseCartProducts = await axios.get(`${BASE_URL}customers/${isLogin.userId}/cart-products`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });
@@ -85,7 +86,7 @@ function CartComp() {
         setIsLoading(true);
         try {
             setProgress(60)
-            const responseCartProducts = await axios.delete(`http://localhost:8080/api/v1/customers/${isLogin.userId}/cart-products/${cartProductId}`,
+            const responseCartProducts = await axios.delete(`${BASE_URL}customers/${isLogin.userId}/cart-products/${cartProductId}`,
                 {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true,
@@ -112,7 +113,7 @@ function CartComp() {
         setIsLoading(true);
         try {
             setProgress(60)
-            const responseCartProducts = await axios.delete(`http://localhost:8080/api/v1/customers/${isLogin.userId}/cart-products`,
+            const responseCartProducts = await axios.delete(`${BASE_URL}customers/${isLogin.userId}/cart-products`,
                 {
                     headers: { "Content-Type": "application/json" },
                     withCredentials: true,
@@ -138,7 +139,7 @@ function CartComp() {
         setIsLoading(true);
         try {
             setProgress(60)
-            const responseCartProducts = await axios.put(`http://localhost:8080/api/v1/customers/cart-products/${cartProductId}?selectedQuantity=${selectedQuantity}`,
+            const responseCartProducts = await axios.put(`${BASE_URL}customers/cart-products/${cartProductId}?selectedQuantity=${selectedQuantity}`,
                 "", {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
