@@ -100,12 +100,11 @@ function Registration({ registrationType, pageTitle }) {
         } catch (error) {
             otpVerify(false);
             console.log(error)
-            console.log(error.response.data);
-            let errorData = error.response.data;
-            if (errorData.status === 404 || errorData.status === 400) {
+            // console.log(error.response.rootCause);
+            if (error.response.status === 404 || error.response.status === 400) {
                 setPopupOpen(false);
                 setTimeout(() => {
-                    setPopupData(errorData);
+                    setPopupData(error.response.data);
                     setPopupOpen(true);
                 }, 0);
             }
@@ -122,11 +121,11 @@ function Registration({ registrationType, pageTitle }) {
     return (
         <>
             {popupOpen && <PopupWarn isOpen={popupOpen}
-                setIsOpen={setPopupOpen} clr="warning" width="w-2/3"
-                head={popupData.message} msg={popupData.rootCause || popupData.rootCause.password} />}
+                setIsOpen={setPopupOpen} clr="warning" width="w-[90%]"
+                head={popupData.message} msg={popupData.rootCause.password || popupData.rootCause} />}
 
             {isWrongFormData && <PopupWarn isOpen={isWrongFormData}
-                setIsOpen={setIsWrongFormData} clr="warning" width="w-2/3"
+                setIsOpen={setIsWrongFormData} clr="warning" width="w-[90%]"
                 head={`Invalid data`} msg={`Please fill proper data`} />}
 
             <h1 className='dark:text-white text-center text-2xl font-bold mt-4'>{pageTitle} Registration Page</h1>
