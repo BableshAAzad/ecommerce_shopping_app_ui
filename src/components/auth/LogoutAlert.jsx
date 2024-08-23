@@ -3,8 +3,8 @@ import { Button, Modal } from "flowbite-react";
 import { useContext } from "react";
 import { HiOutlineLogout } from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../appconstants/EcommerceUrl";
 import { AuthContext } from "../authprovider/AuthProvider";
-import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 // eslint-disable-next-line react/prop-types
 function LogoutAlert({ openLogoutAlertModal, setOpenLogoutAlertModal }) {

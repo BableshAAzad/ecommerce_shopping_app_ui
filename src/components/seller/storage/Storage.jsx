@@ -9,7 +9,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Spinner from "../../loader/Spinner";
 import { TextInput } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
-import { BASE_URL } from "../../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function Storage() {
     let [storages, setStorages] = useState([]);

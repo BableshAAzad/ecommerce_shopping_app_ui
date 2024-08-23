@@ -8,7 +8,7 @@ import "./Registration.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { HiMail, HiLockClosed } from 'react-icons/hi';
-import { BASE_URL } from "../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../appconstants/EcommerceUrl"
 
 // eslint-disable-next-line react/prop-types
 function Registration({ registrationType, pageTitle }) {

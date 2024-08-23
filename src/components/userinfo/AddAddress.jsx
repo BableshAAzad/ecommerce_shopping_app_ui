@@ -4,7 +4,7 @@ import { AuthContext } from "../authprovider/AuthProvider";
 import axios from "axios";
 import { addressType } from "./AddressTypes"
 import { useLocation } from "react-router-dom";
-import { BASE_URL } from "../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../appconstants/EcommerceUrl"
 
 function AddAddress() {
     let id = useId();

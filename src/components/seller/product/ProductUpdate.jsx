@@ -5,7 +5,7 @@ import { AuthContext } from "../../authprovider/AuthProvider";
 import { useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import { discounts } from "../DiscountTypes"
-import { BASE_URL } from "../../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function UpdateProduct() {
     let id = useId();

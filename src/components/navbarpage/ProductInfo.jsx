@@ -7,7 +7,7 @@ import { HiShoppingBag, HiShoppingCart, HiBell, HiExclamation, HiClock, HiCheck 
 import "./HomePage.css"
 import { AuthContext } from "../authprovider/AuthProvider";
 import PopupWarn from "../popup/PopupWarn";
-import { BASE_URL } from "../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../appconstants/EcommerceUrl"
 
 function ProductInfo() {
     let { isLogin,

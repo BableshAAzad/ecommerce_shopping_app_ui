@@ -6,7 +6,7 @@ import PopupWarn from '../popup/PopupWarn';
 import "../auth/Registration.css";
 import { HiOutlinePhone } from 'react-icons/hi';
 import { AuthContext } from '../authprovider/AuthProvider';
-import { BASE_URL } from "../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../appconstants/EcommerceUrl"
 
 function AddContact() {
     let [formData, setFormData] = useState({ contactNumber: "", priority: "" });

@@ -5,7 +5,7 @@ import productImg from "../../../images/giftbox.png"
 import { Badge, Button } from "flowbite-react";
 import { HiArrowRight, HiClock, HiTrash } from "react-icons/hi";
 import { AuthContext } from "../../authprovider/AuthProvider";
-import { BASE_URL } from "../../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function ProductInfoSeller() {
     let { productId } = useParams();

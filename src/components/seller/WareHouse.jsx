@@ -9,7 +9,7 @@ import { HiSearch } from "react-icons/hi";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Spinner from "../loader/Spinner";
 import warehouse_empty from "../../images/warehouse_empty.png"
-import { BASE_URL } from "../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../appconstants/EcommerceUrl"
 
 function WareHouse() {
     let [wareHouses, setWareHouses] = useState([])

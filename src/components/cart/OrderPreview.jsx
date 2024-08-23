@@ -5,7 +5,7 @@ import PopupWarn from "../popup/PopupWarn";
 import axios from "axios";
 import { AuthContext } from "../authprovider/AuthProvider";
 import { HiOutlineArrowRight, HiOutlineShoppingBag } from "react-icons/hi";
-import { BASE_URL } from "../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../appconstants/EcommerceUrl"
 
 function OrderPreview() {
     let [popupOpen, setPopupOpen] = useState(false);

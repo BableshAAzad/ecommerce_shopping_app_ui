@@ -12,7 +12,7 @@ import { HiOutlineFilter } from "react-icons/hi";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CarouselHome from "./carousel/CarouselHome";
 import { AuthContext } from "../authprovider/AuthProvider";
-import { BASE_URL } from "../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../appconstants/EcommerceUrl"
 
 function HomePage() {
     let { setProgress, setIsLoading } = useContext(AuthContext);
