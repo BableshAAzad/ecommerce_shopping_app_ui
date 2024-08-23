@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { HiSearch, HiX } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { Spinner } from "flowbite-react";
-import { BASE_URL } from "../../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 // eslint-disable-next-line react/prop-types
 function SearchProductModal({ openModal, setOpenModal }) {

@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../authprovider/AuthProvider";
 import empty_bag from "../../images/empty_bag.png"
-import { BASE_URL } from "../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../appconstants/EcommerceUrl"
 
 function OrderComp() {
     let [orders, setOrders] = useState([]);

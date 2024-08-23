@@ -9,7 +9,7 @@ import Spinner from "../../loader/Spinner";
 import openBox from "../../../images/open-box.png"
 import { TextInput } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
-import { BASE_URL } from "../../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function ProductBySeller() {
   let [products, setProducts] = useState([]);

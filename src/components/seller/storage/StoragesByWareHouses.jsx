@@ -9,7 +9,7 @@ import Spinner from "../../loader/Spinner";
 import { TextInput } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
 import searchImg from "../../../images/search.png";
-import { BASE_URL } from "../../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../../appconstants/EcommerceUrl"
 
 function StoragesByWareHouses() {
     let [storages, setStorages] = useState([]);

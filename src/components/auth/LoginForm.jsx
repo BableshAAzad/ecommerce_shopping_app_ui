@@ -8,7 +8,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import PopupWarn from '../popup/PopupWarn';
 import "./Registration.css";
 import { HiUser, HiKey } from 'react-icons/hi';
-import { BASE_URL } from "../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../appconstants/EcommerceUrl"
 
 function LoginForm() {
     const [formData, setFormData] = useState({ username: "", password: "" });

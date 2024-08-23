@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../authprovider/AuthProvider";
-import { BASE_URL } from "../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../appconstants/EcommerceUrl"
 
 // eslint-disable-next-line react/prop-types
 function LogoutOperation({ modelData: { val }, handleModel }) {

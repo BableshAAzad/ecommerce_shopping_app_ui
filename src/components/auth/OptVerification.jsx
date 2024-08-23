@@ -7,7 +7,7 @@ import { AuthContext } from '../authprovider/AuthProvider';
 import PopupWarn from '../popup/PopupWarn';
 import { faArrowRight, faClock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { BASE_URL } from "../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../appconstants/EcommerceUrl"
 
 function OptVerification() {
     const [openModal, setOpenModal] = useState(true);

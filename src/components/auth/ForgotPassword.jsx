@@ -1,13 +1,13 @@
-import { useContext, useState } from "react";
-import PopupWarn from "../popup/PopupWarn";
-import { Button, Label, TextInput } from "flowbite-react";
-import { HiMail } from "react-icons/hi";
-import { AuthContext } from "../authprovider/AuthProvider";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { BASE_URL } from "../../appconstants/EcommerceUrl"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
+import { Button, Label, TextInput } from "flowbite-react";
+import { useContext, useState } from "react";
+import { HiMail } from "react-icons/hi";
+import { Link, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../appconstants/EcommerceUrl";
+import { AuthContext } from "../authprovider/AuthProvider";
+import PopupWarn from "../popup/PopupWarn";
 
 function ForgotPassword() {
     let [emailData, setEmailData] = useState({ email: "", password: "Ecommerce@123!" })

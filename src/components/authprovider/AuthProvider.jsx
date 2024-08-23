@@ -1,11 +1,11 @@
-import { createContext, useState, useEffect, useRef } from "react";
 import axios from 'axios';
+import { createContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import Loading from "../loader/Loading"
-import { ModelAlert } from "../popup/ModelAlert";
+import { BASE_URL } from "../appconstants/EcommerceUrl";
 import LogoutAlert from "../auth/LogoutAlert";
-import { BASE_URL } from "../../appconstants/EcommerceUrl"
-import "../navbarpage/HomePage.css"
+import Loading from "../loader/Loading";
+import "../navbarpage/HomePage.css";
+import { ModelAlert } from "../popup/ModelAlert";
 
 export let AuthContext = createContext();
 

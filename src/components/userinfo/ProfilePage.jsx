@@ -9,7 +9,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { faMobileRetro } from "@fortawesome/free-solid-svg-icons";
-import { BASE_URL } from "../../appconstants/EcommerceUrl"
+import { BASE_URL } from "../appconstants/EcommerceUrl"
 
 function ProfilePage() {
     let { isLogin, setProgress, setIsLoading } = useContext(AuthContext);
