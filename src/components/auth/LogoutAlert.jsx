@@ -25,10 +25,11 @@ function LogoutAlert({ openLogoutAlertModal, setOpenLogoutAlertModal }) {
             console.log(response.data)
             setProgress(90)
             if (response.status === 200) {
-                localStorage.setItem("userData", "")
-                localStorage.setItem("atExpiredTime", "");
-                localStorage.setItem("rtExpiredTime", "");
+                // localStorage.setItem("userData", "")
+                // localStorage.setItem("atExpiredTime", "");
+                // localStorage.setItem("rtExpiredTime", "");
                 login(null)
+                logout();
                 setProgress(100)
                 setIsLoading(false)
                 navigate("/login-form")
@@ -62,7 +63,6 @@ function LogoutAlert({ openLogoutAlertModal, setOpenLogoutAlertModal }) {
                             <Button color="failure" onClick={() => {
                                 setOpenLogoutAlertModal(false);
                                 handleLogout();
-                                logout();
                             }}>
                                 {"Logout"}
                             </Button>
