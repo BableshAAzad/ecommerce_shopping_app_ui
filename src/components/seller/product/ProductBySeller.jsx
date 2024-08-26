@@ -34,7 +34,7 @@ function ProductBySeller() {
       );
       setProgress(90)
       response = response.data;
-      console.log(response);
+      // console.log(response);
       setProducts(response.data.content);
       setFilteredProducts(response.data.content)
       setTotalResults(response.data.page.totalElements);
