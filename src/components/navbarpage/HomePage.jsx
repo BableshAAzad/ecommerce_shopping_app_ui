@@ -34,7 +34,7 @@ function HomePage() {
             let response = await axios.get(`${BASE_URL}products?page=${page}&size=10`);
             setProgress(90)
             response = response.data;
-            console.log(response);
+            // console.log(response);
             setProducts(response.data.content);
             setTotalResults(response.data.page.totalElements);
         } catch (error) {
@@ -53,7 +53,7 @@ function HomePage() {
         try {
             let response = await axios.get(`${BASE_URL}products?page=${page + 1}&size=10`);
             response = response.data;
-            console.log(response);
+            // console.log(response);
             setPage(page + 1);
             setProducts([...products, ...response.data.content]);
             setTotalResults(response.data.page.totalElements);
@@ -80,7 +80,7 @@ function HomePage() {
                 });
                 response = response.data;
                 setProgress(90)
-                console.log(response);
+                // console.log(response);
                 setPage(0);
                 setProducts(response.data.content);
                 setTotalResults(response.data.page.totalElements);
@@ -129,7 +129,7 @@ function HomePage() {
                 });
                 response = response.data;
                 setProgress(90)
-                console.log(response);
+                // console.log(response);
                 setPage(0);
                 setProducts(response.data.content);
                 setTotalResults(response.data.page.totalElements);
@@ -150,7 +150,7 @@ function HomePage() {
                 headers: { "Content-Type": "application/json" },
             });
             response = response.data;
-            console.log(response);
+            // console.log(response);
             setPage(page + 1);
             setProducts(products.concat(response.data.content));
             setTotalResults(response.data.page.totalElements);

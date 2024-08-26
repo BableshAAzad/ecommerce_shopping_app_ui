@@ -26,7 +26,7 @@ function ProductInfoSeller() {
             setProgress(90)
             response = response.data.data;
             setProduct(response);
-            console.log(response);
+            // console.log(response);
             setStocks(response.stocks[0].quantity);
         } catch (error) {
             console.log(error)

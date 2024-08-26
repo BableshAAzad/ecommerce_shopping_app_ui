@@ -37,7 +37,7 @@ function StoragesByWareHouses() {
             setStorages(response.data.data.content)
             setFilteredStorages(response.data.data.content);
             setTotalResults(response.data.data.page.totalElements)
-            console.log(response)
+            // console.log(response)
             setProgress(90)
         } catch (error) {
             console.log(error)

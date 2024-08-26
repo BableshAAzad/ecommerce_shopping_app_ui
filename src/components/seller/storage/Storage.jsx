@@ -32,7 +32,7 @@ function Storage() {
                 }
             );
             setProgress(90);
-            console.log(response);
+            // console.log(response);
             setStorages(response.data.data.content);
             setFilteredStorages(response.data.data.content);
             setTotalResults(response.data.data.page.totalElements);
