@@ -36,7 +36,7 @@ root_directory/
 │   ├── app/
 │   │   ├── components/
 │   │   │   ├─ appconstants//
-│   │   │   │   └── EcommerceUrl.jsx/
+│   │   │   │  └── EcommerceUrl.jsx/
 │   │   │   │      └── BASE_URL/      
 ````
 ---
@@ -46,8 +46,10 @@ root_directory/
   <img src="./project_images/dark_light.png" alt="dark_light" width="45%"/>
 </p>
 <p align="center">
-  <img src="./project_images/short_product.png" alt="short_product" width="45%"/>
-  <img src="./project_images/filter_product.png" alt="filter_product" width="45%"/>
+  <img src="./project_images/short_product.png" alt="short_product" width="90%"/>
+</p>
+<p align="center">
+  <img src="./project_images/filter_product.png" alt="filter_product" width="90%"/>
 </p>
 
 ---
