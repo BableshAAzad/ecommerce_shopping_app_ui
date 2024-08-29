@@ -65,7 +65,7 @@ function OptVerification() {
         try {
             setIsLoading(true)
             setProgress(70)
-            console.log({ email: formData.email, opt: otp.join('') })
+            // console.log({ email: formData.email, opt: otp.join('') })
             const response = await axios.post(`${BASE_URL}users/otpVerification`,
                 { email: formData.email, otp: otp.join('') },
                 {
@@ -74,9 +74,7 @@ function OptVerification() {
                 });
             setProgress(90)
             setOtp(["", "", "", "", "", ""])
-            console.log("try block")
-
-            console.log(response)
+            // console.log(response)
             if (response.status === 201) {
                 setIsLoading(false)
                 setProgress(100)
@@ -84,7 +82,6 @@ function OptVerification() {
                 navigate("/user-otp-verified-page", { state: response.data })
             }
         } catch (error) {
-            console.log("catch block")
             otpVerify(true)
             console.log(error)
             let errorData = error.response.data;
@@ -147,7 +144,7 @@ function OptVerification() {
         try {
             setProgress(30)
             setIsLoading(true)
-            console.log({ email: formData.email, opt: otp.join('') })
+            // console.log({ email: formData.email, opt: otp.join('') })
             setProgress(70)
             const response = await axios.post(`${BASE_URL}users/resendOtp`,
                 formData,
@@ -157,7 +154,7 @@ function OptVerification() {
                 });
             setProgress(90)
             setIsLoading(false)
-            console.log(response)
+            // console.log(response)
             if (response.status === 202) {
                 setPopupOpen(true)
                 startTimer(); // Restart the timer when OTP is resent

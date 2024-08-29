@@ -139,12 +139,12 @@ function StoragesByWareHouses() {
                                 </h5>
                                 <h5 className="text-sm font-bold tracking-tight dark:text-slate-400" >
                                     Max Additional Weight: <span className="text-green-700 dark:text-green-300">
-                                        {maxAdditionalWeightInKg} Kg
+                                        {maxAdditionalWeightInKg.toFixed(2)} Kg
                                     </span>
                                 </h5>
                                 <h5 className="text-sm font-bold tracking-tight dark:text-slate-400" >
                                     Available Area : <span className="text-green-700 dark:text-green-300">
-                                        {availableArea}
+                                        {availableArea.toFixed(2)}
                                     </span>
                                 </h5>
                                 <h5 className="text-sm font-bold tracking-tight dark:text-slate-400" >

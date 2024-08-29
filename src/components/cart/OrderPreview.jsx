@@ -19,7 +19,7 @@ function OrderPreview() {
     let product = location.state.product || {};
     let address = location.state.address || {};
     let quantity = location.state.quantity || 0;
-    console.log(product);
+    // console.log(product);
     // console.log(`${product.productId || product.inventoryId}`)
 
     document.title = "Order Preview - Ecommerce Shopping App"
@@ -96,9 +96,15 @@ function OrderPreview() {
                 }
             );
             setProgress(90)
-            console.log(response);
+            // console.log(response);
             setIsLoading(false);
             if (response.status === 201) {
+                setTimeout(() => {
+                    setPopupData(response.data.message);
+                    setPopupOpen(true);
+                    setOpenModal(true)
+                }, 0);
+            }else if (response.status === 200) {
                 setTimeout(() => {
                     setPopupData(response.data.message);
                     setPopupOpen(true);

@@ -94,7 +94,7 @@ function UpdateProduct() {
                 }
             );
             setProgress(90)
-            // console.log(response);
+            console.log(response);
             if (response.status === 200) {
                 setModelMessage(response.data.message)
                 setPreviousLocation(from)

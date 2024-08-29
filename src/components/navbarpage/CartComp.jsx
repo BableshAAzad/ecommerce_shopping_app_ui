@@ -43,7 +43,7 @@ function CartComp() {
                 withCredentials: true,
             });
             setProgress(90)
-            console.log(responseCartProducts)
+            // console.log(responseCartProducts)
             setCartProduct(responseCartProducts.data.data)
         } catch (error) {
             console.error(error);
@@ -92,7 +92,7 @@ function CartComp() {
                     withCredentials: true,
                 });
             setProgress(80)
-            console.log(responseCartProducts)
+            // console.log(responseCartProducts)
             setProgress(90)
             if (responseCartProducts.status === 200) {
                 setCartProduct(cartProduct.filter(product => product.cartProductId !== cartProductId));
@@ -119,7 +119,7 @@ function CartComp() {
                     withCredentials: true,
                 });
             setProgress(90)
-            console.log(responseCartProducts)
+            // console.log(responseCartProducts)
             if (responseCartProducts.status === 200) {
                 setCartProduct([])
                 setPreviousLocation("/cart")
@@ -145,7 +145,7 @@ function CartComp() {
                 withCredentials: true,
             });
             setProgress(90)
-            console.log(responseCartProducts)
+            // console.log(responseCartProducts)
             setCartProduct(cartProduct.map(product =>
                 product.cartProductId === cartProductId
                     ? { ...product, selectedQuantity }
@@ -243,21 +243,21 @@ function CartComp() {
                    dark:bg-gray-800 text-gray-800 dark:text-white mt-4 rounded-b-lg`}>
                 <div className="text-sm dark:text-slate-400 text-slate-700 bg-slate-50 dark:bg-slate-900 p-1 rounded-lg m-1">
                     Total Items:
-                    <span className="text-lime-800 dark:text-lime-400 font-bold ml-1">{totalItemAndPrice.totalItem}</span>
+                    <span className="text-lime-800 dark:text-lime-400 font-bold ml-1">{totalItemAndPrice.totalItem.toFixed(2)}</span>
                 </div>
                 <div className="text-sm dark:text-slate-400 text-slate-700 bg-slate-50 dark:bg-slate-900 p-1 rounded-lg m-1">
                     Total Price :
-                    <span className="text-pink-800 dark:text-pink-500 font-bold ml-1">{totalItemAndPrice.totalPrice} </span>
+                    <span className="text-pink-800 dark:text-pink-500 font-bold ml-1">{totalItemAndPrice.totalPrice.toFixed(2)} </span>
                     Rs/-
                 </div>
                 <div className="text-sm dark:text-slate-400 text-slate-700 bg-slate-50 dark:bg-slate-900 p-1 rounded-lg m-1">
                     Total Discounted price :
-                    <span className="text-yellow-800 dark:text-yellow-400 font-bold ml-1">{totalItemAndPrice.totalDiscountPrice} </span>
+                    <span className="text-yellow-800 dark:text-yellow-400 font-bold ml-1">{totalItemAndPrice.totalDiscountPrice.toFixed(2)} </span>
                     Rs/-
                 </div>
                 <div className="text-sm dark:text-slate-400 text-slate-700 bg-slate-50 dark:bg-slate-900 p-1 rounded-lg m-1">
                     Total Payable Price :
-                    <span className="text-green-800 dark:text-green-400 font-bold ml-1">{totalItemAndPrice.totalPayAblePrice} </span>
+                    <span className="text-green-800 dark:text-green-400 font-bold ml-1">{totalItemAndPrice.totalPayAblePrice.toFixed(2)} </span>
                     Rs/-
                 </div>
 

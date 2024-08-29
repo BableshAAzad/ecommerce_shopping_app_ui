@@ -37,10 +37,10 @@ function AddAddress() {
         setProgress(20)
         setIsLoading(true);
         e.preventDefault();
-        console.log(addressData);
+        // console.log(addressData);
         try {
             setProgress(60)
-            const response = await axios.post(`${BASE_URL} users/${isLogin.userId}/addresses`,
+            const response = await axios.post(`${BASE_URL}users/${isLogin.userId}/addresses`,
                 addressData,
                 {
                     headers: { "Content-Type": "application/json" },
@@ -54,7 +54,7 @@ function AddAddress() {
                 setProgress(100)
                 handleSuccessResponse(response.data.message)
             }
-            console.log(response);
+            // console.log(response);
         } catch (error) {
             console.log(error);
         } finally {

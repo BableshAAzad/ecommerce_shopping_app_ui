@@ -130,7 +130,7 @@ function LoginForm() {
                 </form>
             </div>
             <div className='text-center ml-auto mr-auto'>
-                <Link to="/forgot-password" className='text-blue-800 font-bold mt-1 underline'>FORGOT PASSWORD?</Link>
+                <Link to="/forgot-password" className='text-blue-800 dark:text-blue-700 font-bold mt-1 underline'>FORGOT PASSWORD?</Link>
             </div>
 
             <div className="social-button-container w-96 ml-auto mr-auto flex justify-center items-center flex-col space-y-4 mt-2 mb-4">

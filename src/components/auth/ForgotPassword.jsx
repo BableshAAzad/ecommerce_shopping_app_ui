@@ -25,7 +25,7 @@ function ForgotPassword() {
     let submitFormData = async (e) => {
         setProgress(30)
         setIsLoading(true)
-        console.log(emailData)
+        // console.log(emailData)
         e.preventDefault();
         try {
             setProgress(70)
@@ -34,7 +34,7 @@ function ForgotPassword() {
                     headers: { "Content-Type": "application/json" },
                 }
             )
-            console.log(response)
+            // console.log(response)
             setProgress(90)
             if (response.status === 200) {
                 otpVerify(true);

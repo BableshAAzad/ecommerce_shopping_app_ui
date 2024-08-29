@@ -88,7 +88,7 @@ function ProductInfo() {
                 }
             );
             setProgress(90)
-            console.log(response);
+            // console.log(response);
             if (response.status === 201) {
                 setTimeout(() => {
                     setPopupData(response.data);

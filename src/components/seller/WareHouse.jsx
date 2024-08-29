@@ -130,7 +130,7 @@ function WareHouse() {
                                     {Name}
                                 </h5>
                                 <h5 className="text-sm font-bold tracking-tight text-slate-600 dark:text-slate-500" >
-                                    Total Capacity In KG : <span className="text-green-700 dark:text-green-400">{TotalCapacityInKg}</span>
+                                    Total Capacity In KG : <span className="text-green-700 dark:text-green-400">{TotalCapacityInKg.toFixed(2)}</span>
                                 </h5>
                                 <p className="tracking-tight mb-1 text-slate-500" >
                                     WareHouse ID : {StoreHouseId}

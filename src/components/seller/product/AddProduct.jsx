@@ -85,6 +85,10 @@ function AddProduct() {
                 setPreviousLocation(previousLocation)
                 setModelMessage(response.data.message)
                 setOpenModal(true)
+            } else if (response.status === 200) {
+                setPreviousLocation(previousLocation)
+                setModelMessage(response.data.message)
+                setOpenModal(true)
             }
         } catch (error) {
             console.log(error);
