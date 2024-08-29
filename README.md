@@ -108,7 +108,7 @@ root_directory/
   <img src="./project_images/update_product.png" alt="update_product" width="90%"/>
 </p>
 
-#### 📝 View Invoice copy
+#### 📝 View Invoice copy 👇
 [View the order invoice](./project_images/order.pdf)
 
 
